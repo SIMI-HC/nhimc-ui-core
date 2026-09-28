@@ -38,15 +38,15 @@
         },
         {
           "path": "src/assets/branding/nhimc-logo.svg",
-          "sha256": "7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea"
+          "sha256": "a17d4f585fc8935aafd368fd26500cba16392ee8464568bc5a713e72130a180b"
         },
         {
           "path": "src/assets/branding/nhimc-favicon.svg",
-          "sha256": "33a30ee0ec515ce2e3d3d17b560440096b32cb6a2bffd29655543317caf4e982"
+          "sha256": "097491058a0ec9fedc4e170c272c8396e663d78c983c71ed6f86a6bebbabe50e"
         },
         {
           "path": "src/assets/icons/nhimc-icons.svg",
-          "sha256": "897bc9d319a81bf232924dcdef087511661ca1a369a4981ffe2ab0aa6f73cf10"
+          "sha256": "06774373c5afb855e624b1a40b3ebdac13e42c2a2f9bbb9adc324b8095703b2c"
         }
       ]
     }

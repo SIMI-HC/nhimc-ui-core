@@ -99,6 +99,11 @@ class ContractTests(unittest.TestCase):
             all(line.endswith(": eol: lf") for line in result.stdout.splitlines()),
             result.stdout,
         )
+        self.assertEqual(
+            [],
+            [path for path in sorted(protected) if b"\r\n" in (ROOT / path).read_bytes()],
+            "Protected text files must use canonical LF bytes",
+        )
 
     def test_changed_asset_is_detected(self):
         with tempfile.TemporaryDirectory() as folder:
