@@ -28,6 +28,7 @@ async function sha256(url) {
 
 async function verifyExample(name, expectedTitle, targetId, expectedHeading, protectedHashes) {
   const iframe = document.createElement('iframe');
+  iframe.title = `${name} example`;
   iframe.src = `../../examples/${name}/index.html`;
   document.body.append(iframe);
   await new Promise((resolve, reject) => {
@@ -35,13 +36,41 @@ async function verifyExample(name, expectedTitle, targetId, expectedHeading, pro
     iframe.addEventListener('error', () => reject(new Error(`example failed to load: ${name}`)), { once: true });
   });
   const exampleDocument = iframe.contentDocument;
+  const exampleWindow = iframe.contentWindow;
   assert(exampleDocument.title === expectedTitle, `example title is wrong: ${name}`);
   const frames = exampleDocument.querySelectorAll('nhimc-frame');
   assert(frames.length === 1, `example must contain one frame: ${name}`);
   const exampleFrame = frames[0];
   await waitFor(() => exampleFrame.shadowRoot?.querySelector(`[data-menu-id="${targetId}"]`), `example menu did not render: ${name}`);
+  const exampleRoot = exampleFrame.shadowRoot;
+  const sidebar = exampleRoot.querySelector('.sidebar');
+  const mobileTrigger = exampleRoot.querySelector('[data-action="mobile-open"]');
+  if (exampleWindow.innerWidth <= 767) {
+    assert(getComputedStyle(sidebar).display === 'none', `mobile sidebar remained active: ${name}`);
+    assert(getComputedStyle(mobileTrigger).display !== 'none', `mobile trigger is hidden: ${name}`);
+  } else {
+    assert(getComputedStyle(sidebar).display !== 'none', `desktop sidebar is hidden: ${name}`);
+    assert(getComputedStyle(mobileTrigger).display === 'none', `desktop mobile trigger is visible: ${name}`);
+  }
+  const initialContentViewport = exampleRoot.querySelector('.content');
+  assert(
+    initialContentViewport.scrollWidth <= initialContentViewport.clientWidth,
+    `initial example content viewport overflows horizontally: ${name}`,
+  );
+  for (const cell of exampleDocument.querySelectorAll('.nhimc-table th, .nhimc-table td')) {
+    assert(cell.scrollWidth <= cell.clientWidth, `initial table cell clips content: ${name}/${cell.textContent.trim()}`);
+  }
   exampleFrame.shadowRoot.querySelector(`[data-menu-id="${targetId}"]`).click();
   await waitFor(() => exampleDocument.querySelector('h1')?.textContent === expectedHeading, `example route did not render: ${name}`);
+  assert(
+    exampleDocument.documentElement.scrollWidth <= exampleDocument.documentElement.clientWidth,
+    `example has horizontal document overflow: ${name}`,
+  );
+  const contentViewport = exampleRoot.querySelector('.content');
+  assert(
+    contentViewport.scrollWidth <= contentViewport.clientWidth,
+    `example content viewport overflows horizontally: ${name}`,
+  );
   for (const [path, expected] of Object.entries(protectedHashes)) {
     const url = new URL(`../../${path}`, iframe.contentWindow.location.href);
     assert(await sha256(url) === expected, `example loaded a different protected frame file: ${name}/${path}`);
@@ -99,12 +128,21 @@ async function run() {
   assert(collapse.getAttribute('aria-expanded') !== before, 'collapse state did not toggle');
 
   const mobile = root.querySelector('[data-action="mobile-open"]');
-  mobile.focus();
-  mobile.click();
-  const drawer = root.querySelector('[data-mobile-drawer]');
-  assert(drawer.open, 'mobile drawer did not open');
-  drawer.dispatchEvent(new Event('cancel', { cancelable: true }));
-  await waitFor(() => !drawer.open && root.activeElement === mobile, 'drawer did not close and restore trigger focus');
+  const sidebar = root.querySelector('.sidebar');
+  if (innerWidth <= 767) {
+    assert(getComputedStyle(sidebar).display === 'none', 'mobile desktop sidebar remained active');
+    assert(getComputedStyle(mobile).display !== 'none', 'mobile drawer trigger is hidden');
+    mobile.focus();
+    mobile.click();
+    const drawer = root.querySelector('[data-mobile-drawer]');
+    assert(drawer.open && drawer.matches(':modal'), 'mobile drawer did not open modally');
+    assert(drawer.contains(root.activeElement), 'mobile drawer did not retain modal focus');
+    drawer.dispatchEvent(new Event('cancel', { cancelable: true }));
+    await waitFor(() => !drawer.open && root.activeElement === mobile, 'drawer did not close and restore trigger focus');
+  } else {
+    assert(getComputedStyle(sidebar).display !== 'none', 'desktop sidebar is hidden');
+    assert(getComputedStyle(mobile).display === 'none', 'desktop mobile trigger is visible');
+  }
 
   frame.menu = [{ id: '', label: 'Invalid' }];
   assert(frame.menu.length === 0 && Object.isFrozen(frame.menu), 'invalid menu did not fall back safely');
@@ -132,6 +170,7 @@ async function run() {
   opener.click();
   const componentDialog = document.querySelector('#test-dialog');
   assert(componentDialog.open && document.activeElement === document.querySelector('#dialog-close'), 'dialog did not open with initial focus');
+  assert(componentDialog.matches(':modal') && componentDialog.contains(document.activeElement), 'dialog did not retain modal focus');
   document.querySelector('#dialog-close').click();
   await waitFor(() => !componentDialog.open && document.activeElement === opener, 'dialog did not close and restore focus');
 
@@ -144,6 +183,11 @@ async function run() {
   );
   await verifyExample('operations', 'Northstar Operations', 'tasks', 'Task register', sharedFrameHashes);
   await verifyExample('administration', 'Northstar Administration', 'policies', 'Policy library', sharedFrameHashes);
+
+  assert(
+    document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    'browser runner has horizontal document overflow',
+  );
 
   resultMeta.content = 'PASS';
   results.textContent = 'PASS';

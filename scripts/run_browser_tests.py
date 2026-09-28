@@ -12,6 +12,7 @@ BROWSER_PATHS = [
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
 ]
+DEFAULT_VIEWPORTS = ((1440, 900), (1024, 768), (390, 844))
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -42,8 +43,7 @@ def find_browser() -> Path:
     raise FileNotFoundError("Chrome or Edge was not found in a standard location")
 
 
-def run_browser_tests(root: Path = ROOT, width: int = 390, height: int = 844) -> int:
-    browser = find_browser()
+def _run_browser_test(browser: Path, root: Path, width: int, height: int) -> int:
     with local_server(root) as port:
         url = f"http://127.0.0.1:{port}/tests/browser/runner.html"
         result = subprocess.run(
@@ -66,7 +66,7 @@ def run_browser_tests(root: Path = ROOT, width: int = 390, height: int = 844) ->
             timeout=30,
             check=False,
         )
-    print(f"browser: {browser.name}")
+    print(f"browser: {browser.name} {width}x{height}")
     if 'name="nhimc-test-result" content="PASS"' in result.stdout:
         print("browser: PASS")
         return 0
@@ -77,12 +77,26 @@ def run_browser_tests(root: Path = ROOT, width: int = 390, height: int = 844) ->
     return 1
 
 
+def run_browser_tests(
+    root: Path = ROOT, viewports: tuple[tuple[int, int], ...] = DEFAULT_VIEWPORTS
+) -> int:
+    browser = find_browser()
+    for width, height in viewports:
+        result = _run_browser_test(browser, root, width, height)
+        if result:
+            return result
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run NHIMC browser tests")
-    parser.add_argument("--width", type=int, default=390)
-    parser.add_argument("--height", type=int, default=844)
+    parser.add_argument("--width", type=int)
+    parser.add_argument("--height", type=int)
     args = parser.parse_args()
-    return run_browser_tests(width=args.width, height=args.height)
+    if (args.width is None) != (args.height is None):
+        parser.error("--width and --height must be supplied together")
+    viewports = DEFAULT_VIEWPORTS if args.width is None else ((args.width, args.height),)
+    return run_browser_tests(viewports=viewports)
 
 
 if __name__ == "__main__":

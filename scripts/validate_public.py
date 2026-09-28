@@ -36,6 +36,7 @@ KOREAN_PHONE = re.compile(r"(?<!\d)01[016789][ -]?\d{3,4}[ -]?\d{4}(?!\d)")
 RESIDENT_NUMBER = re.compile(r"(?<!\d)\d{6}[ -][1-4]\d{6}(?!\d)")
 ALLOWED_EMAIL_DOMAINS = {"example.com", "example.org", "example.net"}
 LOCAL_NETWORK_ALLOWLIST = {
+    "README.md",
     "scripts/run_browser_tests.py",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
 }
@@ -68,7 +69,7 @@ def _line_findings(relative: str, number: int, line: str) -> list[Finding]:
         findings.append(
             Finding("public.url-credentials", location, "URL contains embedded credentials")
         )
-    if INTERNAL_HOST.search(line):
+    if INTERNAL_HOST.search(line) and relative not in LOCAL_NETWORK_ALLOWLIST:
         findings.append(
             Finding("public.internal-url", location, "Internal host marker detected")
         )

@@ -1,6 +1,12 @@
 NHIMC UI Core
 Copyright 2026 NHIMC UI Core contributors
 
-The newly authored source code is provided under the Apache License 2.0.
-NHIMC branding assets and bundled fonts are documented separately in
-PUBLIC_ASSET_REVIEW.md and the applicable font license files.
+Newly authored source code and documentation are provided under the Apache
+License 2.0 in LICENSE.
+
+The bundled Noto Sans KR font files are distributed under the SIL Open Font
+License 1.1 in src/assets/fonts/OFL.txt.
+
+The supplied NHIMC logo, favicon, and icon sprite are included for public use
+with user-confirmed permission. Their review record and integrity scope are in
+PUBLIC_ASSET_REVIEW.md and registry/assets.json.

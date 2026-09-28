@@ -21,3 +21,5 @@ The user confirmed on 2026-09-28 that the supplied NHIMC logo and font assets ma
 - [x] SIL Open Font License 1.1 is packaged at `src/assets/fonts/OFL.txt`.
 
 Every listed runtime asset is registered in `registry/assets.json` and integrity checked with SHA-256. There are no unresolved public-asset blockers.
+
+This clearance permits inclusion in a local release archive. Publishing that archive to a selected external destination remains a separate maintainer action.

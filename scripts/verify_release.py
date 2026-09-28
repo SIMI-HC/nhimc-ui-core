@@ -6,6 +6,8 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.validate_contracts import validate_contracts
+from scripts.validate_design import validate_design
+from scripts.validate_public import scan_public_tree
 from scripts.verify_all import verify_all
 
 
@@ -25,10 +27,17 @@ def unresolved_release_blockers(review: Path) -> list[str]:
     return blockers
 
 
-def verify_release() -> int:
+def verify_release(run_full_verification: bool = True) -> int:
     categories: list[str] = []
-    if verify_all():
+    if run_full_verification and verify_all():
         categories.append("verification gate")
+
+    if any(item.blocking for item in validate_contracts(ROOT)):
+        categories.append("contract validation")
+    if any(item.blocking for item in validate_design(ROOT)):
+        categories.append("design validation")
+    if any(item.blocking for item in scan_public_tree(ROOT)):
+        categories.append("public safety")
 
     if unresolved_release_blockers(ROOT / "PUBLIC_ASSET_REVIEW.md"):
         categories.append("public asset review")
