@@ -27,7 +27,11 @@ SECRET_ASSIGNMENT = re.compile(
     r"\s*[:=]\s*[\"']?[A-Za-z0-9_./+=-]{16,}"
 )
 TOKEN = re.compile(r"\b(?:sk|ghp|glpat|xox[baprs])-[A-Za-z0-9_-]{20,}\b")
-EMAIL = re.compile(r"\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b", re.IGNORECASE)
+EMAIL = re.compile(
+    r"(?<![A-Z0-9._%+-])[A-Z0-9._%+-]{1,64}"
+    r"@([A-Z0-9.-]{1,253}\.[A-Z]{2,63})\b",
+    re.IGNORECASE,
+)
 KOREAN_PHONE = re.compile(r"(?<!\d)01[016789][ -]?\d{3,4}[ -]?\d{4}(?!\d)")
 RESIDENT_NUMBER = re.compile(r"(?<!\d)\d{6}[ -][1-4]\d{6}(?!\d)")
 ALLOWED_EMAIL_DOMAINS = {"example.com", "example.org", "example.net"}

@@ -5,7 +5,14 @@ import subprocess
 import tempfile
 import unittest
 
-from scripts.nhimc_upstream import EXPECTED_COUNTS, VENDOR_PREFIX
+from scripts.nhimc_upstream import (
+    EXPECTED_COUNTS,
+    VENDOR_PREFIX,
+    _destination_for,
+    enumerate_allowlisted_files,
+    manifest_entry,
+    snapshot_counts,
+)
 from scripts.sync_nhimc_design import sync_snapshot
 from scripts.verify_nhimc_design_sync import verify_snapshot
 
@@ -22,6 +29,17 @@ LAYOUTS = (
 )
 LOGOS = tuple(f"logo-{index}.svg" for index in range(9))
 FONTS = tuple(f"font-{index}.woff2" for index in range(6))
+TEMPLATES = (
+    "admin/master-detail.html",
+    "dashboard/analytics.html",
+    "dashboard/monitoring.html",
+    "dashboard/workflow.html",
+    "detail/default.html",
+    "form/sections.html",
+    "list/default.html",
+    "list/dense.html",
+    "list/with-tabs.html",
+)
 
 
 class NhimcDesignSyncTests(unittest.TestCase):
@@ -80,6 +98,14 @@ class NhimcDesignSyncTests(unittest.TestCase):
         self._write(source, "rules/layout.md", b"# Layout\r\n")
         self._write(source, "tokens/themes/catalog.yaml", b"themes: []\r\n")
         self._write(source, "templates/catalog.yaml", b"templates: []\r\n")
+        for name in TEMPLATES:
+            self._write(
+                source,
+                f"assets/templates/{name}",
+                f'<!doctype html><main data-nhimc-role="content">{name}</main>\r\n'.encode(),
+            )
+        self._write(source, "scripts/validate_templates.py", b"print('templates')\r\n")
+        self._write(source, "scripts/validate_deliverable.py", b"print('deliverable')\r\n")
         for name in LOGOS:
             self._write(source, f"docs/design-docs/assets/logo/{name}", b"<svg/>\r\n")
         for name in FONTS:
@@ -158,6 +184,20 @@ class NhimcDesignSyncTests(unittest.TestCase):
 
         self.assertEqual(expected, (root / VENDOR_PREFIX / "rules/layout.md").read_bytes())
 
+    def test_snapshot_includes_every_catalogued_template_asset(self):
+        source, _ = self._canonical_git_fixture()
+        destinations = {
+            destination.as_posix()
+            for _, destination in enumerate_allowlisted_files(source)
+        }
+        self.assertIn("assets/templates/list/default.html", destinations)
+
+    def test_manifest_assigns_template_asset_role(self):
+        source, _ = self._canonical_git_fixture()
+        relative = Path("assets/templates/list/default.html")
+        entry = manifest_entry(source, relative, _destination_for(relative))
+        self.assertEqual(entry["role"], "template-asset")
+
     def test_verify_snapshot_detects_tampering_and_extra_files(self):
         source, root = self._canonical_git_fixture()
         sync_snapshot(source, root, expected_commit=None)
@@ -172,6 +212,10 @@ class NhimcDesignSyncTests(unittest.TestCase):
 
 
 class RepositoryCanonicalSnapshotTests(unittest.TestCase):
+    def test_snapshot_counts_nine_templates(self):
+        source = Path(r"C:\Projects\NhimcDesign\.agents\skills\nhimc-worktool")
+        self.assertEqual(snapshot_counts(source)["templates"], 9)
+
     def test_repository_contains_complete_pinned_snapshot(self):
         manifest_path = ROOT / VENDOR_PREFIX / "upstream.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

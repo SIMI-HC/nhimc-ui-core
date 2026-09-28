@@ -1,4 +1,6 @@
 import io
+import subprocess
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -13,6 +15,25 @@ FIXTURES = ROOT / "tests/fixtures/public-safety"
 
 
 class PublicSafetyTests(unittest.TestCase):
+    def test_long_inline_asset_line_scans_without_quadratic_email_backtracking(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "asset.html").write_text(
+                ("%3C" * 20_000), encoding="utf-8"
+            )
+            code = (
+                "from pathlib import Path; "
+                "from scripts.validate_public import scan_public_tree; "
+                f"raise SystemExit(bool(scan_public_tree(Path({str(root)!r}))))"
+            )
+            completed = subprocess.run(
+                [sys.executable, "-c", code],
+                cwd=ROOT,
+                timeout=2,
+                check=False,
+            )
+            self.assertEqual(0, completed.returncode)
+
     def test_safe_fixture_has_no_findings(self):
         self.assertEqual([], scan_public_tree(FIXTURES, include={"safe.txt"}))
 

@@ -4,7 +4,8 @@
     "components": 49,
     "fonts": 6,
     "layouts": 7,
-    "logos": 9
+    "logos": 9,
+    "templates": 9
   },
   "files": [
     {
@@ -78,6 +79,78 @@
       "role": "layout",
       "sha256": "aaa6ec2a99cf64a83da231238ff83c90e6fe9bbd1bb9cc42c80b4b5ef113016c",
       "source": "assets/layouts/top.html"
+    },
+    {
+      "bytes": 69837,
+      "destination": "vendor/nhimc-design/assets/templates/admin/master-detail.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "6cfdc5a4315c93172ac7cfea7337b2cc645cd2dee2eb535af6ca5dee5c8e4b6d",
+      "source": "assets/templates/admin/master-detail.html"
+    },
+    {
+      "bytes": 8523,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/analytics.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "42fc0aa325f02668f2807eb383f9da575a7ae8addc6d3ccf207b8786f8a29b86",
+      "source": "assets/templates/dashboard/analytics.html"
+    },
+    {
+      "bytes": 69591,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/monitoring.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "9322fbe035b5f3942dc4b1cfd502ce0a65c986bb071f5f51e5b939f476ec0ccb",
+      "source": "assets/templates/dashboard/monitoring.html"
+    },
+    {
+      "bytes": 11064,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/workflow.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "1a180b51541134403246f94b100838ca42d7307bc471ccdc7f79d6935b24c734",
+      "source": "assets/templates/dashboard/workflow.html"
+    },
+    {
+      "bytes": 68967,
+      "destination": "vendor/nhimc-design/assets/templates/detail/default.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "5c821daf88a96ae1c1c3343a853dda43b7df5fc836e98993593cfa801ab95bff",
+      "source": "assets/templates/detail/default.html"
+    },
+    {
+      "bytes": 70763,
+      "destination": "vendor/nhimc-design/assets/templates/form/sections.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "e3f4c1d903eb96bfdcc1dc8103af85f089fd0f5e317547475a5da8ac5487c225",
+      "source": "assets/templates/form/sections.html"
+    },
+    {
+      "bytes": 74360,
+      "destination": "vendor/nhimc-design/assets/templates/list/default.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "ffdf1640663d869bcea23dee9962523adfc24bfe4e41a75e5b83cd31007dd1b3",
+      "source": "assets/templates/list/default.html"
+    },
+    {
+      "bytes": 71022,
+      "destination": "vendor/nhimc-design/assets/templates/list/dense.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "73ad9ba7c71fcd551285749e61fee57df70ab2f326179024927b162e1119a4be",
+      "source": "assets/templates/list/dense.html"
+    },
+    {
+      "bytes": 73907,
+      "destination": "vendor/nhimc-design/assets/templates/list/with-tabs.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "5905f2d521e8cd78677a60da98505895563c747352e076c53d99066061b2bf77",
+      "source": "assets/templates/list/with-tabs.html"
     },
     {
       "bytes": 8793,
@@ -336,10 +409,26 @@
       "source": "rules/taste-gate.md"
     },
     {
+      "bytes": 11864,
+      "destination": "vendor/nhimc-design/scripts/validate_deliverable.py",
+      "mediaType": "text/plain",
+      "role": "canonical-validator",
+      "sha256": "e050d85fa39ddc9ce183435f4776f10f4c4571f40660ba77018b3ae33fb1243e",
+      "source": "scripts/validate_deliverable.py"
+    },
+    {
+      "bytes": 39778,
+      "destination": "vendor/nhimc-design/scripts/validate_templates.py",
+      "mediaType": "text/plain",
+      "role": "canonical-validator",
+      "sha256": "2e7e873add3f1b7cb57a5d2c38ed81e19b88b0ef2f376935bd3eb513fb9c6029",
+      "source": "scripts/validate_templates.py"
+    },
+    {
       "bytes": 590,
       "destination": "vendor/nhimc-design/templates/admin-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "cbb65d157e642406d2b750ba655117ec26d2bfbd2e0506873883d6205b38221e",
       "source": "templates/admin-page.md"
     },
@@ -347,7 +436,7 @@
       "bytes": 6729,
       "destination": "vendor/nhimc-design/templates/authoring.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "8b6f1477b349acaa55da7070fcae6c605142e41b647ac18e1e7df792bac8896a",
       "source": "templates/authoring.md"
     },
@@ -355,7 +444,7 @@
       "bytes": 32012,
       "destination": "vendor/nhimc-design/templates/catalog.yaml",
       "mediaType": "application/yaml",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "747c30ed7587d0672e7f64abba93cbd899a2cab6a3dba2dbd98413c6f2344c57",
       "source": "templates/catalog.yaml"
     },
@@ -363,7 +452,7 @@
       "bytes": 878,
       "destination": "vendor/nhimc-design/templates/dashboard-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "04093b0a3973197a986f02fed42c013e76afbe91a6342c6db0c5547ce7ee3feb",
       "source": "templates/dashboard-page.md"
     },
@@ -371,7 +460,7 @@
       "bytes": 665,
       "destination": "vendor/nhimc-design/templates/detail-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "eb04d9b8972c4a72c2bbbf68907ee4ecbe12ae90d77ba5ec3ddf8f2da13bbc23",
       "source": "templates/detail-page.md"
     },
@@ -379,7 +468,7 @@
       "bytes": 698,
       "destination": "vendor/nhimc-design/templates/form-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "1109f29e7e69845210f84db4d929578a1bee5d125328bf2f5b6f758091790bcf",
       "source": "templates/form-page.md"
     },
@@ -387,7 +476,7 @@
       "bytes": 1342,
       "destination": "vendor/nhimc-design/templates/list-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "27329eb92da387e2c0132ae41b58c3dbc05b9c85eaa840f007b3e8aa097ef884",
       "source": "templates/list-page.md"
     },
@@ -395,7 +484,7 @@
       "bytes": 2236,
       "destination": "vendor/nhimc-design/templates/registry.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "f1850c67e6bd1debc56281a80e9c10ebe5a7e2b1980f5247127c88b62ca9e6dd",
       "source": "templates/registry.md"
     },
@@ -403,7 +492,7 @@
       "bytes": 697,
       "destination": "vendor/nhimc-design/templates/settings-page.md",
       "mediaType": "text/markdown",
-      "role": "contract",
+      "role": "template-contract",
       "sha256": "ed9986097155a9db56418af2198ab1a0ae2fee4c1543df7fde7ea9e2ce07547c",
       "source": "templates/settings-page.md"
     },

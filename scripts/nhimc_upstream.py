@@ -9,6 +9,7 @@ PINNED_COMMIT = "08c45402eece8a7c55afc60385e8671c9f13081a"
 VENDOR_PREFIX = Path("vendor/nhimc-design")
 ALLOWLIST_DIRECTORIES = (
     Path("assets/layouts"),
+    Path("assets/templates"),
     Path("assets/icons"),
     Path("components"),
     Path("patterns"),
@@ -21,8 +22,16 @@ ALLOWLIST_DIRECTORIES = (
 ALLOWLIST_FILES = (
     Path("assets/components/showcase.html"),
     Path("docs/design-docs/assets/fonts.css"),
+    Path("scripts/validate_templates.py"),
+    Path("scripts/validate_deliverable.py"),
 )
-EXPECTED_COUNTS = {"layouts": 7, "components": 49, "logos": 9, "fonts": 6}
+EXPECTED_COUNTS = {
+    "layouts": 7,
+    "templates": 9,
+    "components": 49,
+    "logos": 9,
+    "fonts": 6,
+}
 
 
 def _git(source: Path, *arguments: str) -> str:
@@ -69,6 +78,7 @@ def require_clean_git_source(source: Path, expected_commit: str | None) -> tuple
 def _destination_for(relative: Path) -> Path:
     mappings = (
         (Path("assets/layouts"), Path("layouts")),
+        (Path("assets/templates"), Path("assets/templates")),
         (Path("assets/icons"), Path("icons")),
         (Path("assets/components"), Path("components")),
         (Path("components"), Path("components")),
@@ -81,6 +91,11 @@ def _destination_for(relative: Path) -> Path:
     )
     if relative == Path("docs/design-docs/assets/fonts.css"):
         return Path("fonts/fonts.css")
+    if relative in {
+        Path("scripts/validate_templates.py"),
+        Path("scripts/validate_deliverable.py"),
+    }:
+        return Path("scripts") / relative.name
     for source_prefix, destination_prefix in mappings:
         try:
             suffix = relative.relative_to(source_prefix)
@@ -94,6 +109,8 @@ def _role(relative: Path) -> str:
     value = relative.as_posix()
     if value.startswith("assets/layouts/"):
         return "layout"
+    if value.startswith("assets/templates/"):
+        return "template-asset"
     if value.startswith("assets/icons/"):
         return "icon"
     if value.startswith("docs/design-docs/assets/logo/"):
@@ -104,6 +121,10 @@ def _role(relative: Path) -> str:
         return "font-styles"
     if value.startswith(("assets/components/", "components/")):
         return "component"
+    if value.startswith("templates/"):
+        return "template-contract"
+    if value.startswith("scripts/validate_"):
+        return "canonical-validator"
     return "contract"
 
 
@@ -178,6 +199,7 @@ def count_component_registry(path: Path) -> int:
 def snapshot_counts(source: Path) -> dict[str, int]:
     return {
         "layouts": len(list((source / "assets/layouts").glob("*.html"))),
+        "templates": len(list((source / "assets/templates").glob("**/*.html"))),
         "components": count_component_registry(source / "components/registry.md"),
         "logos": len(list((source / "docs/design-docs/assets/logo").glob("*.svg"))),
         "fonts": len(list((source / "docs/design-docs/assets/font").glob("*.woff2"))),
