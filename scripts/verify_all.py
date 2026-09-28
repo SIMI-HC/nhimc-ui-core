@@ -7,7 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def verify_all(root: Path = ROOT) -> int:
+def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
     root = root.resolve()
     npm = shutil.which("npm") or shutil.which("npm.cmd") or "npm"
     checks = [
@@ -16,10 +16,19 @@ def verify_all(root: Path = ROOT) -> int:
         ("contracts", [sys.executable, "scripts/validate_contracts.py"]),
         ("design rules", [sys.executable, "scripts/validate_design.py"]),
         ("public tree", [sys.executable, "scripts/validate_public.py"]),
-        ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
-        ("canonical frame parity", [sys.executable, "scripts/run_browser_tests.py", "--canonical-parity-only"]),
         ("browser", [sys.executable, "scripts/run_browser_tests.py"]),
     ]
+    if include_canonical:
+        checks[5:5] = [
+            ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
+            (
+                "canonical frame parity",
+                [
+                    sys.executable, "scripts/run_browser_tests.py",
+                    "--canonical-parity-only", "--all-frames",
+                ],
+            ),
+        ]
     results = []
     for label, command in checks:
         print(f"[verify] {label}", flush=True)

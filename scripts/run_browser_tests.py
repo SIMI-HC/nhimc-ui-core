@@ -24,6 +24,10 @@ BROWSER_PATHS = [
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
 ]
 DEFAULT_VIEWPORTS = ((1440, 900), (1024, 768), (390, 844))
+CANONICAL_FRAMES = (
+    "left", "left-blank", "top", "top-left", "presentation",
+    "presentation-vertical", "blog",
+)
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -175,6 +179,91 @@ def run_canonical_parity(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> int:
     return 0
 
 
+def run_parity_matrix(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> dict:
+    root = root.resolve()
+    browser = find_browser()
+    with tempfile.TemporaryDirectory(prefix="NHIMC all frame parity ") as folder:
+        test_root = Path(folder)
+        for frame in CANONICAL_FRAMES:
+            source = root / "vendor/nhimc-design/layouts" / f"{frame}.html"
+            (test_root / f"{frame}-source.html").write_bytes(source.read_bytes())
+            adapted = render_canonical_frame(root, frame, _canonical_payload())
+            (test_root / f"{frame}-adapted.html").write_text(
+                adapted, encoding="utf-8", newline="\n"
+            )
+        with local_server(test_root) as port:
+            cells = [
+                {
+                    "frame": frame,
+                    "width": width,
+                    "height": height,
+                    "theme": theme,
+                    "sourceUrl": f"http://127.0.0.1:{port}/{frame}-source.html",
+                    "adaptedUrl": f"http://127.0.0.1:{port}/{frame}-adapted.html",
+                }
+                for frame in CANONICAL_FRAMES
+                for width, height in viewports
+                for theme in ("light", "dark")
+            ]
+            config = test_root / "parity-config.json"
+            config.write_text(json.dumps({"cells": cells}), encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    "node", str(root / "scripts/verify_canonical_parity.mjs"),
+                    str(browser), str(config),
+                ],
+                cwd=root,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=240,
+                check=False,
+            )
+    if completed.returncode:
+        raise RuntimeError(completed.stderr or completed.stdout or "canonical parity runner failed")
+    try:
+        payload = json.loads(completed.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"canonical parity result is invalid: {completed.stdout[-2000:]}") from error
+    results = payload.get("results", [])
+    expected = len(CANONICAL_FRAMES) * len(viewports) * 2
+    complete = len(results) == expected
+    return {
+        "frames": list(CANONICAL_FRAMES),
+        "viewports": [f"{width}x{height}" for width, height in viewports],
+        "results": results,
+        "all_passed": complete and all(
+            item.get("state") and item.get("pixels") and item.get("behavior")
+            for item in results
+        ),
+    }
+
+
+def _run_all_frame_parity(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> int:
+    try:
+        result = run_parity_matrix(root, viewports)
+    except (OSError, RuntimeError, subprocess.TimeoutExpired) as error:
+        print(f"canonical parity matrix: FAIL ({error})")
+        return 1
+    print(
+        f"canonical parity matrix: {len(result['frames'])} frames x "
+        f"{len(result['viewports'])} viewports x 2 themes"
+    )
+    if result["all_passed"]:
+        print("canonical parity matrix: PASS")
+        return 0
+    print("canonical parity matrix: FAIL")
+    for item in result["results"]:
+        if not (item.get("state") and item.get("pixels") and item.get("behavior")):
+            print(
+                f"- {item.get('frame')} {item.get('viewport')} {item.get('theme')}: "
+                f"state={item.get('state')} pixels={item.get('pixels')} "
+                f"behavior={item.get('behavior')} {item.get('error', '')}"
+            )
+    return 1
+
+
 def _run_canonical_components(browser: Path, root: Path, width: int, height: int) -> int:
     with local_server(root) as port:
         result = subprocess.run(
@@ -303,6 +392,7 @@ def main() -> int:
     parser.add_argument("--standalone-file", type=Path)
     parser.add_argument("--canonical-parity-only", action="store_true")
     parser.add_argument("--canonical-components-only", action="store_true")
+    parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
         parser.error("--width and --height must be supplied together")
@@ -312,6 +402,8 @@ def main() -> int:
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
+    if args.all_frames and not args.canonical_parity_only:
+        parser.error("--all-frames requires --canonical-parity-only")
     browser = find_browser()
     if args.standalone_file:
         return _run_standalone_artifact(browser, args.standalone_file)
@@ -319,6 +411,8 @@ def main() -> int:
         return _run_standalone_browser_test(browser, ROOT)
     viewports = DEFAULT_VIEWPORTS if args.width is None else ((args.width, args.height),)
     if args.canonical_parity_only:
+        if args.all_frames:
+            return _run_all_frame_parity(viewports=viewports)
         return run_canonical_parity(viewports=viewports)
     if args.canonical_components_only:
         return run_canonical_components(viewports=viewports)

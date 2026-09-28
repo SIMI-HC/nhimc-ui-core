@@ -47,6 +47,12 @@
     document.querySelectorAll('[data-screen-panel]').forEach(panel => {
       panel.hidden = panel.dataset.screenPanel !== selected;
     });
+    const panels = [...document.querySelectorAll('[data-screen-panel]')];
+    const activeIndex = panels.findIndex(panel => panel.dataset.screenPanel === selected);
+    const previous = document.getElementById('slidePrev');
+    const next = document.getElementById('slideNext');
+    if (previous) previous.disabled = activeIndex <= 0;
+    if (next) next.disabled = activeIndex < 0 || activeIndex >= panels.length - 1;
     document.querySelector('[data-nhimc-role="content-slot"]')?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -109,6 +115,18 @@
     if (item.closest('#mobileDialog')) closeDialog(mobile);
     shell?.classList.remove('nav-open');
   });
+  const moveSlide = offset => {
+    const panels = [...document.querySelectorAll('[data-screen-panel]')];
+    const activeIndex = panels.findIndex(panel => !panel.hidden);
+    const target = panels[activeIndex + offset];
+    if (target) setActive(target.dataset.screenPanel);
+  };
+  document.getElementById('slidePrev')?.addEventListener('click', () => moveSlide(-1));
+  document.getElementById('slideNext')?.addEventListener('click', () => moveSlide(1));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') moveSlide(-1);
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') moveSlide(1);
+  });
   themeButton?.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true));
   addEventListener('message', event => {
     if (event.data?.type === 'nhimc-gallery-theme' && ['light', 'dark'].includes(event.data.theme)) setTheme(event.data.theme);
@@ -117,6 +135,9 @@
     const saved = localStorage.getItem('nhimc-theme');
     if (saved === 'light' || saved === 'dark') setTheme(saved);
   } catch (_) {}
+
+  const current = document.querySelector('[data-menu-id][aria-current="page"]');
+  if (current) setActive(current.dataset.menuId);
 
   window.NhimcCanonicalFrame = Object.freeze({ setActive, setStatus, setTheme });
 })();

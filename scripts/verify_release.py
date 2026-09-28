@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+import subprocess
 import sys
 
 if __package__ in {None, ""}:
@@ -30,8 +31,22 @@ def unresolved_release_blockers(review: Path) -> list[str]:
 def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int:
     root = root.resolve()
     categories: list[str] = []
-    if run_full_verification and verify_all(root):
-        categories.append("verification gate")
+    if run_full_verification:
+        if verify_all(root, include_canonical=False):
+            categories.append("verification gate")
+        canonical_gates = (
+            ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
+            (
+                "canonical frame parity",
+                [
+                    sys.executable, "scripts/run_browser_tests.py",
+                    "--canonical-parity-only", "--all-frames",
+                ],
+            ),
+        )
+        for label, command in canonical_gates:
+            if subprocess.run(command, cwd=root, check=False).returncode:
+                categories.append(label)
 
     if any(item.blocking for item in validate_contracts(root)):
         categories.append("contract validation")
