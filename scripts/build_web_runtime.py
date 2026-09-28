@@ -35,6 +35,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
     }
     sprite = _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests).decode("utf-8")
     runtime = (root / "src/generated/frame/frame-runtime.js").read_text(encoding="utf-8")
+    presentation_runtime = (root / "src/presentation/presentation-runtime.js").read_text(encoding="utf-8")
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
     font_base = f"{CDN_BASE}@v{version}/vendor/nhimc-design/fonts"
     css = "\n".join(
@@ -52,6 +53,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
         "themeColors": theme_color_ids(root),
         "sprite": sprite,
         "runtime": runtime,
+        "presentationRuntime": presentation_runtime,
         "css": css,
         "icons": sorted(set(re.findall(r'<symbol\s+id="([a-z0-9-]+)"', sprite))),
     }

@@ -7,8 +7,15 @@ frameVersion always means the same Frame.
 1.0.0  the Ilsan Hospital logo tile (white border) uses an 8px radius instead of 10px/9px.
 1.0.1  PRESENTATION frames (presentation, presentation-vertical) own a Content Safe Area. Their Header
        (utility buttons) and Controller (slide dots and arrows) float above a full-bleed content slot, so AI
-       Content ran under them. The content slot is now inset by the space those controls occupy, and Content
-       scrolls inside it. Only the frames that have the presentation controller are touched.
+       Content ran under them.
+1.1.0  Presentation Base Contract shared by both PRESENTATION frames; direction is the only difference:
+       - Safe Area: the canonical slide (flex column, centred, animated) is padded by the space the Header and
+         Controller occupy, so Content sits in the visual centre of the Safe Area. Content is never positioned
+         by the page.
+       - the scrollbar gutter is reserved on both edges so Content stays centred even when a slide scrolls.
+       - the Frame names its direction (data-presentation-direction) and the flow direction variable
+         (--presentation-flow-direction) used by the Presentation primitives.
+       Slide lifecycle, transitions and navigation live in src/presentation/presentation-runtime.js.
 """
 from __future__ import annotations
 
@@ -23,22 +30,22 @@ SAFE_AREA_MARKER = "nhimc-presentation-safe-area"
 
 # Sizes come from the Frame's own control rules: .utility (top/right 20px, 40px buttons),
 # .slide-dots (20px from the edge, 26px thick pill) and .nav-arrow (20px from the edge, 48px; 8px and 38px
-# below 768px). GAP is the breathing room between a control and Content.
+# below 768px). The last number is the breathing room between a control and Content.
 _HORIZONTAL_SAFE_AREA = """
 /* nhimc-presentation-safe-area: horizontal. Header = utility (top), Controller = slide dots (bottom) and arrows (sides). */
-.app-shell{--presentation-safe-top:calc(20px + 40px + 12px);--presentation-safe-bottom:calc(20px + 26px + 12px);--presentation-safe-inline:calc(20px + 48px + 12px)}
+.app-shell{--presentation-flow-direction:row;--presentation-safe-top:calc(20px + 40px + 12px);--presentation-safe-bottom:calc(20px + 26px + 12px);--presentation-safe-inline:calc(20px + 48px + 12px)}
 @media(max-width:767px){.app-shell{--presentation-safe-inline:calc(8px + 38px + 8px)}}
 """
 
 _VERTICAL_SAFE_AREA = """
 /* nhimc-presentation-safe-area: vertical. Header = utility (top right), Controller = prev/next arrows (top/bottom) and slide dots (right). */
-.app-shell{--presentation-safe-top:calc(20px + 48px + 12px);--presentation-safe-bottom:calc(20px + 48px + 12px);--presentation-safe-inline:calc(20px + 26px + 12px)}
+.app-shell{--presentation-flow-direction:column;--presentation-safe-top:calc(20px + 48px + 12px);--presentation-safe-bottom:calc(20px + 48px + 12px);--presentation-safe-inline:calc(20px + 26px + 12px)}
 @media(max-width:767px){.app-shell{--presentation-safe-top:calc(20px + 40px + 12px);--presentation-safe-bottom:calc(8px + 38px + 8px)}}
 """
 
-_SAFE_AREA_RULES = """.content-slot{inset:var(--presentation-safe-top) var(--presentation-safe-inline) var(--presentation-safe-bottom);min-width:0;min-height:0;overflow:hidden}
-.content-slot>*{position:absolute;inset:0;box-sizing:border-box;min-width:0;min-height:0;overflow:auto}
-.content-slot>[hidden]{display:none}
+# The canonical .slide is already a centred, animated, scrollable flex column. The Safe Area is its padding, so the
+# slide (and its transition) still sweeps the whole canvas while Content stays clear of Header and Controller.
+_SAFE_AREA_RULES = """.slide{padding:var(--presentation-safe-top) var(--presentation-safe-inline) var(--presentation-safe-bottom);scrollbar-gutter:stable both-edges}
 """
 
 
@@ -62,9 +69,12 @@ def is_presentation_layout(layout: str) -> bool:
 def _patch_presentation_safe_area(layout: str) -> str:
     if not is_presentation_layout(layout) or SAFE_AREA_MARKER in layout:
         return layout
-    block = (_VERTICAL_SAFE_AREA if _SLIDE_DOTS_COLUMN.search(layout) else _HORIZONTAL_SAFE_AREA) + _SAFE_AREA_RULES
+    vertical = bool(_SLIDE_DOTS_COLUMN.search(layout))
+    block = (_VERTICAL_SAFE_AREA if vertical else _HORIZONTAL_SAFE_AREA) + _SAFE_AREA_RULES
     end = layout.rindex("</style>")
-    return layout[:end] + block + layout[end:]
+    layout = layout[:end] + block + layout[end:]
+    direction = "vertical" if vertical else "horizontal"
+    return layout.replace('class="app-shell"', f'class="app-shell" data-presentation-direction="{direction}"', 1)
 
 
 def apply_frame_patches(layout: str) -> str:

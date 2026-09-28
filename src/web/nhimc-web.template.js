@@ -151,6 +151,14 @@
   const mode = kind.startsWith('presentation') ? 'dots' : ['left', 'left-blank', 'top-left'].includes(kind) ? 'side' : 'top';
   const projectTitle = (document.querySelector('nhimc-frame') && document.querySelector('nhimc-frame').dataset.projectTitle) || title;
 
+  // PRESENTATION Content lives in the Frame's own slide markup; the Frame owns the slide, its Safe Area and lifecycle.
+  if (kind.startsWith('presentation')) {
+    if (/data-screen-panel=/.test(content)) {
+      content = content.replace(/<section\b([^>]*\bdata-screen-panel=[^>]*)>/g, (match, attrs) => (/\bclass=/.test(attrs) ? match : '<section class="slide"' + attrs + '>'));
+    } else {
+      content = '<section class="slide" id="' + menu[0].id + '" data-screen-panel="' + menu[0].id + '">' + content + '</section>';
+    }
+  }
   let doc = D.layouts[kind].replace(/(<html\b[^>]*\bdata-theme=")[^"]+("[^>]*>)/i, '$1' + theme + '$2');
   doc = replaceRoleContents(doc, 'content-slot', content);
   const titlePatterns = [/(<strong\s+class="site-title">)[\s\S]*?(<\/strong>)/, /(<button\s+class="brand-group"[^>]*>[\s\S]*?<span>)[\s\S]*?(<\/span>)/];
@@ -170,7 +178,7 @@
   const scripts = [...doc.matchAll(/<script>[\s\S]*?<\/script\s*>/gi)];
   if (scripts.length !== 1) fail('canonical runtime script must occur exactly once');
   const closeScript = '<' + '/script>';
-  doc = doc.slice(0, scripts[0].index) + '<script>\n' + D.runtime + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
+  doc = doc.slice(0, scripts[0].index) + '<script>\n' + (kind.startsWith('presentation') ? D.presentationRuntime : D.runtime) + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
   const closeStyle = '<' + '/style>';
   const head = '<meta name="nhimc-core-version" content="' + D.version + '"><style data-nhimc-component-bundle="canonical">' + D.css + closeStyle;
   if (themeColor !== 'nhimc-default') doc = doc.replace(/(<html\b)/i, (m) => m + ' data-theme-color="' + themeColor + '"');

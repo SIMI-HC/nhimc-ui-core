@@ -40,14 +40,28 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" guide\nhimc-design-guide.html`(또는 `open-guide.cmd`), macOS `open guide/nhimc-design-guide.html`, Linux `xdg-open guide/nhimc-design-guide.html`.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅):
 
-   `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.1.1/guide/nhimc-design-guide.html`
+   `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.2.0/guide/nhimc-design-guide.html`
 
-   주소의 태그 숫자(`v1.1.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v1.2.0`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
-## PRESENTATION Frame (`presentation`, `presentation-vertical`)
+## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
 
-Frame이 Header(도움말·테마 버튼)와 Controller(슬라이드 점·화살표) 밖에 **Content Safe Area**를 제공합니다. AI는 `main[data-nhimc-role="content"]`만 작성하며, 헤더나 컨트롤러를 피하려는 `margin`·`padding`·`position`을 쓰지 않습니다. 사용자에게 “헤더와 컨트롤러를 피해서 작성하라”는 별도 프롬프트를 요구하지 않습니다. 한 화면(16:9)에 들어가지 않는 Content는 검증이 Safe Area 초과로 알려 주므로 내용을 줄이거나 페이지를 나눕니다.
+`presentation`(가로 발표)과 `presentation-vertical`(세로 발표)은 **방향만 다르고 하나의 Presentation Base Contract를 따릅니다.** 공통 Runtime(`src/presentation/presentation-runtime.js`)과 Frame 패치(`scripts/frame_patches.py`)가 두 Frame에 같은 코드로 적용되며, 방향에 따라 달라지는 것은 슬라이드 이동 방향, 방향키(가로 ←/→, 세로 ↑/↓), 흐름(Flow) 방향뿐입니다.
+
+- Frame이 소유하고 AI가 만들거나 고치지 않는 것: Header, Controller(점·화살표), Branding·Logo·favicon, Theme, Font, Icon, Safe Area, 슬라이드 요소, animation·transition, navigation, Runtime.
+- Frame은 Header·Controller 밖에 **Content Safe Area**를 제공하고 Content를 그 안 **시각적 중앙**에 놓습니다. AI는 `main[data-nhimc-role="content"]`만 작성합니다.
+- 헤더·컨트롤러를 피하려는 `margin`·`padding`·`position:absolute/fixed`·`translate`·`100vh` 계산·높이 숫자는 쓰지 않습니다. 사용자에게 “헤더와 컨트롤러를 피해서 작성하라”는 별도 프롬프트를 요구하지 않습니다.
+- 슬라이드 전환·active 상태·prev/next·점·키보드는 Runtime이 처리합니다. Content에 `@keyframes`, `transition` 재정의, `display`·active class를 바꾸는 스크립트를 넣지 않습니다.
+
+Content 작성 규칙(발표용):
+
+1. 한 슬라이드에 핵심 메시지 하나. 제목 + 핵심 내용, 본문은 짧게, 포인트는 3~5개 이내.
+2. `PresentationHero`(제목·부제 `.nhimc-presentation-hero`)와 `PresentationFlow`(단계·흐름 `ol.nhimc-presentation-flow`; presentation은 가로, presentation-vertical은 세로로 Frame이 방향을 정함)를 우선 씁니다. Content 루트는 Frame이 `PresentationContent`로 자동 배치합니다.
+3. Hero message, Process flow, Key points, Comparison, Summary, Closing message 구조를 쓰고 ContentCard·Toolbar·FormGrid·Table·Pagination·SearchFilter는 최소로 씁니다. Form·Pagination·SearchFilter는 쓰지 않습니다.
+4. 핵심 Content는 Safe Area 높이의 약 60~75%에 둡니다. 넘치면 ① 문장 축약 ② 항목 수 감소 ③ Card 수 감소 ④ 다음 슬라이드로 분리 순서로 줄입니다. 스크롤되는 슬라이드는 기본값이 아닙니다. 한 화면(16:9)에 들어가지 않으면 검증이 Safe Area 초과를 알리므로 반드시 줄이거나 나눕니다.
+
+생성 순서: ① Frame 확인 ② Presentation Runtime 확인 ③ Layout Registry(`registry/layouts.json`) 확인 ④ Presentation Primitive 사용 ⑤ Content만 작성 ⑥ Safe Area 중앙 정렬 확인 ⑦ animation·navigation 보존 확인 ⑧ overflow 검사.
 
 ## 프롬프트 힌트 해석
 
@@ -131,7 +145,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.0/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>

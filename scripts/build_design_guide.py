@@ -74,6 +74,18 @@ VIEW_NAV = (
 )
 
 
+PRESENTATION_COPY = {
+    "presentation": {
+        "name": "PRESENTATION Frame (가로 발표)",
+        "description": "가로 발표 Frame. 슬라이드가 좌우로 넘어가고 방향키는 ←/→입니다. presentation-vertical과 하나의 Presentation 공통 계약(중앙 Content, Slide animation, Controller, Theme, Header, Safe Area)을 따르며 방향만 다릅니다. AI는 Content만 작성합니다.",
+    },
+    "presentation-vertical": {
+        "name": "PRESENTATION VERTICAL Frame (세로 발표)",
+        "description": "세로 발표 Frame. 슬라이드가 위아래로 넘어가고 방향키는 ↑/↓입니다. presentation과 하나의 Presentation 공통 계약(중앙 Content, Slide animation, Controller, Theme, Header, Safe Area)을 따르며 방향만 다릅니다. AI는 Content만 작성합니다.",
+    },
+}
+
+
 BUILDER_PROMPT_JS = """  function updateBuilderPrompt(){
     const frame=frameItems.find(item=>item.id===builderState.frame);
     const theme=builderState.theme?themeById.get(builderState.theme):null;
@@ -101,6 +113,9 @@ def build_guide(root: Path) -> Path:
     gallery["documents"] = {
         key: apply_frame_patches(value) if "/layouts/" in key else value for key, value in gallery["documents"].items()
     }
+    for item in gallery["items"]:
+        if item["id"] in PRESENTATION_COPY:
+            item.update(PRESENTATION_COPY[item["id"]])
     data = json.dumps(gallery, ensure_ascii=False, separators=(",", ":"))
     sections = (root / "src/guide/sections.html").read_text(encoding="utf-8")
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")

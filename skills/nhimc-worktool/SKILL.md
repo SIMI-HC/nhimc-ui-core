@@ -56,9 +56,13 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 `bootstrap.md`의 “준비 절차”를 순서대로 따릅니다: ① 원격 `VERSION`과 비교 ② 더 새로우면 저장소 사본 갱신 ③ 스킬·플러그인이 미등록이면 **등록할지 먼저 묻고**, 등록돼 있고 새 버전이 있으면 **업데이트할지 반드시 묻고** 승인 시 함께 업데이트 ④ 처음 준비했거나 버전이 갱신됐으면 Design Guide를 반드시 표출(열거나 클릭 링크) ⑤ 최신 확인 결과·스킬/플러그인 상태·가이드 표출 여부를 보고. 확인하지 못한 것을 했다고 말하지 않습니다.
 
-## PRESENTATION Frame
+## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
 
-`presentation`, `presentation-vertical`은 Frame이 Header·Controller 밖에 Content Safe Area를 제공합니다. Content(`main[data-nhimc-role="content"]`)만 작성하고 헤더·컨트롤러를 피하는 margin/padding/position을 쓰지 않으며, 사용자에게 그런 별도 프롬프트를 요구하지 않습니다. 한 화면에 안 들어가면 검증이 Safe Area 초과를 알리므로 내용을 줄이거나 페이지를 나눕니다.
+두 Frame은 방향(슬라이드 이동·방향키·Flow)만 다르고 같은 Presentation Base Contract를 따릅니다. Frame이 Header·Controller·Branding·Theme·Font·Icon·Safe Area·슬라이드 요소·animation·transition·navigation·Runtime을 소유하고, AI는 `main[data-nhimc-role="content"]`만 작성합니다. Content는 Frame이 Safe Area의 시각적 중앙에 놓으므로 위치 보정용 margin/padding/position/translate/`100vh`/높이 숫자를 쓰지 않고, 사용자에게 헤더·컨트롤러를 피하라는 별도 프롬프트를 요구하지도 않습니다. animation·active 상태·navigation을 Content에서 다시 만들지 않습니다.
+
+발표용 Content: 한 슬라이드 = 핵심 메시지 하나(제목 + 짧은 본문, 포인트 3~5개), `PresentationHero`·`PresentationFlow` 우선, ContentCard·Toolbar·FormGrid·Table 최소, Form·Pagination·SearchFilter 금지, Safe Area 높이의 60~75%. 넘치면 문장 축약 → 항목 감소 → Card 감소 → 슬라이드 분리 순서로 줄이며 스크롤 슬라이드는 기본값이 아닙니다.
+
+생성 순서: Frame 확인 → Presentation Runtime 확인 → Layout Registry 확인 → Presentation Primitive 사용 → Content만 작성 → Safe Area 중앙 정렬 확인 → animation·navigation 보존 확인 → overflow 검사. 자세한 규칙은 `bootstrap.md`의 “PRESENTATION Frame — 공통 계약”을 따릅니다.
 
 ## Design Guide와 프롬프트 힌트
 
@@ -71,7 +75,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Web(context-only)에서는 Web Runtime 사용
 
-빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime 화면 오른쪽 아래의 “오프라인 HTML 저장” 버튼으로 CSS·스크립트·폰트가 모두 든 파일을 받을 수 있다고 안내하되, 브라우저 검증을 거친 `index.html`이라고 말하지 마세요.
+빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.0/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime 화면 오른쪽 아래의 “오프라인 HTML 저장” 버튼으로 CSS·스크립트·폰트가 모두 든 파일을 받을 수 있다고 안내하되, 브라우저 검증을 거친 `index.html`이라고 말하지 마세요.
 
 ## Self-check (완료 전 5개 계약)
 

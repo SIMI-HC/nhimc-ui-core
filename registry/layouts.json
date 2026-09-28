@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "1.1.1",
+  "projectVersion": "1.2.0",
   "implementation": "src/layouts/primitives.css",
   "primitives": [
     {
@@ -47,6 +47,21 @@
       "id": "ContentCard",
       "selector": ".card.nhimc-card",
       "purpose": "머리(.nhimc-card-head)+본문(.nhimc-card-body 또는 .nhimc-scroll 표)를 가진 카드"
+    },
+    {
+      "id": "PresentationContent",
+      "selector": ".slide>main[data-nhimc-role=\"content\"]",
+      "purpose": "PRESENTATION 슬라이드의 Content 루트. Frame이 Safe Area 안 시각적 중앙에 배치하며 페이지가 위치·여백을 정하지 않음"
+    },
+    {
+      "id": "PresentationHero",
+      "selector": ".nhimc-presentation-hero",
+      "purpose": "슬라이드의 핵심 메시지(h1 + p). 가운데 정렬"
+    },
+    {
+      "id": "PresentationFlow",
+      "selector": ".nhimc-presentation-flow",
+      "purpose": "단계·흐름(ol>li). presentation은 가로, presentation-vertical은 세로로 Frame이 방향을 정함"
     }
   ]
 }

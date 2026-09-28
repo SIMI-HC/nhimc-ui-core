@@ -8,6 +8,8 @@ import re
 from scripts.frame_patches import apply_frame_patches
 
 
+FRAME_RUNTIME = "src/generated/frame/frame-runtime.js"
+PRESENTATION_RUNTIME = "src/presentation/presentation-runtime.js"
 ID = re.compile(r"^[a-z][a-z0-9-]*$")
 SAFE_FRAGMENT = re.compile(r"^#[a-z][a-z0-9-]*$")
 ROLE_OPEN = re.compile(r'<(?P<tag>[a-z][a-z0-9]*)\b[^>]*\bdata-nhimc-role="(?P<role>[^"]+)"[^>]*>', re.IGNORECASE)
@@ -93,6 +95,25 @@ def _validate_payload(payload: FramePayload, icon_ids: set[str]) -> None:
         raise ValueError("active_id must identify a menu item")
 
 
+PANEL_OPEN = re.compile(r"<section\b(?P<attrs>[^>]*\bdata-screen-panel=[^>]*)>")
+
+
+def presentation_slides(content_html: str, payload: "FramePayload") -> str:
+    """PRESENTATION Content lives in the Frame's own slide markup (section.slide[data-screen-panel]).
+
+    The Frame, not the page, owns the slide element: its transition, centring and Safe Area are CSS of .slide and
+    its lifecycle is src/presentation/presentation-runtime.js.
+    """
+    if "data-screen-panel=" in content_html:
+        def add_class(match: re.Match[str]) -> str:
+            attrs = match.group("attrs")
+            return match.group(0) if re.search(r"\bclass=", attrs) else f'<section class="slide"{attrs}>'
+
+        return PANEL_OPEN.sub(add_class, content_html)
+    slide_id = payload.menu[0].id if payload.menu else payload.active_id
+    return f'<section class="slide" id="{slide_id}" data-screen-panel="{slide_id}">{content_html}</section>'
+
+
 def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> str:
     rendered: list[str] = []
     for item in items:
@@ -174,7 +195,8 @@ def render_layout(
         layout,
         count=1,
     )
-    rendered = _replace_role_contents(rendered, "content-slot", payload.content_html)
+    content_html = presentation_slides(payload.content_html, payload) if frame_kind.startswith("presentation") else payload.content_html
+    rendered = _replace_role_contents(rendered, "content-slot", content_html)
     rendered = _replace_project_title(rendered, payload.project_title)
     rendered = _replace_navigation(rendered, payload, frame_kind)
     if 'data-nhimc-role="statusbar"' in rendered:
@@ -203,12 +225,14 @@ def render_canonical_frame(root: Path, frame_id: str, payload: FramePayload) -> 
         raise ValueError(f"unknown canonical frame: {frame_id}") from error
     layout = apply_frame_patches((root / "vendor/nhimc-design/layouts" / filename).read_text(encoding="utf-8"))
     sprite = (root / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8")
-    runtime = (root / "src/generated/frame/frame-runtime.js").read_text(encoding="utf-8")
+    frame_kind = Path(filename).stem
+    runtime_file = PRESENTATION_RUNTIME if frame_kind.startswith("presentation") else FRAME_RUNTIME
+    runtime = (root / runtime_file).read_text(encoding="utf-8")
     return render_layout(
         layout,
         payload,
         icon_ids=_icon_ids(sprite),
         sprite=sprite,
         runtime_js=runtime,
-        frame_kind=Path(filename).stem,
+        frame_kind=frame_kind,
     )

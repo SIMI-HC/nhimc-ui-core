@@ -1,5 +1,16 @@
 # 변경 이력
 
+## [1.2.0] - 2026-09-29
+
+- **Presentation Base Contract** (`presentation`, `presentation-vertical`, Frame 1.1.0). 두 Frame은 방향(슬라이드 이동 축, 방향키, Flow 방향)만 다르고 나머지는 같은 계약과 같은 코드를 씁니다.
+  - 공통 Runtime `src/presentation/presentation-runtime.js`: 상위 정본 Presentation 스크립트(슬라이드 생명주기, transition, prev/next, 점, 키보드, 테마, 도움말)에서 방향만 매개변수로 뺀 것입니다. 이전에는 범용 Runtime이 슬라이드 animation 없이 `hidden`만 바꿔서 전환 애니메이션이 사라져 있었습니다.
+  - Frame이 슬라이드 요소(`section.slide[data-screen-panel]`)를 소유합니다. 오프라인 빌더와 Web Runtime이 Content를 그 안에 넣습니다.
+  - Content는 Safe Area의 시각적 중앙에 놓입니다. 정본 `.slide`(중앙 정렬 flex, transition)의 padding을 Header·Controller가 차지하는 공간으로 잡고 스크롤바 gutter를 양쪽에 예약합니다. 페이지가 위치를 보정할 필요가 없습니다.
+  - Layout Primitive 추가: `PresentationContent`(자동 배치), `PresentationHero`, `PresentationFlow`. 발표용 Content 규칙(한 슬라이드 = 핵심 메시지 하나, 60~75%)을 `bootstrap.md`와 `SKILL.md`에 명시했습니다.
+  - `registry/frames.json`: 공통 계약(`baseContracts.presentation`)과 두 Frame의 `extends`, `owns`(header, controller, safe area, center, transition, navigation, runtime)를 명시했습니다.
+- 검증 게이트 확장: 두 Frame × light/dark × 데스크톱·900×600·좁은 세로 × 오프라인/Web Runtime 결과를 측정합니다(48칸). Safe Area 침범, 중앙 정렬, 초과 감지, 전환 클래스, prev/next·점·방향키, 두 Frame의 Header·Theme·Branding·Controller·timing 동일성, 라이트·다크 대비.
+- Design Guide: 두 Presentation Frame을 가로 발표/세로 발표로 구분해 설명하고 공통 기능을 함께 보여 줍니다.
+
 ## [1.1.1] - 2026-09-29
 
 - **PRESENTATION Frame(`presentation`, `presentation-vertical`) Content Safe Area** (Frame 1.0.1). 원인: Header(도움말·테마 버튼)와 Controller(슬라이드 점·화살표)가 전체 화면을 덮는 Content 슬롯 위에 떠 있어 AI Content가 그 아래로 들어갔습니다. `scripts/frame_patches.py`가 콘텐츠 슬롯을 컨트롤이 차지하는 공간만큼 안쪽으로 들이고(Frame 소유 CSS 변수 `--presentation-safe-*`) Content는 그 안에서만 스크롤합니다. 개별 화면에 margin/padding을 넣을 필요가 없습니다. 다른 Frame은 바뀌지 않습니다.

@@ -88,6 +88,17 @@ class DesignGuideTests(unittest.TestCase):
         self.assertIn("업데이트할지 반드시 묻고", skill)
         self.assertIn("Design Guide를 반드시 표출", skill)
 
+    def test_guide_explains_the_two_presentation_frames_as_one_contract(self):
+        data = _data(GUIDE.read_text(encoding="utf-8"))
+        items = {item["id"]: item for item in data["items"]}
+        self.assertIn("가로 발표", items["presentation"]["name"])
+        self.assertIn("세로 발표", items["presentation-vertical"]["name"])
+        for identifier in ("presentation", "presentation-vertical"):
+            description = items[identifier]["description"]
+            for phrase in ("공통 계약", "중앙 Content", "Slide animation", "Controller", "Theme", "Header", "Safe Area"):
+                self.assertIn(phrase, description, identifier)
+        self.assertIn("발표 Frame 두 가지, 계약은 하나", GUIDE.read_text(encoding="utf-8"))
+
     def test_guide_links_use_the_release_tag_and_a_host_that_renders_html(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         for relative in ("bootstrap.md", "README.md"):
