@@ -2,3 +2,5 @@
 
 *.woff2 binary
 *.zip binary
+
+vendor/nhimc-design/** -text
