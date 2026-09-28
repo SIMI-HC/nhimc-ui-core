@@ -8,6 +8,13 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+async function sha256(url) {
+  const response = await fetch(url);
+  assert(response.ok, `could not fetch protected file: ${url}`);
+  const digest = await crypto.subtle.digest('SHA-256', await response.arrayBuffer());
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
 async function run() {
   assert(customElements.get('nhimc-frame'), 'custom element is not registered');
 
@@ -24,6 +31,27 @@ async function run() {
   assert(root, 'frame must expose an open shadow root for verification');
   assert(root.querySelector('slot').assignedElements().includes(content), 'slot did not receive content');
   assert(!root.querySelector('[part]'), 'frame exposed a part styling hook');
+
+  const frameRegistry = await fetch('../../registry/frames.json').then((response) => response.json());
+  const protectedFiles = frameRegistry.frames.find((item) => item.id === 'nhimc-default').protectedFiles;
+  const beforeIntegrity = {};
+  for (const file of protectedFiles) {
+    const actual = await sha256(`../../${file.path}`);
+    assert(actual === file.sha256, `protected digest mismatch before theme change: ${file.path}`);
+    beforeIntegrity[file.path] = actual;
+  }
+
+  const themedSurface = root.querySelector('.mobile-panel');
+  const colorBefore = getComputedStyle(themedSurface).backgroundColor;
+  const alternateTheme = document.createElement('style');
+  alternateTheme.textContent = ':root { --nhimc-color-primary: #7a1fa2; }';
+  document.head.append(alternateTheme);
+  const colorAfter = getComputedStyle(themedSurface).backgroundColor;
+  assert(colorAfter !== colorBefore, `registered token replacement did not change computed color (${colorBefore} -> ${colorAfter})`);
+  for (const file of protectedFiles) {
+    assert(await sha256(`../../${file.path}`) === beforeIntegrity[file.path], `theme change altered protected file: ${file.path}`);
+  }
+  alternateTheme.remove();
 
   let navigation = null;
   frame.addEventListener('nhimc:navigate', (event) => { navigation = event.detail; });

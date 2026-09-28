@@ -4,7 +4,24 @@
   "themes": [
     {
       "id": "nhimc-light",
-      "tokens": []
+      "file": "src/themes/nhimc-light.css",
+      "tokens": [
+        "--nhimc-color-primary", "--nhimc-color-primary-hover", "--nhimc-color-on-primary",
+        "--nhimc-color-canvas", "--nhimc-color-surface", "--nhimc-color-surface-subtle",
+        "--nhimc-color-text", "--nhimc-color-text-muted", "--nhimc-color-border",
+        "--nhimc-color-border-accent", "--nhimc-color-focus", "--nhimc-color-success",
+        "--nhimc-color-warning", "--nhimc-color-danger", "--nhimc-color-cyan",
+        "--nhimc-color-violet", "--nhimc-color-overlay", "--nhimc-font-family",
+        "--nhimc-font-size-xs", "--nhimc-font-size-sm", "--nhimc-font-size-md",
+        "--nhimc-font-size-lg", "--nhimc-font-weight-regular", "--nhimc-font-weight-bold",
+        "--nhimc-space-1", "--nhimc-space-2", "--nhimc-space-3", "--nhimc-space-4",
+        "--nhimc-space-5", "--nhimc-space-6", "--nhimc-space-8", "--nhimc-radius-sm",
+        "--nhimc-radius-md", "--nhimc-radius-lg", "--nhimc-radius-frame", "--nhimc-shadow-sm",
+        "--nhimc-shadow-lg", "--nhimc-control-height-sm", "--nhimc-control-height-md",
+        "--nhimc-control-height-lg", "--nhimc-frame-sidebar-width",
+        "--nhimc-frame-sidebar-collapsed-width", "--nhimc-frame-header-height",
+        "--nhimc-motion-fast", "--nhimc-motion-base"
+      ]
     }
   ]
 }
