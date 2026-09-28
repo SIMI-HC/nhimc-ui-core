@@ -118,6 +118,17 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 
+## 웹에서 “URL 없는 완성 HTML”을 다운로드 파일로 주기 (코드 실행이 되는 경우)
+
+웹 AI라도 **코드 실행(샌드박스)과 GitHub 접근이 되면** 오프라인 빌더로 CSS·스크립트·폰트가 모두 든 단일 `index.html`을 직접 만들어 **다운로드 파일로 첨부**합니다. 이때 AI가 파일 내용을 손으로 써서 붙이지 않고 반드시 빌더를 실행합니다.
+
+1. 저장소를 받습니다: `git clone https://github.com/SIMI-HC/nhimc-ui-core.git` (이미 있으면 위 “항상 먼저 확인”에 따라 갱신).
+2. 저작 원본(Content 조각 또는 `nhimc-frame` 문서)을 `source.html`로 저장합니다. `<script src>`(Web Runtime 줄)는 넣지 않습니다.
+3. Chromium이 있으면 `python scripts/build_verified_artifact.py --input source.html --output index.html`로 브라우저 검증까지 마칩니다. 없으면 `python scripts/build_single_html.py --input source.html --output index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
+4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림).
+
+코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 쓰고, 화면의 “오프라인 HTML 저장” 버튼으로 URL 없는 파일을 받게 안내합니다.
+
 ## Web(빌더를 실행할 수 없는 환경): 프롬프트 안에서 끝내기
 
 `WEB_BOOTSTRAP / context-only`에서는 Frame을 직접 만들지 않고 **Web Runtime**을 씁니다. HTML 파일 하나만 작성합니다.

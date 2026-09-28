@@ -69,6 +69,10 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 준비가 끝나면 `guide/nhimc-design-guide.html`을 열어 줍니다(못 열면 다운로드 파일로 전달). 절차는 `bootstrap.md`의 “준비 완료 후: Design Guide 열기”를 따릅니다.
 - 요청에 `frame:` / `theme:` / `requirements:` 줄이 있으면 각각 `<html data-frame>` / `<html data-theme-color>` / 화면 요구사항으로 반영합니다. `(미선택 - AI 추천)`이면 업무에 맞춰 고릅니다.
 
+## 웹에서도 코드 실행이 되면 완성 파일을 첨부
+
+웹 AI라도 코드 실행과 GitHub 접근이 되면 저장소를 받아 `scripts/build_verified_artifact.py`(Chromium이 없으면 `scripts/build_single_html.py`, 검증 못 했다고 알림)로 URL 없는 단일 `index.html`을 만들어 다운로드 파일로 첨부합니다. 파일 내용을 손으로 써서 붙이지 않습니다. 코드 실행이 안 되면 아래 Web Runtime을 씁니다. 절차는 `bootstrap.md`의 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기”를 따릅니다.
+
 ## Web(context-only)에서는 Web Runtime 사용
 
 빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime 화면 오른쪽 아래의 “오프라인 HTML 저장” 버튼으로 CSS·스크립트·폰트가 모두 든 파일을 받을 수 있다고 안내하되, 브라우저 검증을 거친 `index.html`이라고 말하지 마세요.
