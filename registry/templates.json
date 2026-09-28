@@ -1,0 +1,393 @@
+{
+  "coreVersion": "2.0.0",
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "asset": "assets/templates/admin/master-detail.html",
+      "content_contract": [
+        "content/page-header",
+        "content/master-detail",
+        "content/master-detail/master-list",
+        "content/master-detail/detail-panel",
+        "content/master-detail/detail-panel/action-area"
+      ],
+      "id": "admin-master-detail",
+      "optional_components": [
+        "IconTextButton",
+        "Badge",
+        "Dialog"
+      ],
+      "page_type": "admin",
+      "required_components": [
+        "PageHeader",
+        "SearchFilter",
+        "MasterDetail",
+        "ConfirmAction",
+        "ActionArea",
+        "Input",
+        "CheckboxField",
+        "CheckboxGroup",
+        "Button",
+        "Card"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "variant": "master-detail"
+    },
+    {
+      "asset": "assets/templates/dashboard/analytics.html",
+      "content_contract": [
+        "content/page-header",
+        "content/tab-nav",
+        "content/chart-grid",
+        "content/chart-grid/chart-panel",
+        "content/chart-grid/trend-panel",
+        "content/insight-panel"
+      ],
+      "id": "dashboard-analytics",
+      "optional_components": [
+        "Table",
+        "Select",
+        "DataTable"
+      ],
+      "page_type": "dashboard",
+      "required_components": [
+        "PageHeader",
+        "Tabs",
+        "Card",
+        "BarChart",
+        "LineChart",
+        "Badge"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial-loading"
+      ],
+      "variant": "analytics"
+    },
+    {
+      "asset": "assets/templates/dashboard/monitoring.html",
+      "content_contract": [
+        "content/page-header",
+        "content/metric-overview",
+        "content/monitoring-grid",
+        "content/monitoring-grid/trend-panel",
+        "content/monitoring-grid/exception-panel"
+      ],
+      "id": "dashboard-monitoring",
+      "optional_components": [
+        "FilterToolbar",
+        "DataTable",
+        "Table",
+        "Select",
+        "Progress"
+      ],
+      "page_type": "dashboard",
+      "required_components": [
+        "PageHeader",
+        "MetricOverview",
+        "StatusDisplay",
+        "Card",
+        "Badge"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial-loading"
+      ],
+      "variant": "monitoring"
+    },
+    {
+      "asset": "assets/templates/dashboard/workflow.html",
+      "content_contract": [
+        "content/page-header",
+        "content/metric-overview",
+        "content/workflow-grid",
+        "content/workflow-grid/workflow-steps",
+        "content/workflow-grid/readiness-checklist",
+        "content/preview-grid",
+        "content/preview-grid/staff-summary",
+        "content/preview-grid/result-preview"
+      ],
+      "id": "dashboard-workflow",
+      "optional_components": [
+        "Alert",
+        "Progress",
+        "Select"
+      ],
+      "page_type": "dashboard",
+      "required_components": [
+        "PageHeader",
+        "MetricOverview",
+        "WorkflowSteps",
+        "ReadinessChecklist",
+        "DataTable",
+        "StatusDisplay",
+        "Card",
+        "Badge",
+        "Button",
+        "Table",
+        "Avatar"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial-loading"
+      ],
+      "variant": "workflow"
+    },
+    {
+      "asset": "assets/templates/detail/default.html",
+      "content_contract": [
+        "content/page-header",
+        "content/detail-grid",
+        "content/detail-grid/detail-section",
+        "content/detail-grid/history-section"
+      ],
+      "id": "detail-default",
+      "optional_components": [
+        "Breadcrumb",
+        "Tabs",
+        "Table",
+        "ConfirmAction",
+        "Dialog"
+      ],
+      "page_type": "detail",
+      "required_components": [
+        "PageHeader",
+        "DetailSection",
+        "StatusDisplay",
+        "Button",
+        "Badge",
+        "Card"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "success",
+        "partial-loading"
+      ],
+      "variant": "default"
+    },
+    {
+      "asset": "assets/templates/form/sections.html",
+      "content_contract": [
+        "content/page-header",
+        "content/form-section",
+        "content/action-area"
+      ],
+      "id": "form-sections",
+      "optional_components": [
+        "CheckboxField",
+        "CheckboxGroup",
+        "RadioField",
+        "RadioGroup",
+        "SwitchField",
+        "IconTextButton",
+        "Alert",
+        "Toast"
+      ],
+      "page_type": "form",
+      "required_components": [
+        "PageHeader",
+        "FormSection",
+        "ActionArea",
+        "Field",
+        "SelectField",
+        "Textarea",
+        "Button",
+        "Card"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "error",
+        "success"
+      ],
+      "variant": "sections"
+    },
+    {
+      "asset": "assets/templates/list/default.html",
+      "content_contract": [
+        "content/page-header",
+        "content/search-filter",
+        "content/data-table",
+        "content/data-table/pagination"
+      ],
+      "id": "list-default",
+      "optional_components": [],
+      "page_type": "list",
+      "required_components": [
+        "PageHeader",
+        "SearchFilter",
+        "DataTable",
+        "PaginationArea",
+        "Button",
+        "Input",
+        "Select",
+        "Table",
+        "Badge",
+        "Pagination"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "success",
+        "partial-loading"
+      ],
+      "variant": "default"
+    },
+    {
+      "asset": "assets/templates/list/dense.html",
+      "content_contract": [
+        "content/page-header",
+        "content/filter-toolbar",
+        "content/data-table"
+      ],
+      "id": "list-dense",
+      "optional_components": [],
+      "page_type": "list",
+      "required_components": [
+        "PageHeader",
+        "FilterToolbar",
+        "DataTable",
+        "StatusDisplay",
+        "Input",
+        "Select",
+        "Table",
+        "Badge"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "partial-loading"
+      ],
+      "variant": "dense"
+    },
+    {
+      "asset": "assets/templates/list/with-tabs.html",
+      "content_contract": [
+        "content/page-header",
+        "content/tabs",
+        "content/search-filter",
+        "content/data-table",
+        "content/data-table/pagination"
+      ],
+      "id": "list-with-tabs",
+      "optional_components": [],
+      "page_type": "list",
+      "required_components": [
+        "PageHeader",
+        "SearchFilter",
+        "DataTable",
+        "PaginationArea",
+        "Tabs",
+        "Input",
+        "Select",
+        "Table",
+        "Checkbox",
+        "Badge",
+        "Button",
+        "Pagination"
+      ],
+      "selectable": true,
+      "shells": [
+        "left",
+        "left-blank",
+        "top",
+        "blog",
+        "top-left"
+      ],
+      "supported_states": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "success",
+        "partial-loading"
+      ],
+      "variant": "with-tabs"
+    }
+  ],
+  "upstreamCommit": "08c45402eece8a7c55afc60385e8671c9f13081a"
+}

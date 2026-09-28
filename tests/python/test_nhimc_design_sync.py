@@ -95,9 +95,33 @@ class NhimcDesignSyncTests(unittest.TestCase):
         self._write(source, "components/registry.md", "".join(registry_rows).encode())
         self._write(source, "components/icons.md", b"# Icons\r\n")
         self._write(source, "patterns/catalog.md", b"# Patterns\r\n")
+        self._write(source, "patterns/registry.md", b"# Pattern Registry\r\n")
         self._write(source, "rules/layout.md", b"# Layout\r\n")
         self._write(source, "tokens/themes/catalog.yaml", b"themes: []\r\n")
-        self._write(source, "templates/catalog.yaml", b"templates: []\r\n")
+        template_catalog = {
+            "version": 2,
+            "input_schema": {},
+            "layouts": [{"id": Path(name).stem} for name in LAYOUTS],
+            "templates": [
+                {
+                    "id": name.removesuffix(".html").replace("/", "-"),
+                    "variant": Path(name).stem,
+                    "page_type": name.split("/", 1)[0],
+                    "template": f"assets/templates/{name}",
+                    "shell": ["left"],
+                    "content_contract": ["content/page-header"],
+                    "required_components": [],
+                    "optional_components": [],
+                    "supported_states": ["default"],
+                }
+                for name in TEMPLATES
+            ],
+        }
+        self._write(
+            source,
+            "templates/catalog.yaml",
+            json.dumps(template_catalog).encode("utf-8"),
+        )
         for name in TEMPLATES:
             self._write(
                 source,
@@ -209,6 +233,29 @@ class NhimcDesignSyncTests(unittest.TestCase):
 
         self.assertIn("upstream.digest", rules)
         self.assertIn("upstream.extra-file", rules)
+
+    def test_verify_snapshot_detects_semantically_invalid_template_catalog(self):
+        source, root = self._canonical_git_fixture()
+        sync_snapshot(source, root, expected_commit=None)
+        vendor = root / VENDOR_PREFIX
+        catalog_path = vendor / "templates/catalog.yaml"
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+        catalog["templates"][0]["required_components"].append("InventedWidget")
+        catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+        manifest_path = vendor / "upstream.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        entry = next(
+            item
+            for item in manifest["files"]
+            if item["destination"].endswith("templates/catalog.yaml")
+        )
+        data = catalog_path.read_bytes()
+        entry["bytes"] = len(data)
+        entry["sha256"] = hashlib.sha256(data).hexdigest()
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+        rules = {finding.rule for finding in verify_snapshot(root)}
+        self.assertIn("upstream.template-catalog", rules)
 
 
 class RepositoryCanonicalSnapshotTests(unittest.TestCase):

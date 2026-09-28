@@ -10,6 +10,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.common import Finding, sha256_file
+from scripts.canonical_templates import validate_template_catalog
 from scripts.nhimc_upstream import EXPECTED_COUNTS, VENDOR_PREFIX, count_component_registry
 
 
@@ -66,7 +67,8 @@ def verify_vendor_directory(vendor: Path, manifest: dict) -> list[Finding]:
 
 
 def verify_snapshot(root: Path) -> list[Finding]:
-    vendor = root.resolve() / VENDOR_PREFIX
+    root = root.resolve()
+    vendor = root / VENDOR_PREFIX
     manifest_path = vendor / "upstream.json"
     if not manifest_path.is_file():
         return [Finding("upstream.missing-manifest", VENDOR_PREFIX.as_posix(), "Canonical upstream manifest is missing")]
@@ -74,7 +76,16 @@ def verify_snapshot(root: Path) -> list[Finding]:
         manifest = _load_manifest(manifest_path)
     except ValueError:
         return [Finding("upstream.invalid-manifest", manifest_path.as_posix(), "Canonical upstream manifest is unreadable")]
-    return verify_vendor_directory(vendor, manifest)
+    findings = verify_vendor_directory(vendor, manifest)
+    findings.extend(
+        Finding(
+            "upstream.template-catalog",
+            "vendor/nhimc-design/templates/catalog.yaml",
+            message,
+        )
+        for message in validate_template_catalog(root)
+    )
+    return sorted(set(findings))
 
 
 def main() -> int:
