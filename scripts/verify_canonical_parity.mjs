@@ -1,8 +1,9 @@
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { waitForDevToolsPort } from './devtools_port.mjs';
 
 const [browserPath, configPath] = process.argv.slice(2);
 if (!browserPath || !configPath) {
@@ -17,16 +18,6 @@ const browser = spawn(browserPath, [
   '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank',
 ], { stdio: 'ignore' });
 const delay = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-
-async function waitForDebugPort() {
-  const activePort = join(profile, 'DevToolsActivePort');
-  for (let attempt = 0; attempt < 200; attempt += 1) {
-    if (existsSync(activePort)) return readFileSync(activePort, 'utf8').split(/\r?\n/)[0];
-    if (browser.exitCode !== null) throw new Error(`browser exited before DevTools started: ${browser.exitCode}`);
-    await delay(50);
-  }
-  throw new Error('timed out waiting for the browser DevTools port');
-}
 
 let socket;
 let nextId = 1;
@@ -143,7 +134,10 @@ async function capture(url, width, height, theme) {
 }
 
 async function main() {
-  const port = await waitForDebugPort();
+  const port = await waitForDevToolsPort({
+    activePort: join(profile, 'DevToolsActivePort'),
+    browser,
+  });
   const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
   const target = targets.find(item => item.type === 'page');
   if (!target) throw new Error('browser page target was not found');
