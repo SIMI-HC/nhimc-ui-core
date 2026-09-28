@@ -3,4 +3,4 @@
 *.woff2 binary
 *.zip binary
 
-vendor/nhimc-design/** -text
+vendor/nhimc-design/** -text -diff

@@ -193,6 +193,17 @@ class RepositoryCanonicalSnapshotTests(unittest.TestCase):
         )
 
         self.assertTrue(result.stdout.rstrip().endswith("text: unset"), result.stdout)
+        diff_result = subprocess.run(
+            ["git", "check-attr", "diff", "--", "vendor/nhimc-design/layouts/left.html"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True,
+        )
+        self.assertTrue(
+            diff_result.stdout.rstrip().endswith("diff: unset"), diff_result.stdout
+        )
 
 
 if __name__ == "__main__":
