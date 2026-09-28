@@ -2,17 +2,26 @@ from __future__ import annotations
 
 import argparse
 import base64
+from dataclasses import dataclass
 import hashlib
 from html.parser import HTMLParser
 import json
+import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
+from scripts.canonical_template_adapter import (
+    TemplateBundle,
+    adapt_canonical_template,
+    validate_authored_template_content,
+)
+from scripts.canonical_templates import get_template_contract
 from scripts.validate_contracts import validate_contracts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +31,18 @@ FRAME_TAG = re.compile(r"<nhimc-frame\b(?P<attrs>[^>]*)>(?P<body>.*?)</nhimc-fra
 ATTRIBUTE = r"\b{name}\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'=<>`]+))"
 COLOR = re.compile(r"#[0-9a-f]{3,8}\b|(?:rgb|rgba|hsl|hsla)\(\s*[^)]*\)", re.I)
 ASSET_REFERENCE = re.compile(r"['\"]([^'\"]+\.(?:svg|woff2?|ttf|otf)(?:#[^'\"]*)?)['\"]", re.I)
+COMPLETION_TAG = re.compile(
+    r'<script\b(?=[^>]*\bid\s*=\s*["\']nhimc-completion-manifest["\'])'
+    r'(?=[^>]*\btype\s*=\s*["\']application/json["\'])[^>]*>(?P<body>.*?)</script\s*>',
+    re.I | re.S,
+)
+
+
+@dataclass(frozen=True)
+class AuthoringScreen:
+    screen_id: str
+    template_id: str
+    content_html: str
 
 
 def _attribute(tag: str, name: str) -> str | None:
@@ -107,10 +128,12 @@ def _strip_core_imports(script: str) -> str:
 
 
 def _validate_business_input(root: Path, source: Path, html: str) -> None:
+    if COMPLETION_TAG.search(html):
+        raise ValueError("source already contains a completed artifact manifest")
     if re.search(r"data-nhimc-core\s*=|name\s*=\s*['\"]nhimc-core-version", html, re.I):
         raise ValueError("source already contains an embedded NHIMC Core")
-    if STYLE_TAG.search(html) or re.search(r"\sstyle\s*=", html, re.I):
-        raise ValueError("business HTML cannot contain local or inline styles")
+    if STYLE_TAG.search(html):
+        raise ValueError("business HTML cannot contain authored style blocks")
     if re.search(r"(?:\.style\.|style\.setProperty|insertRule|adoptedStyleSheets|\.shadowRoot)", html, re.I):
         raise ValueError("business HTML cannot inject or override protected styles")
     if COLOR.search(html):
@@ -196,7 +219,160 @@ def _menu_items(raw: list[dict]) -> tuple[MenuItem, ...]:
     return tuple(convert(item) for item in raw)
 
 
-def _parse_authoring(html: str, raw_menu: list[dict], business_script: str) -> tuple[str, FramePayload]:
+def _frame_kind(value: str) -> str:
+    return {"nhimc-default": "left", "nhimc-left-blank": "left-blank"}.get(
+        value, value.removeprefix("nhimc-")
+    )
+
+
+def _menu_ids(raw: list[dict]) -> list[str]:
+    ids: list[str] = []
+
+    def visit(items: list[dict]) -> None:
+        for item in items:
+            if isinstance(item, dict) and isinstance(item.get("id"), str):
+                ids.append(item["id"])
+                children = item.get("children", [])
+                if isinstance(children, list):
+                    visit(children)
+
+    visit(raw)
+    return ids
+
+
+def _balanced_elements(html: str, tag: str, marker: str) -> list[tuple[str, str]]:
+    token = re.compile(rf"</?{re.escape(tag)}\b[^>]*>", re.I | re.S)
+    tokens = list(token.finditer(html))
+    results: list[tuple[str, str]] = []
+    for index, opening in enumerate(tokens):
+        if opening.group(0).startswith("</") or _attribute(opening.group(0), marker) is None:
+            continue
+        depth = 1
+        for closing in tokens[index + 1 :]:
+            depth += -1 if closing.group(0).startswith("</") else 1
+            if depth == 0:
+                results.append(
+                    (opening.group(0), html[opening.end() : closing.start()])
+                )
+                break
+        else:
+            raise ValueError(f"unbalanced authoring <{tag}> element")
+    return results
+
+
+def _content_roots(html: str) -> list[str]:
+    roots: list[str] = []
+    for opening, body in _balanced_elements(html, "main", "data-nhimc-role"):
+        if _attribute(opening, "data-nhimc-role") == "content":
+            roots.append(f"{opening}{body}</main>")
+    return roots
+
+
+def _authoring_menu(source_html: str) -> list[dict]:
+    payloads = []
+    for match in SCRIPT_TAG.finditer(source_html):
+        attrs = match.group("attrs")
+        if (_attribute(attrs, "type") or "").lower() == "application/json" and re.search(
+            r"\bdata-nhimc-menu\b", attrs, re.I
+        ):
+            try:
+                payloads.append(json.loads(match.group("body")))
+            except json.JSONDecodeError as error:
+                raise ValueError("navigation manifest is not valid JSON") from error
+    if len(payloads) != 1 or not isinstance(payloads[0], list):
+        raise ValueError("business HTML must contain exactly one data-nhimc-menu manifest")
+    return payloads[0]
+
+
+def parse_authoring_screens(
+    source_html: str, root: Path = ROOT
+) -> tuple[AuthoringScreen, ...]:
+    frame = FRAME_TAG.search(source_html)
+    if not frame:
+        raise ValueError("business HTML must contain exactly one shared nhimc-frame")
+    frame_id = _frame_kind(_attribute(frame.group("attrs"), "data-frame") or "left")
+    menu_ids = _menu_ids(_authoring_menu(source_html))
+    if not menu_ids or len(menu_ids) != len(set(menu_ids)):
+        raise ValueError("navigation screen ids must be present and unique")
+
+    panels = _balanced_elements(frame.group("body"), "section", "data-screen-panel")
+    screens: list[AuthoringScreen] = []
+    if panels:
+        for opening, body in panels:
+            screen_id = _attribute(opening, "data-screen-panel") or ""
+            template_id = _attribute(opening, "data-template") or ""
+            roots = _content_roots(body)
+            if not template_id:
+                raise ValueError(f"screen {screen_id} data-template must select a registered canonical Template")
+            if len(roots) != 1:
+                raise ValueError(f"screen {screen_id} must contain exactly one canonical Template root")
+            screens.append(AuthoringScreen(screen_id, template_id, roots[0]))
+    else:
+        template_id = _attribute(frame.group("attrs"), "data-template") or ""
+        if not template_id:
+            raise ValueError("data-template must select a registered canonical Template")
+        roots = _content_roots(frame.group("body"))
+        if len(roots) != 1:
+            raise ValueError("single-screen authoring must contain exactly one canonical Template root")
+        remainder = frame.group("body").replace(roots[0], "", 1)
+        remainder = SCRIPT_TAG.sub("", remainder)
+        if re.sub(r"<!--.*?-->", "", remainder, flags=re.S).strip():
+            raise ValueError("single-screen authoring contains markup outside its canonical Template root")
+        screens.append(AuthoringScreen(menu_ids[0], template_id, roots[0]))
+
+    if [screen.screen_id for screen in screens] != menu_ids:
+        raise ValueError("navigation and screen panel ids must have a 1:1 binding in manifest order")
+    for screen in screens:
+        contract = get_template_contract(root, screen.template_id)
+        if frame_id not in contract.shells:
+            raise ValueError(
+                f"Template {screen.template_id} does not support Frame {frame_id}"
+            )
+        validate_authored_template_content(root, contract, screen.content_html)
+    return tuple(screens)
+
+
+def inspect_completion_manifest(html: str) -> dict:
+    matches = list(COMPLETION_TAG.finditer(html))
+    if len(matches) != 1:
+        raise ValueError("HTML is not a completed artifact")
+    try:
+        manifest = json.loads(matches[0].group("body"))
+    except json.JSONDecodeError as error:
+        raise ValueError("completion manifest is not valid JSON") from error
+    required = {
+        "artifactType",
+        "schemaVersion",
+        "coreVersion",
+        "upstreamCommit",
+        "frameId",
+        "screens",
+        "themeId",
+        "bundleSha256",
+        "runtimeSha256",
+        "sidecarCount",
+        "verificationRequired",
+    }
+    if not isinstance(manifest, dict) or set(manifest) != required:
+        raise ValueError("completion manifest has an invalid schema")
+    if manifest["artifactType"] != "nhimc-single-html" or manifest["schemaVersion"] != 3:
+        raise ValueError("completion manifest has an invalid artifact identity")
+    if manifest["sidecarCount"] != 0 or manifest["verificationRequired"] is not True:
+        raise ValueError("completion manifest does not require verified standalone delivery")
+    if not isinstance(manifest["screens"], list) or not manifest["screens"]:
+        raise ValueError("completion manifest has no screens")
+    for digest in ("bundleSha256", "runtimeSha256"):
+        if not isinstance(manifest[digest], str) or not re.fullmatch(r"[0-9a-f]{64}", manifest[digest]):
+            raise ValueError(f"completion manifest has an invalid {digest}")
+    return manifest
+
+
+def _parse_authoring(
+    html: str,
+    raw_menu: list[dict],
+    business_script: str,
+    screens: tuple[AuthoringScreen, ...],
+) -> tuple[str, FramePayload]:
     match = FRAME_TAG.search(html)
     if not match:
         raise ValueError("shared nhimc-frame contents could not be parsed")
@@ -205,11 +381,19 @@ def _parse_authoring(html: str, raw_menu: list[dict], business_script: str) -> t
     if not menu:
         raise ValueError("navigation manifest cannot be empty")
     theme_match = re.search(r"<html\b[^>]*(?:data-theme|data-nhimc-theme)=[\"'](?:nhimc-)?(light|dark)[\"']", html, re.I)
+    if len(screens) == 1:
+        content_html = screens[0].content_html
+    else:
+        content_html = "".join(
+            f'<section id="{screen.screen_id}" data-screen-panel="{screen.screen_id}"'
+            f'{"" if index == 0 else " hidden"}>{screen.content_html}</section>'
+            for index, screen in enumerate(screens)
+        )
     return (_attribute(attrs, "data-frame") or "left"), FramePayload(
         project_title=_attribute(attrs, "data-project-title") or "국민건강보험 일산병원",
         menu=menu,
         active_id=_attribute(attrs, "data-active-id") or menu[0].id,
-        content_html=match.group("body").strip(),
+        content_html=content_html,
         status_text="준비됨 · 오프라인 문서",
         theme=theme_match.group(1).lower() if theme_match else "light",
         business_script=business_script,
@@ -289,17 +473,29 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
         raise ValueError("Core contract validation failed before standalone bundling")
     source_html = source.read_text(encoding="utf-8")
     _validate_business_input(root, source, source_html)
+    screens = parse_authoring_screens(source_html, root)
     stripped, raw_menu, business_script = _extract_scripts(source_html)
-    frame_id, payload = _parse_authoring(stripped, raw_menu, business_script)
+    frame_id, payload = _parse_authoring(stripped, raw_menu, business_script, screens)
 
     upstream, digests = _upstream(root)
-    layout_name = {"nhimc-default": "left", "left": "left"}.get(frame_id, frame_id.removeprefix("nhimc-"))
+    layout_name = _frame_kind(frame_id)
     _verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{layout_name}.html", digests)
     _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests)
     font_css = _font_css(root, digests)
     component_css = (root / "src/generated/components/components.css").read_text(encoding="utf-8")
+    bundles: dict[str, TemplateBundle] = {}
+    for screen in screens:
+        bundles.setdefault(
+            screen.template_id,
+            adapt_canonical_template(root, get_template_contract(root, screen.template_id)),
+        )
+    template_css = "".join(
+        f'<style data-nhimc-template-bundle="{template_id}">\n'
+        f'{bundles[template_id].scoped_css.replace("</style", "<\\/style")}\n</style>\n'
+        for template_id in sorted(bundles)
+    )
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
-    semantic = "\0".join((version, upstream["commit"], frame_id, payload.content_html, json.dumps(raw_menu, ensure_ascii=False, sort_keys=True), business_script, component_css, font_css))
+    semantic = "\0".join((version, upstream["commit"], frame_id, payload.content_html, json.dumps(raw_menu, ensure_ascii=False, sort_keys=True), business_script, component_css, font_css, template_css))
     runtime_token = hashlib.sha256(semantic.encode("utf-8")).hexdigest()
     payload = FramePayload(**{**payload.__dict__, "business_script": _runtime_business(root, business_script, runtime_token)})
     html = render_canonical_frame(root, frame_id, payload)
@@ -308,7 +504,27 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
     if title_match:
         title = re.sub(r"[<>&]", "", title_match.group(1)).strip()
         html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html, count=1, flags=re.I | re.S)
-    bundle_hash = hashlib.sha256((component_css + font_css + payload.business_script).encode("utf-8")).hexdigest()
+    bundle_hash = hashlib.sha256((component_css + font_css + template_css).encode("utf-8")).hexdigest()
+    runtime_hash = hashlib.sha256(payload.business_script.encode("utf-8")).hexdigest()
+    completion = {
+        "artifactType": "nhimc-single-html",
+        "schemaVersion": 3,
+        "coreVersion": version,
+        "upstreamCommit": upstream["commit"],
+        "frameId": frame_id,
+        "screens": [
+            {"screenId": screen.screen_id, "templateId": screen.template_id}
+            for screen in screens
+        ],
+        "themeId": f"nhimc-{payload.theme}",
+        "bundleSha256": bundle_hash,
+        "runtimeSha256": runtime_hash,
+        "sidecarCount": 0,
+        "verificationRequired": True,
+    }
+    completion_json = json.dumps(
+        completion, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).replace("</", "<\\/")
     policy = (
         "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
         "img-src data:; font-src data:; media-src data:; connect-src 'none'; "
@@ -322,14 +538,37 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
         f'<meta name="nhimc-core-bundle-sha256" content="{bundle_hash}">\n'
         f'<meta name="nhimc-runtime-token" content="{runtime_token}">\n'
         f'<style data-nhimc-component-bundle="canonical">\n{component_css.replace("</style", "<\\/style")}\n</style>\n'
-        f'<style data-nhimc-font-bundle="canonical">\n{font_css}\n</style>'
+        f'<style data-nhimc-font-bundle="canonical">\n{font_css}\n</style>\n'
+        f'{template_css}'
+        f'<script id="nhimc-completion-manifest" type="application/json">{completion_json}</script>'
     )
     html, count = re.subn(r"(<head\b[^>]*>)", lambda match: f"{match.group(1)}\n{head}", html, count=1, flags=re.I)
     if count != 1:
         raise ValueError("canonical frame is missing its head")
     _validate_standalone(html)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(html, encoding="utf-8", newline="\n")
+    temporary_name: str | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            delete=False,
+            dir=output.parent,
+            prefix=f".{output.name}.",
+            suffix=".tmp",
+        ) as temporary:
+            temporary.write(html)
+            temporary.flush()
+            temporary_name = temporary.name
+        exact_html = Path(temporary_name).read_text(encoding="utf-8")
+        _validate_standalone(exact_html)
+        inspect_completion_manifest(exact_html)
+        os.replace(temporary_name, output)
+        temporary_name = None
+    finally:
+        if temporary_name is not None:
+            Path(temporary_name).unlink(missing_ok=True)
     return output
 
 

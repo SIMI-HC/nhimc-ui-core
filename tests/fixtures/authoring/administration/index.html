@@ -1,51 +1,18 @@
 <!doctype html>
 <html lang="ko" data-theme="light">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>병원 권한 관리</title>
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>병원 권한 관리</title></head>
 <body>
-  <nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 권한 관리" data-active-id="roles">
-    <div id="business-content" class="specimen" aria-live="polite">
-      <div class="row">
-        <div><h1>역할 관리</h1><p>테스트용 병원 업무 권한과 사용자 그룹을 관리합니다.</p></div>
-        <div class="row"><button class="btn primary" type="button">역할 추가</button><span class="status-indicator"><span class="dot"></span>정책 최신</span></div>
-      </div>
-      <section class="grid" aria-label="역할 검색 조건">
-        <div class="field"><label for="role-search">역할 검색</label><input id="role-search" type="search"></div>
-        <div class="field"><label for="role-state">상태</label><select id="role-state"><option>전체</option><option>사용 중</option></select></div>
-      </section>
-      <section class="card"><h2>역할 목록</h2><table><caption>실제 개인정보가 아닌 테스트용 역할 목록</caption><thead><tr><th scope="col">역할</th><th scope="col">인원</th><th scope="col">상태</th></tr></thead><tbody><tr><td>이송 관리자</td><td>12</td><td><span class="badge">사용 중</span></td></tr><tr><td>감사 조회자</td><td>4</td><td><span class="badge">사용 중</span></td></tr></tbody></table></section>
-    </div>
-  </nhimc-frame>
-  <script type="application/json" data-nhimc-menu>
-    [
-      {"id":"roles","label":"역할 관리","icon":"user-check","href":"#roles"},
-      {"id":"groups","label":"사용자 그룹","icon":"users","href":"#groups"},
-      {"id":"audit","label":"감사 내역","icon":"clipboard-list","href":"#audit"},
-      {"id":"settings","label":"환경 설정","icon":"settings","href":"#settings"}
-    ]
-  </script>
-  <script type="module" data-nhimc-business>
-    const content = document.querySelector('#business-content');
-    const views = {
-      roles: ['역할 관리', '테스트용 병원 업무 권한과 사용자 그룹을 관리합니다.'],
-      groups: ['사용자 그룹', '부서별 사용자 그룹과 역할을 연결합니다.'],
-      audit: ['감사 내역', '권한 변경 이력을 확인합니다.'],
-      settings: ['환경 설정', '권한 정책의 기본 동작을 설정합니다.'],
-    };
-
-    function renderRoute(id) {
-      const [title, description] = views[id] ?? views.roles;
-      content.querySelector('h1').textContent = title;
-      content.querySelector('.row p').textContent = description;
-      content.dataset.route = id;
-    }
-
-    document.addEventListener('nhimc:navigate', (event) => {
-      renderRoute(event.detail.id);
-    });
-  </script>
-</body>
-</html>
+<nhimc-frame id="app-frame" data-frame="left" data-template="admin-master-detail" data-project-title="병원 권한 관리" data-active-id="roles">
+<main data-nhimc-template-root="admin-master-detail" data-nhimc-role="content">
+  <section class="heading" data-nhimc-role="page-header" data-nhimc-component="PageHeader"><div><h1>역할 관리</h1><p>병원 업무 역할과 권한을 관리합니다.</p></div></section>
+  <section class="master-detail" data-nhimc-role="master-detail" data-nhimc-component="MasterDetail">
+    <aside class="card master" data-nhimc-role="master-list" data-nhimc-component="Card SearchFilter Input"><label class="field" for="role-search">역할 검색</label><input id="role-search" type="search"><button class="btn" type="button">이송 관리자</button></aside>
+    <section class="card detail" data-nhimc-role="detail-panel" data-nhimc-component="Card CheckboxGroup CheckboxField Checkbox ConfirmAction Button">
+      <h2>이송 관리자 <span class="badge ok">사용 중</span></h2><fieldset class="choice-group"><legend>허용 업무</legend><label class="check"><input type="checkbox" checked> <span>이송 요청 조회</span></label><label class="check"><input type="checkbox" checked> <span>이송 배정</span></label><label class="check"><input type="checkbox"> <span>완료 내역 삭제</span></label></fieldset>
+      <div class="actions row" data-nhimc-role="action-area" data-nhimc-component="ActionArea Button"><button class="btn primary" type="button">변경 저장</button></div>
+    </section>
+  </section>
+</main>
+</nhimc-frame>
+<script type="application/json" data-nhimc-menu>[{"id":"roles","label":"역할 관리","icon":"user-check","href":"#roles"}]</script>
+</body></html>

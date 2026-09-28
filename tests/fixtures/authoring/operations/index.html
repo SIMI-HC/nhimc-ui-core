@@ -1,51 +1,22 @@
 <!doctype html>
 <html lang="ko" data-theme="light">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>병원 이송업무 관리</title>
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>병원 이송업무 관리</title></head>
 <body>
-  <nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 이송업무 관리" data-active-id="ambulance">
-    <div id="business-content" class="specimen" aria-live="polite">
-      <div class="row">
-        <div><h1>이송 현황</h1><p>일산병원 환자 이송 요청과 배정 현황을 확인합니다.</p></div>
-        <div class="row"><button class="btn primary" type="button">이송 신청</button></div>
-      </div>
-      <section class="grid" aria-label="이송 요약">
-        <article class="card"><h2>배정 대기</h2><strong>18</strong><span class="badge">오늘</span></article>
-        <article class="card"><h2>이송 중</h2><strong>7</strong><span class="status-indicator"><span class="dot"></span>정상 진행</span></article>
-      </section>
-      <section class="card"><h2>최근 이송 요청</h2><table><caption>환자 정보가 아닌 테스트용 이송 목록</caption><thead><tr><th scope="col">요청 번호</th><th scope="col">출발지</th><th scope="col">상태</th></tr></thead><tbody><tr><td>T-2401</td><td>외래진료동</td><td>배정 대기</td></tr><tr><td>T-2402</td><td>건강검진센터</td><td>이송 중</td></tr></tbody></table></section>
-    </div>
-  </nhimc-frame>
-  <script type="application/json" data-nhimc-menu>
-    [
-      {"id":"ambulance","label":"이송 현황","icon":"ambulance","href":"#ambulance"},
-      {"id":"requests","label":"이송 신청","icon":"clipboard-list","href":"#requests"},
-      {"id":"assignments","label":"배정 관리","icon":"users","href":"#assignments"},
-      {"id":"completed","label":"완료 내역","icon":"calendar-check","href":"#completed"}
-    ]
-  </script>
-  <script type="module" data-nhimc-business>
-    const content = document.querySelector('#business-content');
-    const views = {
-      ambulance: ['이송 현황', '일산병원 환자 이송 요청과 배정 현황을 확인합니다.'],
-      requests: ['이송 신청', '새로운 이송 요청을 등록합니다.'],
-      assignments: ['배정 관리', '이송 담당자와 장비를 배정합니다.'],
-      completed: ['완료 내역', '완료된 이송 업무를 조회합니다.'],
-    };
-
-    function renderRoute(id) {
-      const [title, description] = views[id] ?? views.ambulance;
-      content.querySelector('h1').textContent = title;
-      content.querySelector('.row p').textContent = description;
-      content.dataset.route = id;
-    }
-
-    document.addEventListener('nhimc:navigate', (event) => {
-      renderRoute(event.detail.id);
-    });
-  </script>
-</body>
-</html>
+<nhimc-frame id="app-frame" data-frame="left" data-template="list-default" data-project-title="병원 이송업무 관리" data-active-id="ambulance">
+<main data-nhimc-template-root="list-default" data-nhimc-role="content">
+  <section class="heading" data-nhimc-role="page-header" data-nhimc-component="PageHeader"><div><h1>이송 현황</h1><p>일산병원 환자 이송 요청과 배정 현황을 확인합니다.</p></div><button class="btn primary" data-nhimc-component="Button" type="button">이송 신청</button></section>
+  <section class="toolbar" data-nhimc-role="search-filter" data-nhimc-component="SearchFilter" aria-label="이송 조회 조건">
+    <div class="field"><label for="keyword">검색어</label><input data-nhimc-component="Input" id="keyword" placeholder="요청 번호 또는 부서"></div>
+    <div class="field"><label for="status">상태</label><select data-nhimc-component="Select" id="status"><option>전체 상태</option><option>배정 대기</option><option>이송 중</option></select></div>
+    <button class="btn primary" data-nhimc-component="Button" data-nhimc-role="search-filter-query" type="button">조회</button><button class="btn ghost-subtle" data-nhimc-component="Button" data-nhimc-role="search-filter-reset" type="button">초기화</button>
+  </section>
+  <section class="card" data-nhimc-role="data-table" data-nhimc-component="DataTable">
+    <div class="card-head"><strong>이송 요청 목록</strong><span>총 2건</span></div>
+    <div class="table-wrap"><table data-nhimc-component="Table"><caption>환자 개인정보가 아닌 시연용 이송 목록</caption><thead><tr><th>요청 번호</th><th>출발지</th><th>도착지</th><th>상태</th><th>담당</th></tr></thead><tbody><tr><td>T-2401</td><td>외래진료실</td><td>영상의학과</td><td><span class="badge warn" data-nhimc-component="Badge">배정 대기</span></td><td>미배정</td></tr><tr><td>T-2402</td><td>건강검진센터</td><td>병동</td><td><span class="badge ok" data-nhimc-component="Badge">이송 중</span></td><td>이송팀 2</td></tr></tbody></table></div>
+    <div class="pager" data-nhimc-role="pagination" data-nhimc-component="PaginationArea Pagination"><button data-nhimc-component="Pagination" aria-label="이전 페이지" type="button">이전</button><button data-nhimc-component="Pagination" aria-current="page" type="button">1</button><button data-nhimc-component="Pagination" type="button">2</button><button data-nhimc-component="Pagination" aria-label="다음 페이지" type="button">다음</button></div>
+  </section>
+</main>
+</nhimc-frame>
+<script type="application/json" data-nhimc-menu>[{"id":"ambulance","label":"이송 현황","icon":"ambulance","href":"#ambulance"}]</script>
+<script type="module" data-nhimc-business>document.querySelector('[data-nhimc-role="search-filter-reset"]')?.addEventListener('click',()=>{document.querySelector('#keyword').value='';document.querySelector('#status').selectedIndex=0;});</script>
+</body></html>

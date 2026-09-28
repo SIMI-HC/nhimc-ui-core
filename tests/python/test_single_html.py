@@ -5,6 +5,14 @@ import unittest
 from pathlib import Path
 import shutil
 
+from scripts.build_single_html import (
+    build_single_html,
+    inspect_completion_manifest,
+    parse_authoring_screens,
+)
+from scripts.canonical_template_adapter import adapt_canonical_template
+from scripts.canonical_templates import get_template_contract
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -28,16 +36,93 @@ class SingleHtmlArtifactTests(unittest.TestCase):
 
     @staticmethod
     def _document(fragment: str) -> str:
+        content = adapt_canonical_template(
+            ROOT, get_template_contract(ROOT, "list-default")
+        ).skeleton_html
         return (
             "<!doctype html><html><head></head><body>"
             '<nhimc-frame id="app-frame" data-frame="left" '
-            'data-project-title="일산병원 업무도구" data-active-id="ambulance">'
-            f'{fragment}</nhimc-frame>'
+            'data-template="list-default" data-project-title="일산병원 업무도구" '
+            'data-active-id="ambulance">'
+            f'{content}{fragment}</nhimc-frame>'
             '<script type="application/json" data-nhimc-menu>'
             '[{"id":"ambulance","label":"이송 현황","icon":"ambulance","href":"#ambulance"}]'
             '</script>'
             "</body></html>"
         )
+
+    def test_v3_artifact_contains_template_bundle_and_completion_manifest(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "index.html"
+            build_single_html(
+                ROOT, ROOT / "tests/fixtures/authoring/operations/index.html", output
+            )
+            html = output.read_text(encoding="utf-8")
+            manifest = inspect_completion_manifest(html)
+
+            self.assertIn('data-nhimc-template-root="list-default"', html)
+            self.assertIn('data-nhimc-template-bundle="list-default"', html)
+            self.assertEqual("nhimc-single-html", manifest["artifactType"])
+            self.assertEqual(3, manifest["schemaVersion"])
+            self.assertEqual(
+                [{"screenId": "ambulance", "templateId": "list-default"}],
+                manifest["screens"],
+            )
+            self.assertEqual(0, manifest["sidecarCount"])
+            self.assertIs(True, manifest["verificationRequired"])
+
+    def test_rejects_bare_legacy_business_layout(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "index.html"
+            with self.assertRaisesRegex(
+                ValueError, "data-template.*registered canonical Template"
+            ):
+                build_single_html(
+                    ROOT,
+                    ROOT / "tests/fixtures/unsafe-authoring/bare-business-layout.html",
+                    output,
+                )
+            self.assertFalse(output.exists())
+
+    def test_completion_manifest_rejects_authoring_and_already_built_spoof(self):
+        source = ROOT / "tests/fixtures/authoring/operations/index.html"
+        with self.assertRaisesRegex(ValueError, "not a completed artifact"):
+            inspect_completion_manifest(source.read_text(encoding="utf-8"))
+        spoof = ROOT / "tests/fixtures/unsafe-authoring/already-built-artifact.html"
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "index.html"
+            with self.assertRaisesRegex(ValueError, "already.*completed artifact"):
+                build_single_html(ROOT, spoof, output)
+            self.assertFalse(output.exists())
+
+    def test_multiple_panels_bind_navigation_to_templates_in_order(self):
+        source = (
+            ROOT / "tests/fixtures/unsafe-authoring/mixed-screen-templates.html"
+        ).read_text(encoding="utf-8")
+        for template_id in ("list-default", "admin-master-detail"):
+            skeleton = adapt_canonical_template(
+                ROOT, get_template_contract(ROOT, template_id)
+            ).skeleton_html
+            source = source.replace(
+                f'<main data-nhimc-role="content" data-nhimc-template-root="{template_id}"></main>',
+                skeleton,
+            )
+        screens = parse_authoring_screens(source)
+        self.assertEqual(
+            [("ambulance", "list-default"), ("roles", "admin-master-detail")],
+            [(screen.screen_id, screen.template_id) for screen in screens],
+        )
+        broken = source.replace('data-screen-panel="roles"', 'data-screen-panel="other"')
+        with self.assertRaisesRegex(ValueError, "navigation.*panel.*1:1"):
+            parse_authoring_screens(broken)
+
+    def test_rejects_unknown_template_and_unsupported_frame_pair(self):
+        valid = self._document("")
+        with self.assertRaisesRegex(ValueError, "unknown canonical Template"):
+            parse_authoring_screens(valid.replace("list-default", "invented-grid"))
+        unsupported = valid.replace('data-frame="left"', 'data-frame="presentation"')
+        with self.assertRaisesRegex(ValueError, "does not support Frame presentation"):
+            parse_authoring_screens(unsupported)
 
     def test_builder_emits_one_self_contained_offline_html(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -122,7 +207,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
             second = self._run_builder(output, output)
 
             self.assertNotEqual(0, second.returncode)
-            self.assertIn("already contains an embedded NHIMC Core", second.stderr)
+            self.assertIn("already contains a completed artifact manifest", second.stderr)
             self.assertEqual(original, output.read_bytes())
 
     def test_two_builds_from_same_source_are_byte_identical(self):
