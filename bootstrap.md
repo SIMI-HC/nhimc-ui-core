@@ -19,36 +19,30 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 
 별도의 설치 명령을 사용자에게 묻지 마세요.
 
-## 스킬·플러그인 등록 확인
+## 준비 절차 (항상 이 순서로, 사본이 남아 있어도 생략하지 않습니다)
 
-준비 단계에서 이 환경에 `nhimc-worktool` 스킬(또는 플러그인·확장)이 등록되어 있는지 확인합니다.
+이전 대화나 샌드박스에 저장소 사본·스킬이 남아 있어도 **아래 1~5를 건너뛰지 않습니다.** 사본이 있다는 이유만으로 준비를 생략하지 않습니다.
 
-- 등록되어 있지 않고 이 환경이 공식 등록 경로(플러그인, Skill 업로드, 확장)를 지원하면, **등록할지 사용자에게 먼저 묻습니다**. 자동 설치나 지원되지 않는 방법으로의 우회는 하지 않습니다. 승인하면 그 경로로 등록하고, 거절하거나 지원하지 않으면 Web Bootstrap으로 계속합니다.
-- 이미 등록되어 있고 저장소 `VERSION`이 더 새로우면 저장소 사본과 함께 **스킬·플러그인도 같은 버전으로 업데이트**합니다(승인이 필요하면 요청). 같거나 더 새로우면 건너뜁니다.
-- 등록이나 업데이트를 실제로 확인하지 못했으면 됐다고 말하지 않습니다.
-
-## 이미 준비되어 있는 경우 (항상 먼저 확인)
-
-이전 대화나 샌드박스에 저장소 사본·스킬이 남아 있어도 **재준비를 생략하기 전에 반드시 버전을 비교**합니다. 사본이 있다는 이유만으로 건너뛰지 않습니다.
-
-1. 원격 최신 버전을 읽습니다: `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`
-2. 로컬 사본(또는 설치된 `nhimc-worktool`)의 `VERSION`과 비교합니다.
-3. 원격이 더 새로우면 갱신합니다: 저장소 사본은 `git pull`(또는 다시 클론), 플러그인·스킬은 공식 업데이트 경로를 씁니다(승인이 필요하면 요청). 갱신 뒤 `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry를 다시 읽습니다.
-4. 같거나 설치본이 더 새로우면 그대로 사용하고 갱신은 건너뜁니다.
-5. 원격 버전을 읽을 수 없으면 최신인지 확인하지 못했다고 보고하고, 갱신했다고 말하지 않습니다.
-
-준비 상태 보고에는 실제로 사용한 `projectVersion`과 “최신 확인 결과(갱신함 / 이미 최신 / 확인 못함)”를 포함합니다.
+1. **항상 먼저 확인합니다.** 원격 최신 버전 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`을 읽어 로컬 사본(또는 설치된 `nhimc-worktool`)의 `VERSION`과 비교하고, 결과를 `갱신함 / 이미 최신 / 확인 못함` 중 하나로 기억합니다. 원격 버전을 읽을 수 없으면 `확인 못함`이며 최신이라고 말하지 않습니다.
+2. **저장소 사본을 갱신합니다.** 원격이 더 새로우면 `git pull`(또는 다시 클론)하고 `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry를 다시 읽습니다. 같거나 로컬이 더 새로우면 건너뜁니다.
+3. **스킬·플러그인을 확인하고 사용자에게 묻습니다.** 이 환경에 `nhimc-worktool` 스킬(또는 플러그인·확장)이 있는지 봅니다.
+   - 등록되어 있지 않고 이 환경이 공식 등록 경로(플러그인, Skill 업로드, 확장)를 지원하면, **등록할지 사용자에게 먼저 묻습니다**. 자동 설치나 지원되지 않는 방법으로의 우회는 하지 않습니다. 승인하면 그 경로로 등록하고, 거절하거나 지원하지 않으면 Web Bootstrap으로 계속합니다.
+   - 이미 등록되어 있고 저장소 `VERSION`이 더 새로우면 “`nhimc-worktool`을 현재 버전에서 새 버전으로 업데이트할까요?”라고 **반드시 묻고**, 승인하면 스킬·플러그인도 같은 버전으로 업데이트합니다(스킬·플러그인도 같은 버전으로 업데이트). 거절하면 이전 버전을 유지한다고 알립니다.
+   - 등록되어 있고 같거나 더 새로우면 그대로 사용합니다.
+   - 등록이나 업데이트를 실제로 확인하지 못했으면 됐다고 말하지 않습니다.
+4. **Design Guide를 표출합니다.** 처음 준비했거나 1단계 결과가 `갱신함`이면 **반드시** 아래 “준비 완료 후: Design Guide 열기”대로 사용자에게 열어 줍니다. `이미 최신`이면 다시 열지 않고 가이드 링크만 한 줄로 알려 줍니다.
+5. **결과를 보고합니다.** `platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`에 더해 `최신 확인 결과`, `스킬·플러그인`(등록됨 / 업데이트함 / 업데이트 안 함 / 미등록·미지원), `Design Guide`(열었음 / 링크 전달 / 생략: 이미 최신)를 함께 씁니다.
 
 ## 준비 완료 후: Design Guide 열기
 
-준비 상태(`platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`)를 보고한 직후 `guide/nhimc-design-guide.html`을 사용자에게 엽니다. 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
+준비 절차 4단계에서 `guide/nhimc-design-guide.html`을 사용자에게 엽니다(처음 준비하거나 버전이 갱신됐을 때는 생략하지 않습니다). 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
 
 1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" guide\nhimc-design-guide.html`(또는 `open-guide.cmd`), macOS `open guide/nhimc-design-guide.html`, Linux `xdg-open guide/nhimc-design-guide.html`.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅):
 
    `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.1.1/guide/nhimc-design-guide.html`
 
-   버전 태그(`v1.1.1`)는 저장소 `VERSION`에 맞춰 바꿉니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v1.1.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`)
