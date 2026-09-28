@@ -83,20 +83,11 @@ python scripts/run_browser_tests.py --standalone-file path/to/index.html
 
 검사 결과가 `standalone file: PASS`일 때만 해당 `index.html`을 전달합니다. 빌더는 이미 최종화된 파일을 변경하지 않고 거부하므로, 업무 내용이 바뀌면 작성 원본에서 다시 생성해야 합니다.
 
-## 로컬 예제 확인
+## 업무 화면 작성 기준
 
-Python 3, Node.js, Chrome 또는 Edge는 Core 개발 및 검증에만 사용됩니다.
+Python 3, Node.js, Chrome 또는 Edge는 Core 개발 및 검증에만 사용됩니다. 저장소의 테스트 fixture는 빌더와 브라우저 검증을 위한 내부 입력물이며, 실제 업무 화면의 시각 디자인 예제로 사용하지 않습니다.
 
-```powershell
-python -m http.server 8765 --bind localhost
-```
-
-브라우저에서 다음 예제를 확인할 수 있습니다.
-
-- `http://localhost:8765/examples/operations/`
-- `http://localhost:8765/examples/administration/`
-
-두 예제는 서로 다른 메뉴와 업무 콘텐츠를 사용하지만 동일한 프레임과 컴포넌트를 공유합니다. 등록된 컴포넌트 표준 마크업은 [registry/components.json](registry/components.json), 레이아웃 도구는 [src/layouts/primitives.css](src/layouts/primitives.css)에서 확인할 수 있습니다.
+등록된 컴포넌트 표준 마크업은 [registry/components.json](registry/components.json), 레이아웃 도구는 [src/layouts/primitives.css](src/layouts/primitives.css)에서 확인할 수 있습니다.
 
 ```html
 <nhimc-frame id="app-frame">

@@ -132,7 +132,9 @@ def _run_standalone_artifact(browser: Path, output: Path) -> int:
 def _run_standalone_browser_test(browser: Path, root: Path) -> int:
     with tempfile.TemporaryDirectory(prefix="NHIMC offline ") as folder:
         output = Path(folder) / "download result" / "nhimc-worktool.html"
-        build_single_html(root, root / "examples/operations/index.html", output)
+        build_single_html(
+            root, root / "tests/fixtures/authoring/operations/index.html", output
+        )
         return _run_standalone_artifact(browser, output)
 
 

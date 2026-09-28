@@ -55,8 +55,8 @@ class ReleaseBuildTests(unittest.TestCase):
             self.assertIn(environment, text)
         for status in ("READY", "WEB_BOOTSTRAP", "UNSUPPORTED"):
             self.assertIn(status, text)
-        self.assertIn("examples/operations", text)
-        self.assertIn("examples/administration", text)
+        self.assertNotIn("examples/operations", text)
+        self.assertNotIn("examples/administration", text)
         self.assertIn("PUBLIC_ASSET_REVIEW.md", text)
         self.assertIn("게시 작업은 별도 절차입니다", text)
         self.assertNotIn("already published", text.lower())

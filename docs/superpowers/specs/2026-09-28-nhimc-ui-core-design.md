@@ -36,7 +36,7 @@ Relevant findings:
 4. **Themes are replaceable.** A theme may change design tokens but cannot change frame structure, branding, or frame-owned dimensions.
 5. **Reuse precedes creation.** Existing registered components must be used before adding a new component.
 6. **Business content remains flexible.** Applications own menu data, routing, and slotted business content.
-7. **No template system.** The project provides primitives and examples, not page templates or business-screen generators.
+7. **No template system.** The project provides primitives, not page templates, visual examples, or business-screen generators. Internal authoring fixtures exist only for automated verification.
 8. **One source, thin adapters.** Platform integration never forks the UI implementation.
 9. **No unverified installation claims.** Bootstrap status reflects what was actually detected and verified.
 10. **Public by construction.** Internal infrastructure, secrets, and personal data are rejected by validation.
@@ -166,9 +166,9 @@ nhimc-ui-core/
 │   ├── themes/
 │   └── assets/
 ├── registry/
-├── examples/
 ├── scripts/
 ├── tests/
+│   └── fixtures/authoring/
 └── docs/
 ```
 
@@ -223,13 +223,13 @@ The project uses dependency-free validation, implemented with Python's standard 
 - Hash immutable frame implementation files and protected branding assets.
 - Detect supported override paths into frame DOM, protected dimensions, or branding.
 - Verify menu data is dynamic and business routing is not embedded in the frame.
-- Render two materially different fictional business examples against the same frame and confirm the same frame identity/hash.
+- Render two materially different internal authoring fixtures against the same frame and confirm the same frame identity/hash.
 
 ### 9.3 Design-System Validation
 
 - Detect hard-coded colors outside allowed files.
 - Detect unregistered fonts and icons.
-- Detect local reimplementations of registered components in examples.
+- Detect local reimplementations of registered components in authoring fixtures or consuming applications.
 - Verify theme replacement changes token values without changing frame integrity.
 - Enforce the new-component decision record.
 
@@ -260,9 +260,9 @@ Runtime and bootstrap failures are explicit and recoverable:
 - Validation tools return non-zero exit codes and identify the file, rule, and remediation category.
 - Public-release validation distinguishes blocking findings from warnings.
 
-## 11. Example Content
+## 11. Internal Fixture Content
 
-Examples use fictional, non-medical business content and synthetic names/data. At least two examples exercise distinct menu shapes and content compositions while sharing the exact frame implementation. Examples demonstrate primitives and registered components, not reusable page templates.
+Automated authoring fixtures use fictional, non-medical business content and synthetic names/data. At least two fixtures exercise distinct menu shapes and content compositions while sharing the exact frame implementation. They are internal verification inputs and must not be presented or reused as visual design references.
 
 ## 12. Versioning and Change Control
 

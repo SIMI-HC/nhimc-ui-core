@@ -243,8 +243,8 @@ class DesignRuleTests(unittest.TestCase):
             for subset in ("korean", "latin"):
                 self.assertIn(f"noto-sans-kr-{subset}-{weight}.woff2", font_css)
         for relative in (
-            "examples/operations/index.html",
-            "examples/administration/index.html",
+            "tests/fixtures/authoring/operations/index.html",
+            "tests/fixtures/authoring/administration/index.html",
             "tests/browser/runner.html",
         ):
             self.assertIn("nhimc-fonts.css", (ROOT / relative).read_text(encoding="utf-8"))
@@ -255,18 +255,18 @@ class DesignRuleTests(unittest.TestCase):
         self.assertGreaterEqual(contrast(values["--nhimc-color-focus"], values["--nhimc-color-canvas"]), 3)
         self.assertGreaterEqual(contrast(values["--nhimc-color-warning"], values["--nhimc-color-surface-subtle"]), 4.5)
 
-    def test_examples_share_frame_without_copying_it(self):
+    def test_authoring_fixtures_share_frame_without_copying_it(self):
         expected_imports = {
-            "../../src/frame/nhimc-frame.js",
-            "../../src/themes/nhimc-light.css",
-            "../../src/themes/nhimc-fonts.css",
-            "../../src/layouts/application.css",
-            "../../src/layouts/primitives.css",
-            "../../src/components/components.css",
+            "../../../../src/frame/nhimc-frame.js",
+            "../../../../src/themes/nhimc-light.css",
+            "../../../../src/themes/nhimc-fonts.css",
+            "../../../../src/layouts/application.css",
+            "../../../../src/layouts/primitives.css",
+            "../../../../src/components/components.css",
         }
         menus = []
         for name in ("operations", "administration"):
-            html_path = ROOT / f"examples/{name}/index.html"
+            html_path = ROOT / f"tests/fixtures/authoring/{name}/index.html"
             html = html_path.read_text(encoding="utf-8")
             script = "\n".join(
                 re.findall(r"<script\b[^>]*>(.*?)</script>", html, re.I | re.S)
@@ -286,6 +286,9 @@ class DesignRuleTests(unittest.TestCase):
             self.assertGreaterEqual(count_registered_classes(parsed.classes, ROOT), 7, name)
             menus.append(extract_literal_menu_shape(script))
         self.assertNotEqual(menus[0], menus[1])
+
+    def test_repository_does_not_publish_test_fixtures_as_design_examples(self):
+        self.assertFalse((ROOT / "examples").exists())
 
 
 if __name__ == "__main__":

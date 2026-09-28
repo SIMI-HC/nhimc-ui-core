@@ -39,7 +39,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
             output_dir = Path(folder) / "deliverable"
             output = output_dir / "index.html"
             output_dir.mkdir(parents=True)
-            shutil.copyfile(ROOT / "examples/operations/index.html", output)
+            shutil.copyfile(ROOT / "tests/fixtures/authoring/operations/index.html", output)
             result = subprocess.run(
                 [
                     sys.executable,
@@ -102,7 +102,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
     def test_builder_rejects_already_built_input_without_changing_it(self):
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "index.html"
-            shutil.copyfile(ROOT / "examples/operations/index.html", output)
+            shutil.copyfile(ROOT / "tests/fixtures/authoring/operations/index.html", output)
             first = self._run_builder(output, output)
             self.assertEqual(0, first.returncode, first.stderr)
             original = output.read_bytes()
@@ -117,7 +117,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             first = Path(folder) / "first.html"
             second = Path(folder) / "second.html"
-            source = ROOT / "examples/operations/index.html"
+            source = ROOT / "tests/fixtures/authoring/operations/index.html"
             first_result = self._run_builder(source, first)
             second_result = self._run_builder(source, second)
 
@@ -186,7 +186,9 @@ class SingleHtmlArtifactTests(unittest.TestCase):
     def test_standalone_file_option_opens_the_actual_artifact(self):
         with tempfile.TemporaryDirectory(prefix="NHIMC 실제 산출물 ") as folder:
             output = Path(folder) / "index.html"
-            result = self._run_builder(ROOT / "examples/operations/index.html", output)
+            result = self._run_builder(
+                ROOT / "tests/fixtures/authoring/operations/index.html", output
+            )
             self.assertEqual(0, result.returncode, result.stderr)
 
             browser = subprocess.run(

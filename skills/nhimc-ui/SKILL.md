@@ -29,7 +29,7 @@ Read `references/contracts.md` for the authoring shape and standalone boundary.
 
 ## Compose before extending
 
-Reuse registered layout primitives and components first. Keep application-specific markup inside examples or consuming applications. Use theme tokens for visual values; do not hard-code colors outside a registered theme.
+Reuse registered layout primitives and components first. Keep application-specific markup inside consuming applications. Test fixtures are internal verification inputs, not visual design references. Use theme tokens for visual values; do not hard-code colors outside a registered theme.
 
 If required behavior is genuinely absent, document the decision with `docs/decisions/new-component.md`, register the component, and add contract, accessibility, and browser coverage. Do not create a new frame or parallel sidebar to solve a content-layout problem.
 

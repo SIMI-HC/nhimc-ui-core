@@ -26,14 +26,14 @@ async function sha256(url) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-async function verifyExample(name, expectedTitle, targetId, expectedHeading, protectedHashes) {
+async function verifyAuthoringFixture(name, expectedTitle, targetId, expectedHeading, protectedHashes) {
   const iframe = document.createElement('iframe');
-  iframe.title = `${name} example`;
-  iframe.src = `../../examples/${name}/index.html`;
+  iframe.title = `${name} authoring fixture`;
+  iframe.src = `../fixtures/authoring/${name}/index.html`;
   document.body.append(iframe);
   await new Promise((resolve, reject) => {
     iframe.addEventListener('load', resolve, { once: true });
-    iframe.addEventListener('error', () => reject(new Error(`example failed to load: ${name}`)), { once: true });
+    iframe.addEventListener('error', () => reject(new Error(`authoring fixture failed to load: ${name}`)), { once: true });
   });
   const exampleDocument = iframe.contentDocument;
   const exampleWindow = iframe.contentWindow;
@@ -82,7 +82,7 @@ async function verifyExample(name, expectedTitle, targetId, expectedHeading, pro
     `example content viewport overflows horizontally: ${name}`,
   );
   for (const [path, expected] of Object.entries(protectedHashes)) {
-    const url = new URL(`../../${path}`, iframe.contentWindow.location.href);
+    const url = new URL(`../../../../${path}`, iframe.contentWindow.location.href);
     assert(await sha256(url) === expected, `example loaded a different protected frame file: ${name}/${path}`);
   }
   iframe.remove();
@@ -217,8 +217,8 @@ async function run() {
   const sharedFrameHashes = Object.fromEntries(
     Object.entries(beforeIntegrity).filter(([path]) => path.endsWith('nhimc-frame.js') || path.endsWith('nhimc-frame.css')),
   );
-  await verifyExample('operations', 'Northstar Operations', 'tasks', 'Task register', sharedFrameHashes);
-  await verifyExample('administration', 'Northstar Administration', 'policies', 'Policy library', sharedFrameHashes);
+  await verifyAuthoringFixture('operations', 'Northstar Operations', 'tasks', 'Task register', sharedFrameHashes);
+  await verifyAuthoringFixture('administration', 'Northstar Administration', 'policies', 'Policy library', sharedFrameHashes);
 
   assert(
     document.documentElement.scrollWidth <= document.documentElement.clientWidth,
