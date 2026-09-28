@@ -175,6 +175,41 @@ def run_canonical_parity(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> int:
     return 0
 
 
+def _run_canonical_components(browser: Path, root: Path, width: int, height: int) -> int:
+    with local_server(root) as port:
+        result = subprocess.run(
+            [
+                str(browser), "--headless", "--disable-gpu", "--disable-extensions",
+                "--no-first-run", "--force-prefers-reduced-motion=reduce",
+                "--virtual-time-budget=5000", f"--window-size={width},{height}",
+                "--dump-dom", f"http://127.0.0.1:{port}/tests/browser/canonical-components.html",
+            ],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=30, check=False,
+        )
+    print(f"canonical components: {browser.name} {width}x{height}")
+    if 'name="nhimc-canonical-components-result" content="PASS"' in result.stdout:
+        print("canonical components: PASS (49)")
+        return 0
+    print("canonical components: FAIL")
+    failure_match = re.search(r'data-failures="([^"]*)"', result.stdout)
+    if failure_match:
+        print(f"component failures: {failure_match.group(1)}")
+    print(result.stdout[-5000:])
+    if result.stderr:
+        print(result.stderr[-2000:])
+    return 1
+
+
+def run_canonical_components(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> int:
+    browser = find_browser()
+    for width, height in viewports:
+        result = _run_canonical_components(browser, root, width, height)
+        if result:
+            return result
+    return 0
+
+
 def _run_standalone_artifact(browser: Path, output: Path) -> int:
     output = output.resolve()
     try:
@@ -250,10 +285,14 @@ def main() -> int:
     parser.add_argument("--standalone-only", action="store_true")
     parser.add_argument("--standalone-file", type=Path)
     parser.add_argument("--canonical-parity-only", action="store_true")
+    parser.add_argument("--canonical-components-only", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
         parser.error("--width and --height must be supplied together")
-    modes = sum(bool(item) for item in (args.standalone_only, args.standalone_file, args.canonical_parity_only))
+    modes = sum(bool(item) for item in (
+        args.standalone_only, args.standalone_file, args.canonical_parity_only,
+        args.canonical_components_only,
+    ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
     browser = find_browser()
@@ -264,6 +303,8 @@ def main() -> int:
     viewports = DEFAULT_VIEWPORTS if args.width is None else ((args.width, args.height),)
     if args.canonical_parity_only:
         return run_canonical_parity(viewports=viewports)
+    if args.canonical_components_only:
+        return run_canonical_components(viewports=viewports)
     return run_browser_tests(viewports=viewports)
 
 

@@ -40,7 +40,7 @@ REQUIRED_DECISION_HEADINGS = {
     "## Tests",
 }
 ALLOWED_THEME_SELECTORS = {":root", '[data-nhimc-theme="nhimc-light"]'}
-IGNORED_PARTS = {".git", ".superpowers", "__pycache__", "vendor"}
+IGNORED_PARTS = {".git", ".superpowers", "__pycache__", "vendor", "generated"}
 
 
 def _without_comments(text: str) -> str:
@@ -72,7 +72,13 @@ def validate_design(root: Path) -> list[Finding]:
         for component in component_data.get("components", []):
             component_id = component.get("id", "")
             decision = component.get("decision")
-            if component_id not in BASELINE_COMPONENT_IDS and not decision:
+            canonical_source = component.get("canonicalSource", "")
+            canonical_digest = component.get("canonicalDigest", "")
+            is_canonical = (
+                canonical_source.startswith("vendor/nhimc-design/")
+                and len(canonical_digest) == 64
+            )
+            if not is_canonical and component_id not in BASELINE_COMPONENT_IDS and not decision:
                 findings.append(
                     Finding(
                         "design.missing-component-decision",

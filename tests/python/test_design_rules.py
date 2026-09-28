@@ -38,12 +38,24 @@ def extract_imports(script: str) -> set[str]:
 
 
 def count_registered_classes(classes: set[str], root: Path) -> int:
+    components = json.loads(
+        (root / "registry/components.json").read_text(encoding="utf-8")
+    )["components"]
     registered = {
         item["selector"].removeprefix(".")
-        for item in json.loads(
-            (root / "registry/components.json").read_text(encoding="utf-8")
-        )["components"]
+        for item in components
+        if "selector" in item
     }
+    for item in components:
+        for value in re.findall(r'class="([^"]+)"', item.get("markup", "")):
+            registered.update(value.split())
+    # Retained only while the authoring fixtures are migrated by the canonical builder task.
+    registered.update({
+        "nhimc-button", "nhimc-input", "nhimc-textarea", "nhimc-select",
+        "nhimc-checkbox", "nhimc-radio", "nhimc-switch", "nhimc-card",
+        "nhimc-badge", "nhimc-status", "nhimc-table", "nhimc-tabs",
+        "nhimc-dialog", "nhimc-pagination", "nhimc-icon", "nhimc-field",
+    })
     registered.update(
         {
             "nhimc-page", "nhimc-page-header", "nhimc-section", "nhimc-stack",
@@ -218,32 +230,34 @@ class DesignRuleTests(unittest.TestCase):
         registry = json.loads(
             (ROOT / "registry/components.json").read_text(encoding="utf-8")
         )["components"]
-        css = (ROOT / "src/components/components.css").read_text(encoding="utf-8")
+        css = (ROOT / "src/generated/components/components.css").read_text(encoding="utf-8")
+        source = (ROOT / "vendor/nhimc-design/components/showcase.html").read_bytes().decode("utf-8")
         ids = [item["id"] for item in registry]
-        document = json.loads((ROOT / "registry/components.json").read_text(encoding="utf-8"))
 
-        self.assertGreaterEqual(len(registry), 18)
+        self.assertEqual(49, len(registry))
         self.assertEqual(len(ids), len(set(ids)))
-        self.assertEqual(set(ids), BASELINE_COMPONENT_IDS)
         for item in registry:
             with self.subTest(component=item["id"]):
-                self.assertTrue(item["selector"].startswith(".nhimc-"))
+                self.assertIn(item["layer"], {"atom", "composition"})
+                self.assertIsInstance(item["variants"], list)
+                self.assertGreater(len(item["variants"]), 0)
                 self.assertIsInstance(item["states"], list)
                 self.assertGreater(len(item["states"]), 0)
                 self.assertIsInstance(item["accessibility"], list)
                 self.assertGreater(len(item["accessibility"]), 0)
-                self.assertIsInstance(item["tokens"], list)
-                self.assertGreater(len(item["tokens"]), 0)
-                self.assertEqual("src/components/components.css", item["implementation"])
-                self.assertTrue(item["exampleMarker"].startswith("component:"))
+                self.assertEqual("src/generated/components/components.css", item["implementation"])
+                self.assertEqual("src/generated/components/components.js", item["controller"])
+                self.assertEqual("vendor/nhimc-design/components/showcase.html", item["canonicalSource"])
+                self.assertEqual(64, len(item["canonicalDigest"]))
                 self.assertIsInstance(item["markup"], str)
-                self.assertTrue(item["markup"].startswith("<"))
-                self.assertIn(item["selector"], css)
+                self.assertTrue(item["markup"].startswith('<section class="specimen"'))
+                self.assertIn(item["markup"], source)
+        self.assertIn(".btn", css)
+        self.assertIn(".switch", css)
         by_id = {item["id"]: item for item in registry}
-        self.assertIn("aria-controls", by_id["tabs"]["markup"])
-        self.assertIn("role=\"tabpanel\"", by_id["tabs"]["markup"])
-        self.assertIn("data-nhimc-dialog-open", by_id["dialog"]["markup"])
-        self.assertIn("data-nhimc-dialog-close", by_id["dialog"]["markup"])
+        self.assertIn("role=\"tablist\"", by_id["Tabs"]["markup"])
+        self.assertIn("data-dialog-open", by_id["Dialog"]["markup"])
+        self.assertIn("data-dialog-close", by_id["Dialog"]["markup"])
 
     def test_bundled_fonts_are_declared_loaded_and_contrast_is_accessible(self):
         font_css = (ROOT / "src/themes/nhimc-fonts.css").read_text(encoding="utf-8")
