@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "projectVersion": "1.0.0",
+  "defaultFrame": "nhimc-default",
+  "defaultTheme": "nhimc-light",
+  "bootstrapStatuses": [
+    "READY",
+    "WEB_BOOTSTRAP",
+    "UNSUPPORTED"
+  ],
+  "registries": [
+    "registry/frames.json",
+    "registry/themes.json",
+    "registry/components.json",
+    "registry/assets.json"
+  ]
+}
