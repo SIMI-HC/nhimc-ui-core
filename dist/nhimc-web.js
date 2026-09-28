@@ -80,31 +80,17 @@
   };
   const installExport = (finalDoc, pageTitle) => {
     window.nhimcExportHtml = () => buildOfflineHtml(finalDoc);
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.setAttribute('data-nhimc-export', '');
-    button.textContent = '오프라인 HTML 저장';
-    button.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483000;padding:8px 12px;border:1px solid var(--color-primary);border-radius:var(--radius-md);background:var(--color-card);color:var(--color-primary);font-family:inherit;font-weight:600;font-size:12px;line-height:1;cursor:pointer;box-shadow:var(--shadow-lg)';
-    button.addEventListener('click', async () => {
-      button.disabled = true;
-      button.textContent = '만드는 중…';
-      try {
-        const html = await buildOfflineHtml(finalDoc);
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-        link.download = (pageTitle || 'nhimc').replace(/[^\w가-힣-]+/g, '-') + '.html';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(link.href), 4000);
-        button.textContent = '저장했어요';
-      } catch (error) {
-        button.textContent = '저장 실패';
-      }
-      setTimeout(() => { button.disabled = false; button.textContent = '오프라인 HTML 저장'; }, 2500);
-    });
-    // Added after the Frame is in place; it lives outside the Frame regions and is not part of the saved file.
-    window.addEventListener('nhimc:frame-ready', () => document.body.appendChild(button), { once: true });
+    // Save the offline copy automatically once the Frame is in place; no button, no click needed.
+    window.addEventListener('nhimc:frame-ready', async () => {
+      const html = await buildOfflineHtml(finalDoc);
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+      link.download = (pageTitle || 'nhimc').replace(/[^\w가-힣-]+/g, '-') + '.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+    }, { once: true });
   };
   const render = () => {
   const source = document.documentElement;

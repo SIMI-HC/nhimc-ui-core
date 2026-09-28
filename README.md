@@ -53,7 +53,7 @@ Frame은 고정이고 메뉴와 Page는 AI가 업무 요구에 맞춰 정합니�
 <script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.0/dist/nhimc-web.js"></script>
 ```
 
-Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하며, 오프라인 검증된 `index.html`은 아닙니다. 화면 오른쪽 아래의 **“오프라인 HTML 저장”** 버튼을 누르면 CSS·스크립트·폰트가 모두 들어간 HTML 파일을 내려받습니다(인터넷 없이 열림, 저장 시에는 인터넷 필요). 브라우저 검증까지 거친 파일이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 요청하세요. `dist/nhimc-web.js`는 `python scripts/build_web_runtime.py`로만 생성합니다.
+Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하며, 오프라인 검증된 `index.html`은 아닙니다. Frame이 갖춰지면 CSS·스크립트·폰트가 모두 들어간 오프라인 HTML 파일이 자동으로 저장됩니다(인터넷 없이 열림, 저장 시에는 인터넷 필요). 브라우저 검증까지 거친 파일이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 요청하세요. `dist/nhimc-web.js`는 `python scripts/build_web_runtime.py`로만 생성합니다.
 
 ## 일관성이 유지되는 이유
 

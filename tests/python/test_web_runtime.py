@@ -31,7 +31,6 @@ def _frame_markup(dom: str) -> str:
     body = dom[dom.index("<body") :]
     body = re.sub(r"<script\b.*?</script>", "", body, flags=re.S)
     body = re.sub(r"<svg hidden.*?</svg>", "", body, flags=re.S)
-    body = re.sub(r"<button[^>]*data-nhimc-export.*?</button>", "", body, flags=re.S)
     body = re.sub(r"준비됨 · (?:오프라인 문서|웹 실행)", "STATUS", body)
     return re.sub(r"\s+", " ", body)
 
@@ -148,7 +147,6 @@ class WebRuntimeTests(unittest.TestCase):
             self.assertTrue(json.loads(first.stdout.strip().splitlines()[-1])["shell"])
             html = saved.read_text(encoding="utf-8")
             self.assertNotRegex(html, r"<script\b[^>]*\bsrc=")
-            self.assertNotIn("data-nhimc-export", html)
             self.assertIn('data-nhimc-role="app-shell"', html)
             self.assertIn('data-screen-panel="orders"', html)
             if "data:font/woff2" in html:

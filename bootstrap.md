@@ -139,7 +139,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 3. Chromium이 있으면 `python scripts/build_verified_artifact.py --input source.html --output index.html`로 브라우저 검증까지 마칩니다. 없으면 `python scripts/build_single_html.py --input source.html --output index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
 4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림).
 
-코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 쓰고, 화면의 “오프라인 HTML 저장” 버튼으로 URL 없는 파일을 받게 안내합니다.
+코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 쓰고, Frame이 갖춰지면 자동으로 저장되는 URL 없는 파일을 받게 안내합니다.
 
 ## Web(빌더를 실행할 수 없는 환경): 프롬프트 안에서 끝내기
 
@@ -160,4 +160,4 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
 2. 메뉴 `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
 3. 인터넷과 외부 `<script src>`를 허용하는 호스트에서만 동작합니다. 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고, 오프라인 `index.html`이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
-4. Web Runtime 화면에는 오른쪽 아래 “오프라인 HTML 저장” 버튼이 자동으로 생깁니다. 사용자가 이 버튼으로 CSS·스크립트·폰트가 모두 들어간 HTML을 내려받을 수 있다고 안내합니다(직접 파일을 만들어 붙여 넣지 않습니다). 이 결과는 Web Runtime 결과이며 브라우저 검증을 거친 `index.html`이 아닙니다. 저작용 원본을 완성 파일로 첨부하지 말고, 사용자가 실제 브라우저에서 열어 확인하도록 안내합니다.
+4. Frame이 갖춰지면 Web Runtime이 CSS·스크립트·폰트가 모두 들어간 오프라인 HTML을 자동으로 내려받습니다(버튼 없음, 직접 파일을 만들어 붙여 넣지 않습니다). 이 결과는 Web Runtime 결과이며 브라우저 검증을 거친 `index.html`이 아닙니다. 저작용 원본을 완성 파일로 첨부하지 말고, 사용자가 실제 브라우저에서 열어 확인하도록 안내합니다.
