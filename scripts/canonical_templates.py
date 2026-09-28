@@ -84,6 +84,10 @@ def _registered_patterns(root: Path) -> set[str]:
     }
 
 
+def registered_design_items(root: Path) -> frozenset[str]:
+    return frozenset(_registered_components(root) | _registered_patterns(root))
+
+
 def _string_tuple(entry: dict, field: str, template_id: str, errors: list[str]) -> tuple[str, ...]:
     value = entry.get(field, [])
     if not isinstance(value, list) or any(not isinstance(item, str) or not item for item in value):
@@ -131,7 +135,7 @@ def _contracts_and_errors(root: Path) -> tuple[list[TemplateContract], list[str]
         item.get("id") for item in layouts if isinstance(item, dict) and isinstance(item.get("id"), str)
     }
     try:
-        known_components = _registered_components(root) | _registered_patterns(root)
+        known_components = registered_design_items(root)
     except ValueError as error:
         return [], [str(error)]
     contracts: list[TemplateContract] = []
