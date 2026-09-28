@@ -30,7 +30,12 @@ class SingleHtmlArtifactTests(unittest.TestCase):
     def _document(fragment: str) -> str:
         return (
             "<!doctype html><html><head></head><body>"
-            f'<nhimc-frame id="app-frame">{fragment}</nhimc-frame>'
+            '<nhimc-frame id="app-frame" data-frame="left" '
+            'data-project-title="일산병원 업무도구" data-active-id="ambulance">'
+            f'{fragment}</nhimc-frame>'
+            '<script type="application/json" data-nhimc-menu>'
+            '[{"id":"ambulance","label":"이송 현황","icon":"ambulance","href":"#ambulance"}]'
+            '</script>'
             "</body></html>"
         )
 
@@ -61,12 +66,18 @@ class SingleHtmlArtifactTests(unittest.TestCase):
             html = output.read_text(encoding="utf-8")
             version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
             self.assertIn(f'name="nhimc-core-version" content="{version}"', html)
+            self.assertIn('name="nhimc-upstream-commit" content="08c45402eece"', html)
+            self.assertIn('data-nhimc-role="app-shell"', html)
+            self.assertIn('href="#ambulance"', html)
+            self.assertEqual(6, html.count("@font-face"))
             self.assertIn("data:font/woff2;base64,", html)
-            self.assertIn("data:image/svg+xml;base64,", html)
-            self.assertIn("customElements.define('nhimc-frame'", html)
-            self.assertIn("initNhimcComponents(document)", html)
-            self.assertIn('aria-hidden="true" hidden', html)
+            self.assertIn('data-nhimc-component-bundle="canonical"', html)
+            self.assertIn('<use href="#ambulance"></use>', html)
             self.assertIn("default-src 'none'", html)
+            self.assertNotIn("<nhimc-frame", html)
+            self.assertNotIn("customElements.define('nhimc-frame'", html)
+            self.assertNotIn("☰", html)
+            self.assertNotIn("‹", html)
             self.assertNotIn('rel="stylesheet"', html)
             self.assertNotIn('type="module"', html)
             self.assertNotIn("import.meta", html)

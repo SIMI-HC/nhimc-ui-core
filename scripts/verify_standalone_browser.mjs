@@ -107,12 +107,22 @@ async function main() {
   await delay(2000);
 
   const expression = `(() => {
-    const frame = document.querySelector('nhimc-frame');
+    const fontCss = document.querySelector('style[data-nhimc-font-bundle="canonical"]')?.textContent || '';
+    const upstream = document.querySelector('meta[name="nhimc-upstream-commit"]')?.content || '';
+    const roleCount = role => document.querySelectorAll('[data-nhimc-role="' + role + '"]').length;
     return {
       protocol: location.protocol,
       href: location.href,
-      hasFrameStyle: Boolean(frame?.shadowRoot?.querySelector('style')),
+      hasCanonicalShell: roleCount('app-shell') === 1,
+      hasContentSlot: roleCount('content-slot') === 1,
+      hasStatusbar: roleCount('statusbar') === 1,
+      hasCanonicalComponents: Boolean(document.querySelector('style[data-nhimc-component-bundle="canonical"]')),
+      upstreamCommit: upstream,
+      fontFaceCount: (fontCss.match(/@font-face/g) || []).length,
       fontCount: document.fonts.size,
+      svgControls: Boolean(document.querySelector('#sidebarToggle svg')) &&
+        Boolean(document.querySelector('#mobileMenuOpen svg')),
+      unicodeSubstitutes: document.body.textContent.includes('☰') || document.body.textContent.includes('‹'),
       linkedResources: document.querySelectorAll('link[rel="stylesheet"], script[src]').length,
       marker: document.documentElement.getAttribute('data-nhimc-standalone-ready'),
     };
@@ -126,8 +136,15 @@ async function main() {
   const checks = [
     state.protocol === 'file:',
     state.href === artifactUrl,
-    state.hasFrameStyle === true,
-    state.fontCount >= 6,
+    state.hasCanonicalShell === true,
+    state.hasContentSlot === true,
+    state.hasStatusbar === true,
+    state.hasCanonicalComponents === true,
+    /^[0-9a-f]{12}$/.test(state.upstreamCommit),
+    state.fontFaceCount === 6,
+    state.fontCount === 6,
+    state.svgControls === true,
+    state.unicodeSubstitutes === false,
     state.linkedResources === 0,
     state.marker === runtimeToken,
     exceptions.length === 0,

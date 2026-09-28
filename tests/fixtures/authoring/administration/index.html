@@ -1,72 +1,51 @@
 <!doctype html>
-<html lang="en" data-nhimc-theme="nhimc-light">
+<html lang="ko" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Northstar Administration</title>
-  <link rel="icon" href="../../../../src/assets/branding/nhimc-favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../../../../src/themes/nhimc-light.css">
-  <link rel="stylesheet" href="../../../../src/themes/nhimc-fonts.css">
-  <link rel="stylesheet" href="../../../../src/layouts/application.css">
-  <link rel="stylesheet" href="../../../../src/layouts/primitives.css">
-  <link rel="stylesheet" href="../../../../src/components/components.css">
+  <title>병원 권한 관리</title>
 </head>
 <body>
-  <nhimc-frame id="app-frame">
+  <nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 권한 관리" data-active-id="roles">
     <div id="business-content" class="nhimc-page nhimc-stack" aria-live="polite">
       <div class="nhimc-page-header">
-        <div><h1>Access administration</h1><p>Fictional roles and policies for Northstar Services.</p></div>
-        <div class="nhimc-toolbar"><button class="nhimc-button" type="button">Add role</button><span class="nhimc-status" data-status="success">Policy current</span></div>
+        <div><h1>역할 관리</h1><p>테스트용 병원 업무 권한과 사용자 그룹을 관리합니다.</p></div>
+        <div class="row"><button class="btn primary" type="button">역할 추가</button><span class="status-indicator"><span class="dot"></span>정책 최신</span></div>
       </div>
       <section class="nhimc-section nhimc-form-grid" aria-label="Role filters">
-        <div class="nhimc-field"><label for="role-search">Find a role</label><input id="role-search" class="nhimc-input" type="search"></div>
-        <div class="nhimc-field"><label for="role-state">State</label><select id="role-state" class="nhimc-select"><option>All states</option><option>Active</option></select></div>
+        <div class="field"><label for="role-search">역할 검색</label><input id="role-search" type="search"></div>
+        <div class="field"><label for="role-state">상태</label><select id="role-state"><option>전체</option><option>사용 중</option></select></div>
       </section>
-      <section class="nhimc-content-card"><h2>Role register</h2><table class="nhimc-table"><caption>Fictional administration roles</caption><thead><tr><th scope="col">Role</th><th scope="col">Members</th><th scope="col">State</th></tr></thead><tbody><tr><td>Workspace editor</td><td>12</td><td><span class="nhimc-badge">Active</span></td></tr><tr><td>Audit reader</td><td>4</td><td><span class="nhimc-badge">Active</span></td></tr></tbody></table></section>
+      <section class="card"><h2>역할 목록</h2><table><caption>실제 개인정보가 아닌 테스트용 역할 목록</caption><thead><tr><th scope="col">역할</th><th scope="col">인원</th><th scope="col">상태</th></tr></thead><tbody><tr><td>이송 관리자</td><td>12</td><td><span class="badge">사용 중</span></td></tr><tr><td>감사 조회자</td><td>4</td><td><span class="badge">사용 중</span></td></tr></tbody></table></section>
     </div>
   </nhimc-frame>
+  <script type="application/json" data-nhimc-menu>
+    [
+      {"id":"roles","label":"역할 관리","icon":"user-check","href":"#roles"},
+      {"id":"groups","label":"사용자 그룹","icon":"users","href":"#groups"},
+      {"id":"audit","label":"감사 내역","icon":"clipboard-list","href":"#audit"},
+      {"id":"settings","label":"환경 설정","icon":"settings","href":"#settings"}
+    ]
+  </script>
   <script type="module" data-nhimc-business>
-    import '../../../../src/frame/nhimc-frame.js';
-    import { initNhimcComponents } from '../../../../src/components/controllers.js';
-
-    const frame = document.querySelector('#app-frame');
     const content = document.querySelector('#business-content');
-    const menu = [
-      { id: 'access', label: 'Access', children: [
-        { id: 'roles', label: 'Roles', href: '#roles' },
-        { id: 'groups', label: 'Groups', href: '#groups' },
-      ] },
-      { id: 'governance', label: 'Governance', children: [
-        { id: 'policies', label: 'Policies', href: '#policies' },
-        { id: 'audit', label: 'Audit events', children: [{ id: 'exports', label: 'Exports', href: '#exports' }] },
-      ] },
-      { id: 'settings', label: 'Workspace settings', href: '#settings' },
-    ];
     const views = {
-      access: ['Access administration', 'Fictional roles and policies for Northstar Services.'],
-      roles: ['Role register', 'Assign fictional workspace capabilities by role.'],
-      groups: ['Group directory', 'Organize fictional members without duplicating the frame.'],
-      governance: ['Governance', 'Review policy coverage and audit readiness.'],
-      policies: ['Policy library', 'Maintain fictional access and retention policies.'],
-      audit: ['Audit events', 'Inspect synthetic workspace activity.'],
-      exports: ['Audit exports', 'Prepare a fictional event export.'],
-      settings: ['Workspace settings', 'Configure this fictional administration workspace.'],
+      roles: ['역할 관리', '테스트용 병원 업무 권한과 사용자 그룹을 관리합니다.'],
+      groups: ['사용자 그룹', '부서별 사용자 그룹과 역할을 연결합니다.'],
+      audit: ['감사 내역', '권한 변경 이력을 확인합니다.'],
+      settings: ['환경 설정', '권한 정책의 기본 동작을 설정합니다.'],
     };
 
     function renderRoute(id) {
-      const [title, description] = views[id] ?? views.access;
+      const [title, description] = views[id] ?? views.roles;
       content.querySelector('h1').textContent = title;
       content.querySelector('.nhimc-page-header p').textContent = description;
       content.dataset.route = id;
     }
 
-    frame.menu = menu;
-    frame.activeId = 'access';
-    frame.addEventListener('nhimc:navigate', (event) => {
-      frame.activeId = event.detail.id;
+    document.addEventListener('nhimc:navigate', (event) => {
       renderRoute(event.detail.id);
     });
-    initNhimcComponents(document);
   </script>
 </body>
 </html>

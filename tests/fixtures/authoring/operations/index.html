@@ -1,64 +1,51 @@
 <!doctype html>
-<html lang="en" data-nhimc-theme="nhimc-light">
+<html lang="ko" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Northstar Operations</title>
-  <link rel="icon" href="../../../../src/assets/branding/nhimc-favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../../../../src/themes/nhimc-light.css">
-  <link rel="stylesheet" href="../../../../src/themes/nhimc-fonts.css">
-  <link rel="stylesheet" href="../../../../src/layouts/application.css">
-  <link rel="stylesheet" href="../../../../src/layouts/primitives.css">
-  <link rel="stylesheet" href="../../../../src/components/components.css">
+  <title>병원 이송업무 관리</title>
 </head>
 <body>
-  <nhimc-frame id="app-frame">
+  <nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 이송업무 관리" data-active-id="ambulance">
     <div id="business-content" class="nhimc-page nhimc-stack" aria-live="polite">
       <div class="nhimc-page-header">
-        <div><h1>Operations overview</h1><p>Fictional work queues for Northstar Services.</p></div>
-        <div class="nhimc-toolbar"><button class="nhimc-button" type="button">Create task</button></div>
+        <div><h1>이송 현황</h1><p>일산병원 환자 이송 요청과 배정 현황을 확인합니다.</p></div>
+        <div class="row"><button class="btn primary" type="button">이송 신청</button></div>
       </div>
       <section class="nhimc-section nhimc-grid" aria-label="Queue summary">
-        <article class="nhimc-card"><h2>Ready</h2><strong>18</strong><span class="nhimc-badge">Today</span></article>
-        <article class="nhimc-card"><h2>In progress</h2><strong>7</strong><span class="nhimc-status" data-status="success">On schedule</span></article>
+        <article class="card"><h2>배정 대기</h2><strong>18</strong><span class="badge">오늘</span></article>
+        <article class="card"><h2>이송 중</h2><strong>7</strong><span class="status-indicator"><span class="dot"></span>정상 진행</span></article>
       </section>
-      <section class="nhimc-content-card"><h2>Recent tasks</h2><table class="nhimc-table"><caption>Fictional operations tasks</caption><thead><tr><th scope="col">Task</th><th scope="col">Owner</th><th scope="col">State</th></tr></thead><tbody><tr><td>Review intake</td><td>Alex Kim</td><td>Ready</td></tr><tr><td>Publish summary</td><td>Mina Park</td><td>In progress</td></tr></tbody></table></section>
+      <section class="card"><h2>최근 이송 요청</h2><table><caption>환자 정보가 아닌 테스트용 이송 목록</caption><thead><tr><th scope="col">요청 번호</th><th scope="col">출발지</th><th scope="col">상태</th></tr></thead><tbody><tr><td>T-2401</td><td>외래진료동</td><td>배정 대기</td></tr><tr><td>T-2402</td><td>건강검진센터</td><td>이송 중</td></tr></tbody></table></section>
     </div>
   </nhimc-frame>
+  <script type="application/json" data-nhimc-menu>
+    [
+      {"id":"ambulance","label":"이송 현황","icon":"ambulance","href":"#ambulance"},
+      {"id":"requests","label":"이송 신청","icon":"clipboard-list","href":"#requests"},
+      {"id":"assignments","label":"배정 관리","icon":"users","href":"#assignments"},
+      {"id":"completed","label":"완료 내역","icon":"calendar-check","href":"#completed"}
+    ]
+  </script>
   <script type="module" data-nhimc-business>
-    import '../../../../src/frame/nhimc-frame.js';
-    import { initNhimcComponents } from '../../../../src/components/controllers.js';
-
-    const frame = document.querySelector('#app-frame');
     const content = document.querySelector('#business-content');
-    const menu = [
-      { id: 'overview', label: 'Overview', href: '#overview' },
-      { id: 'queues', label: 'Queues', children: [{ id: 'priority', label: 'Priority queue', href: '#priority' }] },
-      { id: 'tasks', label: 'Tasks', href: '#tasks' },
-      { id: 'services', label: 'Service status', href: '#services' },
-    ];
     const views = {
-      overview: ['Operations overview', 'Fictional work queues for Northstar Services.'],
-      queues: ['Queue workspace', 'Compare waiting work by fictional service line.'],
-      priority: ['Priority queue', 'Review the highest-impact fictional tasks first.'],
-      tasks: ['Task register', 'Track ownership and completion without changing the shared frame.'],
-      services: ['Service status', 'All fictional services are operating normally.'],
+      ambulance: ['이송 현황', '일산병원 환자 이송 요청과 배정 현황을 확인합니다.'],
+      requests: ['이송 신청', '새로운 이송 요청을 등록합니다.'],
+      assignments: ['배정 관리', '이송 담당자와 장비를 배정합니다.'],
+      completed: ['완료 내역', '완료된 이송 업무를 조회합니다.'],
     };
 
     function renderRoute(id) {
-      const [title, description] = views[id] ?? views.overview;
+      const [title, description] = views[id] ?? views.ambulance;
       content.querySelector('h1').textContent = title;
       content.querySelector('.nhimc-page-header p').textContent = description;
       content.dataset.route = id;
     }
 
-    frame.menu = menu;
-    frame.activeId = 'overview';
-    frame.addEventListener('nhimc:navigate', (event) => {
-      frame.activeId = event.detail.id;
+    document.addEventListener('nhimc:navigate', (event) => {
       renderRoute(event.detail.id);
     });
-    initNhimcComponents(document);
   </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ import threading
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.build_single_html import _validate_standalone, build_single_html
+from scripts.build_single_html import _inventory, _validate_standalone, build_single_html
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
 
 
@@ -220,6 +220,23 @@ def _run_standalone_artifact(browser: Path, output: Path) -> int:
         return 1
     if 'name="nhimc-core-version"' not in html:
         print("standalone file: FAIL (artifact is not finalized)")
+        return 1
+    tags = _inventory(html).tags
+    role_count = lambda role: sum(attrs.get("data-nhimc-role") == role for _, attrs in tags)
+    static_contract = {
+        "canonical app shell": role_count("app-shell") == 1,
+        "canonical content slot": role_count("content-slot") == 1,
+        "upstream provenance": bool(re.search(
+            r'<meta\s+name="nhimc-upstream-commit"\s+content="[0-9a-f]{12}">', html
+        )),
+        "six embedded font faces": html.count("@font-face") == 6,
+        "canonical component bundle": 'data-nhimc-component-bundle="canonical"' in html,
+        "SVG frame controls": 'id="sidebarToggle"' in html and 'id="mobileMenuOpen"' in html,
+        "no Unicode control substitutes": "☰" not in html and "‹" not in html,
+    }
+    failures = [label for label, passed in static_contract.items() if not passed]
+    if failures:
+        print(f"standalone file: FAIL ({', '.join(failures)})")
         return 1
     token_match = re.search(
         r'<meta\s+name="nhimc-runtime-token"\s+content="([0-9a-f]{64})">', html

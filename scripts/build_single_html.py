@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import base64
 import hashlib
@@ -7,34 +9,24 @@ import re
 import sys
 from pathlib import Path
 
-
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
 from scripts.validate_contracts import validate_contracts
 
-
 ROOT = Path(__file__).resolve().parents[1]
-CORE_STYLES = (
-    "src/themes/nhimc-fonts.css",
-    "src/themes/nhimc-light.css",
-    "src/layouts/application.css",
-    "src/layouts/primitives.css",
-    "src/components/components.css",
-)
-LINK_TAG = re.compile(r"<link\b[^>]*>", re.IGNORECASE)
-SCRIPT_TAG = re.compile(r"<script\b(?P<attrs>[^>]*)>(?P<body>.*?)</script>", re.IGNORECASE | re.DOTALL)
-STYLE_TAG = re.compile(r"<style\b[^>]*>(?P<body>.*?)</style>", re.IGNORECASE | re.DOTALL)
+SCRIPT_TAG = re.compile(r"<script\b(?P<attrs>[^>]*)>(?P<body>.*?)</script>", re.I | re.S)
+STYLE_TAG = re.compile(r"<style\b[^>]*>(?P<body>.*?)</style>", re.I | re.S)
+FRAME_TAG = re.compile(r"<nhimc-frame\b(?P<attrs>[^>]*)>(?P<body>.*?)</nhimc-frame\s*>", re.I | re.S)
 ATTRIBUTE = r"\b{name}\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'=<>`]+))"
-COLOR = re.compile(r"#[0-9a-f]{3,8}\b|(?:rgb|rgba|hsl|hsla)\(\s*[^)]*\)", re.IGNORECASE)
-ASSET_REFERENCE = re.compile(r"['\"]([^'\"]+\.(?:svg|woff2?|ttf|otf)(?:#[^'\"]*)?)['\"]", re.IGNORECASE)
+COLOR = re.compile(r"#[0-9a-f]{3,8}\b|(?:rgb|rgba|hsl|hsla)\(\s*[^)]*\)", re.I)
+ASSET_REFERENCE = re.compile(r"['\"]([^'\"]+\.(?:svg|woff2?|ttf|otf)(?:#[^'\"]*)?)['\"]", re.I)
 
 
 def _attribute(tag: str, name: str) -> str | None:
-    match = re.search(ATTRIBUTE.format(name=re.escape(name)), tag, re.IGNORECASE | re.DOTALL)
-    if not match:
-        return None
-    return next((value for value in match.groups() if value is not None), "")
+    match = re.search(ATTRIBUTE.format(name=re.escape(name)), tag, re.I | re.S)
+    return next((value for value in match.groups() if value is not None), "") if match else None
 
 
 class _HtmlInventory(HTMLParser):
@@ -55,103 +47,98 @@ def _inventory(html: str) -> _HtmlInventory:
     return parser
 
 
-def _data_url(path: Path, media_type: str) -> str:
-    payload = base64.b64encode(path.read_bytes()).decode("ascii")
-    return f"data:{media_type};base64,{payload}"
+def _data_url(payload: bytes, media_type: str) -> str:
+    return f"data:{media_type};base64,{base64.b64encode(payload).decode('ascii')}"
 
 
-def _escape_style(text: str) -> str:
-    return text.replace("</style", "<\\/style")
+def _upstream(root: Path) -> tuple[dict, dict[str, str]]:
+    manifest = json.loads((root / "vendor/nhimc-design/UPSTREAM.json").read_text(encoding="utf-8"))
+    return manifest, {item["destination"]: item["sha256"] for item in manifest["files"]}
 
 
-def _rewrite_font_urls(root: Path, css: str) -> str:
-    def replace(match: re.Match[str]) -> str:
-        name = Path(match.group(1)).name
-        font = root / "src/assets/fonts" / name
-        if not font.is_file():
-            raise ValueError(f"font asset is missing: {name}")
-        return f'url("{_data_url(font, "font/woff2")}")'
-
-    rewritten = re.sub(r'url\(["\']?\.\./assets/fonts/([^"\')]+)["\']?\)', replace, css)
-    if "../assets/fonts/" in rewritten:
-        raise ValueError("font URL was not embedded")
-    return rewritten
+def _verified_vendor_bytes(root: Path, relative: str, digests: dict[str, str]) -> bytes:
+    expected = digests.get(relative)
+    if not expected:
+        raise ValueError(f"canonical asset is not pinned: {relative}")
+    payload = (root / relative).read_bytes()
+    if hashlib.sha256(payload).hexdigest() != expected:
+        raise ValueError(f"canonical asset digest mismatch: {relative}")
+    return payload
 
 
-def _build_global_css(root: Path) -> str:
-    chunks = []
-    for relative in CORE_STYLES:
-        text = (root / relative).read_text(encoding="utf-8")
-        if relative.endswith("nhimc-fonts.css"):
-            text = _rewrite_font_urls(root, text)
-        chunks.append(f"/* {relative} */\n{text.strip()}")
-    return "\n\n".join(chunks)
+def _font_css(root: Path, digests: dict[str, str]) -> str:
+    latin_range = (
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, "
+        "U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, "
+        "U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+    )
+    faces = []
+    for weight in (300, 400, 700):
+        for subset in ("latin", "korean"):
+            relative = f"vendor/nhimc-design/fonts/noto-sans-kr-{subset}-{weight}.woff2"
+            source = _data_url(_verified_vendor_bytes(root, relative, digests), "font/woff2")
+            range_rule = f"\n  unicode-range: {latin_range};" if subset == "latin" else ""
+            faces.append(
+                "@font-face {\n"
+                '  font-family: "Noto Sans KR";\n'
+                "  font-style: normal;\n"
+                f"  font-weight: {weight};\n"
+                "  font-display: swap;\n"
+                f'  src: url("{source}") format("woff2");{range_rule}\n'
+                "}"
+            )
+    return "\n\n".join(faces)
 
 
 def _strip_core_imports(script: str) -> str:
-    script = re.sub(
-        r"^\s*import\s+['\"][^'\"]*src/frame/nhimc-frame\.js['\"]\s*;?\s*",
-        "",
-        script,
-        flags=re.MULTILINE,
-    )
-    script = re.sub(
-        r"\s*import\s*\{.*?\}\s*from\s*['\"][^'\"]*src/components/controllers\.js['\"]\s*;?",
-        "",
-        script,
-        flags=re.DOTALL,
-    )
+    script = re.sub(r"^\s*import\s+['\"][^'\"]*src/frame/nhimc-frame\.js['\"]\s*;?\s*", "", script, flags=re.M)
+    script = re.sub(r"\s*import\s*\{.*?\}\s*from\s*['\"][^'\"]*src/components/controllers\.js['\"]\s*;?", "", script, flags=re.S)
     if re.search(r"(^|[;\n])\s*import\s", script):
         raise ValueError("business script contains an unsupported module import")
-    forbidden_runtime = {
+    forbidden = {
         "dynamic import": r"\bimport\s*\(",
         "network request": r"\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(",
         "beacon request": r"\bnavigator\s*\.\s*sendBeacon\s*\(",
         "worker resource": r"\b(?:Worker|SharedWorker)\s*\(",
         "service worker": r"\bserviceWorker\s*\.\s*register\s*\(",
     }
-    for label, pattern in forbidden_runtime.items():
-        if re.search(pattern, script, re.IGNORECASE):
+    for label, pattern in forbidden.items():
+        if re.search(pattern, script, re.I):
             raise ValueError(f"business script contains a forbidden {label}")
     return script.strip()
 
 
 def _validate_business_input(root: Path, source: Path, html: str) -> None:
-    if re.search(r"data-nhimc-core\s*=|name\s*=\s*['\"]nhimc-core-version", html, re.IGNORECASE):
+    if re.search(r"data-nhimc-core\s*=|name\s*=\s*['\"]nhimc-core-version", html, re.I):
         raise ValueError("source already contains an embedded NHIMC Core")
-    if STYLE_TAG.search(html) or re.search(r"\sstyle\s*=", html, re.IGNORECASE):
+    if STYLE_TAG.search(html) or re.search(r"\sstyle\s*=", html, re.I):
         raise ValueError("business HTML cannot contain local or inline styles")
-    if re.search(
-        r"(?:\.style\.|style\.setProperty|insertRule|adoptedStyleSheets|\.shadowRoot)",
-        html,
-        re.IGNORECASE,
-    ):
+    if re.search(r"(?:\.style\.|style\.setProperty|insertRule|adoptedStyleSheets|\.shadowRoot)", html, re.I):
         raise ValueError("business HTML cannot inject or override protected styles")
     if COLOR.search(html):
         raise ValueError("business HTML cannot hard-code color values")
-    if re.search(r"\bdata-nhimc-standalone-ready\b", html, re.IGNORECASE):
+    if re.search(r"\bdata-nhimc-standalone-ready\b", html, re.I):
         raise ValueError("business HTML cannot use the reserved standalone marker")
 
     inventory = _inventory(html)
-    frames = [attrs for tag, attrs in inventory.tags if tag == "nhimc-frame"]
-    if len(frames) != 1:
+    if sum(tag == "nhimc-frame" for tag, _ in inventory.tags) != 1:
         raise ValueError("business HTML must contain exactly one shared nhimc-frame")
-    protected_classes = {
-        "frame-shell", "sidebar", "brand", "navigation", "collapse", "workspace",
-        "header", "mobile-brand", "product-name", "statusbar", "mobile-dialog",
-        "mobile-panel", "mobile-head",
-    }
+    protected = {"frame-shell", "sidebar", "brand", "navigation", "collapse", "workspace", "header", "mobile-brand", "product-name", "statusbar", "mobile-dialog", "mobile-panel", "mobile-head"}
     for tag, attrs in inventory.tags:
-        classes = set((attrs.get("class") or "").split())
-        copied = protected_classes & classes
+        copied = protected & set((attrs.get("class") or "").split())
         if copied:
             raise ValueError(f"business HTML copies protected frame chrome: {sorted(copied)[0]}")
         if tag == "script":
             script_type = (attrs.get("type") or "").lower()
-            if script_type != "module" and "data-nhimc-business" not in attrs:
+            is_menu = script_type == "application/json" and "data-nhimc-menu" in attrs
+            if script_type != "module" and "data-nhimc-business" not in attrs and not is_menu:
                 raise ValueError("business HTML cannot contain classic or unowned scripts")
         if tag == "meta" and (attrs.get("http-equiv") or "").lower() == "refresh":
             raise ValueError("business HTML cannot contain meta refresh")
+        if tag == "link" and "stylesheet" in (attrs.get("rel") or "").lower():
+            raise ValueError("business HTML cannot load stylesheets")
+        if tag == "a" and (href := attrs.get("href")) and not href.startswith("#"):
+            raise ValueError(f"business HTML contains a non-offline link: {href}")
 
     assets = json.loads((root / "registry/assets.json").read_text(encoding="utf-8"))["assets"]
     registered = {(root / item["path"]).resolve() for item in assets}
@@ -161,153 +148,124 @@ def _validate_business_input(root: Path, source: Path, html: str) -> None:
             continue
         asset_path = value.split("#", 1)[0].replace("\\", "/")
         resolved = (source.parent / asset_path).resolve()
-        root_relative = re.sub(r"^(?:\.\./)+", "", asset_path)
-        registered_candidate = (root / root_relative).resolve()
+        registered_candidate = (root / re.sub(r"^(?:\.\./)+", "", asset_path)).resolve()
         if resolved not in registered and registered_candidate not in registered:
             raise ValueError(f"business HTML references an unregistered asset: {value}")
 
 
-def _extract_business_script(source: Path, html: str) -> tuple[str, str]:
-    scripts = []
+def _extract_scripts(html: str) -> tuple[str, list[dict], str]:
+    menu_payloads: list[list[dict]] = []
+    business: list[str] = []
 
     def replace(match: re.Match[str]) -> str:
         attrs = match.group("attrs")
         script_type = (_attribute(attrs, "type") or "").lower()
-        src = _attribute(attrs, "src")
-        if src:
-            if script_type != "module":
-                raise ValueError("external classic scripts cannot be bundled safely")
-            script_path = (source.parent / src).resolve()
-            if not script_path.is_file():
-                raise ValueError(f"business script is missing: {src}")
-            scripts.append(script_path.read_text(encoding="utf-8"))
+        if script_type == "application/json" and re.search(r"\bdata-nhimc-menu\b", attrs, re.I):
+            try:
+                parsed = json.loads(match.group("body"))
+            except json.JSONDecodeError as error:
+                raise ValueError("navigation manifest is not valid JSON") from error
+            if not isinstance(parsed, list):
+                raise ValueError("navigation manifest must be a JSON array")
+            menu_payloads.append(parsed)
             return ""
-        if script_type == "module" or "data-nhimc-business" in attrs:
-            scripts.append(match.group("body"))
+        if script_type == "module" or re.search(r"\bdata-nhimc-business\b", attrs, re.I):
+            if _attribute(attrs, "src"):
+                raise ValueError("business scripts must be inline in canonical authoring input")
+            business.append(match.group("body"))
             return ""
         return match.group(0)
 
-    html = SCRIPT_TAG.sub(replace, html)
-    return html, _strip_core_imports("\n".join(scripts))
+    stripped = SCRIPT_TAG.sub(replace, html)
+    if len(menu_payloads) != 1:
+        raise ValueError("business HTML must contain exactly one data-nhimc-menu manifest")
+    return stripped, menu_payloads[0], _strip_core_imports("\n".join(business))
 
 
-def _build_core_script(root: Path, business_script: str, runtime_token: str) -> str:
-    menu = (root / "src/frame/menu-model.js").read_text(encoding="utf-8")
-    frame = (root / "src/frame/nhimc-frame.js").read_text(encoding="utf-8")
-    controllers = (root / "src/components/controllers.js").read_text(encoding="utf-8")
-    frame_css = (root / "src/frame/nhimc-frame.css").read_text(encoding="utf-8")
-    logo = _data_url(root / "src/assets/branding/nhimc-logo.svg", "image/svg+xml")
-    favicon = _data_url(root / "src/assets/branding/nhimc-favicon.svg", "image/svg+xml")
+def _menu_items(raw: list[dict]) -> tuple[MenuItem, ...]:
+    def convert(item: object) -> MenuItem:
+        if not isinstance(item, dict):
+            raise ValueError("navigation items must be objects")
+        try:
+            item_id, label, icon, href = item["id"], item["label"], item["icon"], item["href"]
+        except KeyError as error:
+            raise ValueError(f"navigation item is missing {error.args[0]}") from error
+        children = item.get("children", [])
+        if not all(isinstance(value, str) for value in (item_id, label, icon, href)) or not isinstance(children, list):
+            raise ValueError("navigation item fields have invalid types")
+        return MenuItem(item_id, label, icon, href, tuple(convert(child) for child in children))
 
-    menu = re.sub(r"\bexport\s+", "", menu)
-    frame = re.sub(r"^import .*?;\s*", "", frame, count=1, flags=re.MULTILINE)
-    frame = re.sub(r"\bexport\s+", "", frame)
-    replacements = {
-        "FRAME_STYLES": frame_css,
-        "LOGO": logo,
-        "FAVICON": favicon,
-    }
-    for name, value in replacements.items():
-        frame, count = re.subn(
-            rf"const {name} = .*?;",
-            lambda _match, name=name, value=value: f"const {name} = {json.dumps(value)};",
-            frame,
-            count=1,
-        )
-        if count != 1:
-            raise ValueError(f"frame bundle anchor is missing: {name}")
-    frame, count = re.subn(
-        r'<link rel="stylesheet" href="\$\{FRAME_STYLES\}">',
-        r"<style>${FRAME_STYLES}</style>",
-        frame,
-        count=1,
+    return tuple(convert(item) for item in raw)
+
+
+def _parse_authoring(html: str, raw_menu: list[dict], business_script: str) -> tuple[str, FramePayload]:
+    match = FRAME_TAG.search(html)
+    if not match:
+        raise ValueError("shared nhimc-frame contents could not be parsed")
+    attrs = match.group("attrs")
+    menu = _menu_items(raw_menu)
+    if not menu:
+        raise ValueError("navigation manifest cannot be empty")
+    theme_match = re.search(r"<html\b[^>]*(?:data-theme|data-nhimc-theme)=[\"'](?:nhimc-)?(light|dark)[\"']", html, re.I)
+    return (_attribute(attrs, "data-frame") or "left"), FramePayload(
+        project_title=_attribute(attrs, "data-project-title") or "국민건강보험 일산병원",
+        menu=menu,
+        active_id=_attribute(attrs, "data-active-id") or menu[0].id,
+        content_html=match.group("body").strip(),
+        status_text="준비됨 · 오프라인 문서",
+        theme=theme_match.group(1).lower() if theme_match else "light",
+        business_script=business_script,
     )
-    if count != 1:
-        raise ValueError("frame stylesheet template anchor is missing")
-    controllers = re.sub(r"\bexport\s+", "", controllers)
 
-    runtime_prelude = """
+
+def _component_controller(root: Path) -> str:
+    script = (root / "src/generated/components/components.js").read_text(encoding="utf-8")
+    script = script.replace("document.querySelector('[data-input-demo]').addEventListener", "document.querySelector('[data-input-demo]')?.addEventListener")
+    return script.replace("document.querySelector('[data-select-demo]').addEventListener", "document.querySelector('[data-select-demo]')?.addEventListener")
+
+
+def _runtime_business(root: Path, business_script: str, runtime_token: str) -> str:
+    return f"""
 const nhimcStandaloneErrors = [];
-window.addEventListener('error', (event) => {
+window.addEventListener('error', event => {{
   nhimcStandaloneErrors.push(String(event.message || event.error || 'runtime error'));
   document.documentElement.removeAttribute('data-nhimc-standalone-ready');
-});
-window.addEventListener('unhandledrejection', (event) => {
+}});
+window.addEventListener('unhandledrejection', event => {{
   nhimcStandaloneErrors.push(String(event.reason || 'unhandled rejection'));
   document.documentElement.removeAttribute('data-nhimc-standalone-ready');
-});
-"""
-    runtime_check = f"""
+}});
+{_component_controller(root)}
+{business_script}
 window.addEventListener('load', () => setTimeout(() => {{
-  const standaloneFrame = document.querySelector('nhimc-frame');
-  const standaloneResources = performance.getEntriesByType('resource').map((entry) => entry.name);
-  if (nhimcStandaloneErrors.length > 0 ||
-      !standaloneFrame?.shadowRoot?.querySelector('style') ||
-      standaloneResources.some((name) => !name.startsWith('data:'))) return;
+  const resources = performance.getEntriesByType('resource').map(entry => entry.name);
+  const shell = document.querySelector('[data-nhimc-role="app-shell"]');
+  if (nhimcStandaloneErrors.length || !shell || document.fonts.size < 6 ||
+      resources.some(name => !name.startsWith('data:'))) return;
   document.documentElement.setAttribute('data-nhimc-standalone-ready', {json.dumps(runtime_token)});
-}}, 250), {{ once: true }});
-"""
-    bundle = "\n\n".join(
-        (
-            runtime_prelude.strip(),
-            menu.strip(),
-            frame.strip(),
-            controllers.strip(),
-            business_script,
-            runtime_check.strip(),
-        )
-    )
-    if re.search(r"(^|[;\n])\s*(?:import|export)\s", bundle):
-        raise ValueError("module syntax remains in the standalone bundle")
-    return f'(() => {{\n"use strict";\n{bundle}\n}})();'
-
-
-def _remove_runtime_links(root: Path, html: str) -> tuple[str, str]:
-    favicon = _data_url(root / "src/assets/branding/nhimc-favicon.svg", "image/svg+xml")
-    allowed_style_names = {Path(item).name for item in CORE_STYLES}
-
-    def replace(match: re.Match[str]) -> str:
-        tag = match.group(0)
-        rel = (_attribute(tag, "rel") or "").lower()
-        href = _attribute(tag, "href") or ""
-        if "stylesheet" in rel:
-            if Path(href).name not in allowed_style_names:
-                raise ValueError(f"unregistered stylesheet cannot be bundled: {href}")
-            return ""
-        if "icon" in rel:
-            return ""
-        if href and not href.startswith(("#", "data:")):
-            raise ValueError(f"external link resource cannot be bundled: {href}")
-        return tag
-
-    return LINK_TAG.sub(replace, html), favicon
-
-
-def _embed_icon_sprite(root: Path, html: str) -> str:
-    sprite = (root / "src/assets/icons/nhimc-icons.svg").read_text(encoding="utf-8")
-    inner = re.sub(r"^\s*<svg\b[^>]*>|</svg>\s*$", "", sprite, flags=re.IGNORECASE)
-    html = re.sub(r"(?:[^\"']*/)?nhimc-icons\.svg#", "#", html)
-    hidden = f'<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" hidden>{inner}</svg>'
-    return re.sub(r"(<body\b[^>]*>)", rf"\1\n  {hidden}", html, count=1, flags=re.IGNORECASE)
+}}, 500), {{ once: true }});
+""".strip()
 
 
 def _validate_standalone(html: str) -> None:
-    if re.search(r"<html\b[^>]*\bdata-nhimc-standalone-ready\b", html, re.IGNORECASE):
+    if re.search(r"<html\b[^>]*\bdata-nhimc-standalone-ready\b", html, re.I):
         raise ValueError("standalone output contains a spoofed runtime marker")
     forbidden = {
+        "authoring frame": r"<nhimc-frame\b",
         "external script": r"<script\b[^>]*\bsrc\s*=",
         "external stylesheet": r"<link\b[^>]*\brel\s*=\s*['\"][^'\"]*stylesheet",
         "module script": r"<script\b[^>]*\btype\s*=\s*['\"]module['\"]",
         "module URL": r"\bimport\.meta\b",
-        "relative core path": r"\.\./\.\./src/",
         "CSS import": r"@import\b",
+        "Unicode hamburger substitute": "☰",
+        "Unicode collapse substitute": "‹",
     }
     for label, pattern in forbidden.items():
-        if re.search(pattern, html, re.IGNORECASE):
+        if re.search(pattern, html, re.I):
             raise ValueError(f"standalone output contains {label}")
     document_markup = SCRIPT_TAG.sub("", html)
     for style in STYLE_TAG.finditer(document_markup):
-        for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", style.group("body"), re.IGNORECASE):
+        for match in re.finditer(r"url\(\s*(['\"]?)(.*?)\1\s*\)", style.group("body"), re.I):
             value = match.group(2).strip()
             if not value.startswith(("data:", "#")):
                 raise ValueError(f"standalone output contains an external CSS URL: {value}")
@@ -315,82 +273,70 @@ def _validate_standalone(html: str) -> None:
         if "srcset" in attrs:
             raise ValueError("standalone output cannot contain srcset")
         for attribute in ("src", "poster"):
-            value = attrs.get(attribute)
-            if value is not None and not value.startswith("data:"):
+            if (value := attrs.get(attribute)) is not None and not value.startswith("data:"):
                 raise ValueError(f"standalone output contains external {attribute}: {value}")
-        if name == "object":
-            value = attrs.get("data")
-            if value is not None and not value.startswith("data:"):
-                raise ValueError(f"standalone output contains external object data: {value}")
+        if name == "object" and (value := attrs.get("data")) and not value.startswith("data:"):
+            raise ValueError(f"standalone output contains external object data: {value}")
         if name in {"form", "button", "input"}:
             for attribute in ("action", "formaction"):
-                value = attrs.get(attribute)
-                if value:
-                    raise ValueError(f"standalone output contains external {attribute}: {value}")
+                if attrs.get(attribute):
+                    raise ValueError(f"standalone output contains external {attribute}: {attrs[attribute]}")
         if name == "base" and "href" in attrs:
             raise ValueError("standalone output cannot change its base URL")
 
 
 def build_single_html(root: Path, source: Path, output: Path) -> Path:
-    root = root.resolve()
-    source = source.resolve()
-    output = output.resolve()
-    findings = validate_contracts(root)
-    if findings:
+    root, source, output = root.resolve(), source.resolve(), output.resolve()
+    if validate_contracts(root):
         raise ValueError("Core contract validation failed before standalone bundling")
+    source_html = source.read_text(encoding="utf-8")
+    _validate_business_input(root, source, source_html)
+    stripped, raw_menu, business_script = _extract_scripts(source_html)
+    frame_id, payload = _parse_authoring(stripped, raw_menu, business_script)
 
-    html = source.read_text(encoding="utf-8")
-    _validate_business_input(root, source, html)
-    html, business_script = _extract_business_script(source, html)
-    html, favicon = _remove_runtime_links(root, html)
-    html = _embed_icon_sprite(root, html)
-    css = _escape_style(_build_global_css(root))
+    upstream, digests = _upstream(root)
+    layout_name = {"nhimc-default": "left", "left": "left"}.get(frame_id, frame_id.removeprefix("nhimc-"))
+    _verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{layout_name}.html", digests)
+    _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests)
+    font_css = _font_css(root, digests)
+    component_css = (root / "src/generated/components/components.css").read_text(encoding="utf-8")
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
-    runtime_token = hashlib.sha256(
-        (version + "\0" + html + "\0" + css + "\0" + business_script).encode("utf-8")
-    ).hexdigest()
-    script = _build_core_script(root, business_script, runtime_token).replace(
-        "</script", "<\\/script"
+    semantic = "\0".join((version, upstream["commit"], frame_id, payload.content_html, json.dumps(raw_menu, ensure_ascii=False, sort_keys=True), business_script, component_css, font_css))
+    runtime_token = hashlib.sha256(semantic.encode("utf-8")).hexdigest()
+    payload = FramePayload(**{**payload.__dict__, "business_script": _runtime_business(root, business_script, runtime_token)})
+    html = render_canonical_frame(root, frame_id, payload)
+
+    title_match = re.search(r"<title>(.*?)</title>", source_html, re.I | re.S)
+    if title_match:
+        title = re.sub(r"[<>&]", "", title_match.group(1)).strip()
+        html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html, count=1, flags=re.I | re.S)
+    bundle_hash = hashlib.sha256((component_css + font_css + payload.business_script).encode("utf-8")).hexdigest()
+    policy = (
+        "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
+        "img-src data:; font-src data:; media-src data:; connect-src 'none'; "
+        "object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; "
+        "form-action 'none'"
     )
-    bundle_hash = hashlib.sha256((css + script).encode("utf-8")).hexdigest()
     head = (
-        '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; '
-        "script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; "
-        "font-src data:; media-src data:; connect-src 'none'; object-src 'none'; "
-        "frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'\">\n"
+        f'<meta http-equiv="Content-Security-Policy" content="{policy}">\n'
         f'<meta name="nhimc-core-version" content="{version}">\n'
+        f'<meta name="nhimc-upstream-commit" content="{upstream["commit"][:12]}">\n'
         f'<meta name="nhimc-core-bundle-sha256" content="{bundle_hash}">\n'
         f'<meta name="nhimc-runtime-token" content="{runtime_token}">\n'
-        f'<link rel="icon" href="{favicon}" type="image/svg+xml">\n'
-        f'<style data-nhimc-core="{version}">\n{css}\n</style>'
+        f'<style data-nhimc-component-bundle="canonical">\n{component_css.replace("</style", "<\\/style")}\n</style>\n'
+        f'<style data-nhimc-font-bundle="canonical">\n{font_css}\n</style>'
     )
-    html, count = re.subn(
-        r"(<head\b[^>]*>)",
-        lambda match: f"{match.group(1)}\n{head}",
-        html,
-        count=1,
-        flags=re.IGNORECASE,
-    )
+    html, count = re.subn(r"(<head\b[^>]*>)", lambda match: f"{match.group(1)}\n{head}", html, count=1, flags=re.I)
     if count != 1:
-        raise ValueError("source HTML must contain <head>")
-    html, count = re.subn(
-        r"</body>",
-        lambda _match: f'<script data-nhimc-core="{version}">\n{script}\n</script>\n</body>',
-        html,
-        count=1,
-        flags=re.IGNORECASE,
-    )
-    if count != 1:
-        raise ValueError("source HTML must contain </body>")
+        raise ValueError("canonical frame is missing its head")
     _validate_standalone(html)
-
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding="utf-8", newline="\n")
     return output
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build one offline NHIMC HTML artifact")
+    parser = argparse.ArgumentParser(description="Build one offline canonical NHIMC HTML artifact")
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
