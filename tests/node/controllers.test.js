@@ -1,20 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
-import { nextTabIndex } from '../../src/components/controllers.js';
+const registry = JSON.parse(readFileSync('registry/components.json', 'utf8'));
+const controller = readFileSync('src/generated/components/components.js', 'utf8');
 
-
-test('tab keyboard navigation wraps', () => {
-  assert.equal(nextTabIndex(2, 3, 'ArrowRight'), 0);
-  assert.equal(nextTabIndex(0, 3, 'ArrowLeft'), 2);
-  assert.equal(nextTabIndex(1, 3, 'Home'), 0);
-  assert.equal(nextTabIndex(1, 3, 'End'), 2);
+test('all 49 canonical components use the generated controller', () => {
+  assert.equal(registry.components.length, 49);
+  assert.ok(registry.components.every(item => item.controller === 'src/generated/components/components.js'));
 });
 
-test('unhandled key preserves index', () => {
-  assert.equal(nextTabIndex(1, 3, 'Enter'), 1);
-});
+for (const behavior of [
+  'data-dialog-open', 'data-progress', 'data-dropzone', 'data-chat-send', 'data-cell',
+]) {
+  test(`canonical controller includes ${behavior} behavior`, () => {
+    assert.match(controller, new RegExp(behavior));
+  });
+}
 
-test('empty tab list preserves the safe zero index', () => {
-  assert.equal(nextTabIndex(0, 0, 'ArrowRight'), 0);
+test('generated controller is a closed classic-script bundle', () => {
+  assert.doesNotMatch(controller, /(^|[;\n])\s*(?:import|export)\s/m);
+  assert.doesNotMatch(controller, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/);
 });

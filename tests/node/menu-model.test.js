@@ -1,55 +1,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
-import { normalizeMenu } from '../../src/frame/menu-model.js';
+const sprite = readFileSync(
+  new URL('../../vendor/nhimc-design/icons/nhimc-icons.svg', import.meta.url),
+  'utf8',
+);
+const iconIds = new Set([...sprite.matchAll(/<symbol\s+id="([a-z0-9-]+)"/g)].map(match => match[1]));
 
+function authoringMenu(name) {
+  const html = readFileSync(`tests/fixtures/authoring/${name}/index.html`, 'utf8');
+  const matches = [...html.matchAll(/<script\s+type="application\/json"\s+data-nhimc-menu>([\s\S]*?)<\/script>/gi)];
+  assert.equal(matches.length, 1);
+  return JSON.parse(matches[0][1]);
+}
 
-test('normalizes and deeply freezes nested menu items', () => {
-  const source = [{
-    id: 'home',
-    label: 'Home',
-    href: '#home',
-    children: [{ id: 'queue', label: 'Queue' }],
-  }];
-
-  const result = normalizeMenu(source);
-
-  assert.equal(result[0].id, 'home');
-  assert.notEqual(result[0], source[0]);
-  assert.ok(Object.isFrozen(result));
-  assert.ok(Object.isFrozen(result[0]));
-  assert.ok(Object.isFrozen(result[0].children));
-  assert.ok(Object.isFrozen(result[0].children[0]));
-});
-
-for (const [name, value] of [
-  ['null', null],
-  ['object', {}],
-  ['empty id', [{ id: '', label: 'X' }]],
-  ['duplicate id', [{ id: 'a', label: 'A' }, { id: 'a', label: 'B' }]],
-  ['unknown key', [{ id: 'a', label: 'A', color: 'red' }]],
-  ['unsafe href', [{ id: 'a', label: 'A', href: 'javascript:alert(1)' }]],
-]) {
-  test(`rejects malformed menu: ${name}`, () => {
-    assert.throws(() => normalizeMenu(value), { name: 'TypeError' });
+for (const name of ['operations', 'administration']) {
+  test(`${name} uses one safe declarative canonical menu`, () => {
+    const menu = authoringMenu(name);
+    const ids = menu.map(item => item.id);
+    assert.equal(new Set(ids).size, ids.length);
+    for (const item of menu) {
+      assert.match(item.id, /^[a-z][a-z0-9-]*$/);
+      assert.equal(item.href, `#${item.id}`);
+      assert.ok(iconIds.has(item.icon), item.icon);
+      assert.ok(item.label.length > 0);
+    }
   });
 }
 
-test('rejects cyclic children', () => {
-  const item = { id: 'a', label: 'A', children: [] };
-  item.children.push(item);
-
-  assert.throws(() => normalizeMenu([item]), /cyclic/i);
-});
-
-test('rejects nesting deeper than three item levels', () => {
-  const menu = [{
-    id: 'one', label: 'One', children: [{
-      id: 'two', label: 'Two', children: [{
-        id: 'three', label: 'Three', children: [{ id: 'four', label: 'Four' }],
-      }],
-    }],
-  }];
-
-  assert.throws(() => normalizeMenu(menu), /three levels/i);
+test('legacy menu-model fallback is absent', async () => {
+  await assert.rejects(import('../../src/frame/menu-model.js'), /ERR_MODULE_NOT_FOUND/);
 });
