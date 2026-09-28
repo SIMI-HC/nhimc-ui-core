@@ -7,12 +7,12 @@
 </head>
 <body>
   <nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 이송업무 관리" data-active-id="ambulance">
-    <div id="business-content" class="nhimc-page nhimc-stack" aria-live="polite">
-      <div class="nhimc-page-header">
+    <div id="business-content" class="specimen" aria-live="polite">
+      <div class="row">
         <div><h1>이송 현황</h1><p>일산병원 환자 이송 요청과 배정 현황을 확인합니다.</p></div>
         <div class="row"><button class="btn primary" type="button">이송 신청</button></div>
       </div>
-      <section class="nhimc-section nhimc-grid" aria-label="Queue summary">
+      <section class="grid" aria-label="이송 요약">
         <article class="card"><h2>배정 대기</h2><strong>18</strong><span class="badge">오늘</span></article>
         <article class="card"><h2>이송 중</h2><strong>7</strong><span class="status-indicator"><span class="dot"></span>정상 진행</span></article>
       </section>
@@ -39,7 +39,7 @@
     function renderRoute(id) {
       const [title, description] = views[id] ?? views.ambulance;
       content.querySelector('h1').textContent = title;
-      content.querySelector('.nhimc-page-header p').textContent = description;
+      content.querySelector('.row p').textContent = description;
       content.dataset.route = id;
     }
 

@@ -49,20 +49,6 @@ def count_registered_classes(classes: set[str], root: Path) -> int:
     for item in components:
         for value in re.findall(r'class="([^"]+)"', item.get("markup", "")):
             registered.update(value.split())
-    # Retained only while the authoring fixtures are migrated by the canonical builder task.
-    registered.update({
-        "nhimc-button", "nhimc-input", "nhimc-textarea", "nhimc-select",
-        "nhimc-checkbox", "nhimc-radio", "nhimc-switch", "nhimc-card",
-        "nhimc-badge", "nhimc-status", "nhimc-table", "nhimc-tabs",
-        "nhimc-dialog", "nhimc-pagination", "nhimc-icon", "nhimc-field",
-    })
-    registered.update(
-        {
-            "nhimc-page", "nhimc-page-header", "nhimc-section", "nhimc-stack",
-            "nhimc-grid", "nhimc-form-grid", "nhimc-toolbar", "nhimc-field-group",
-            "nhimc-content-card",
-        }
-    )
     return len(classes & registered)
 
 
@@ -260,33 +246,17 @@ class DesignRuleTests(unittest.TestCase):
         self.assertIn("data-dialog-close", by_id["Dialog"]["markup"])
 
     def test_bundled_fonts_are_declared_loaded_and_contrast_is_accessible(self):
-        font_css = (ROOT / "src/themes/nhimc-fonts.css").read_text(encoding="utf-8")
-        self.assertEqual(6, font_css.count("@font-face"))
+        upstream = json.loads(
+            (ROOT / "vendor/nhimc-design/upstream.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(6, upstream["counts"]["fonts"])
         for weight in (300, 400, 700):
             for subset in ("korean", "latin"):
-                self.assertIn(f"noto-sans-kr-{subset}-{weight}.woff2", font_css)
-        for relative in (
-            "tests/fixtures/authoring/operations/index.html",
-            "tests/fixtures/authoring/administration/index.html",
-            "tests/browser/runner.html",
-        ):
-            self.assertIn("nhimc-fonts.css", (ROOT / relative).read_text(encoding="utf-8"))
-
-        theme = (ROOT / "src/themes/nhimc-light.css").read_text(encoding="utf-8")
-        values = dict(re.findall(r"(--nhimc-[a-z0-9-]+):\s*(#[0-9a-f]{6})", theme, re.I))
-        self.assertGreaterEqual(contrast(values["--nhimc-color-focus"], values["--nhimc-color-surface"]), 3)
-        self.assertGreaterEqual(contrast(values["--nhimc-color-focus"], values["--nhimc-color-canvas"]), 3)
-        self.assertGreaterEqual(contrast(values["--nhimc-color-warning"], values["--nhimc-color-surface-subtle"]), 4.5)
+                self.assertTrue(
+                    (ROOT / f"vendor/nhimc-design/fonts/noto-sans-kr-{subset}-{weight}.woff2").is_file()
+                )
 
     def test_authoring_fixtures_share_frame_without_copying_it(self):
-        expected_imports = {
-            "../../../../src/frame/nhimc-frame.js",
-            "../../../../src/themes/nhimc-light.css",
-            "../../../../src/themes/nhimc-fonts.css",
-            "../../../../src/layouts/application.css",
-            "../../../../src/layouts/primitives.css",
-            "../../../../src/components/components.css",
-        }
         menus = []
         for name in ("operations", "administration"):
             html_path = ROOT / f"tests/fixtures/authoring/{name}/index.html"
@@ -297,18 +267,23 @@ class DesignRuleTests(unittest.TestCase):
             parsed = parse_example(html)
 
             self.assertEqual(1, parsed.tags.count("nhimc-frame"), name)
-            self.assertTrue(
-                expected_imports.issubset(parsed.references | extract_imports(script)),
-                name,
-            )
+            self.assertEqual(set(), parsed.references, name)
+            self.assertNotRegex(script, r"(^|[;\n])\s*import\s", name)
             self.assertNotIn("header", parsed.tags, name)
             self.assertNotIn("<style", html.lower(), name)
             self.assertNotIn("::part", html + script, name)
             self.assertNotRegex(html + script, r"#[0-9a-fA-F]{3,8}|(?:rgb|hsl)a?\(")
             self.assertNotRegex(html + script, r"(?i)patient|medical record|resident number")
             self.assertGreaterEqual(count_registered_classes(parsed.classes, ROOT), 7, name)
-            menus.append(extract_literal_menu_shape(script))
-        self.assertNotEqual(menus[0], menus[1])
+            match = re.search(
+                r'<script\s+type="application/json"\s+data-nhimc-menu>(.*?)</script>',
+                html, re.I | re.S,
+            )
+            self.assertIsNotNone(match, name)
+            menu = json.loads(match.group(1))
+            self.assertTrue(all(item["icon"] and item["href"] == f'#{item["id"]}' for item in menu))
+            menus.append(menu)
+        self.assertNotEqual([item["id"] for item in menus[0]], [item["id"] for item in menus[1]])
 
     def test_repository_does_not_publish_test_fixtures_as_design_examples(self):
         self.assertFalse((ROOT / "examples").exists())

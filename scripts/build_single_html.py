@@ -52,7 +52,7 @@ def _data_url(payload: bytes, media_type: str) -> str:
 
 
 def _upstream(root: Path) -> tuple[dict, dict[str, str]]:
-    manifest = json.loads((root / "vendor/nhimc-design/UPSTREAM.json").read_text(encoding="utf-8"))
+    manifest = json.loads((root / "vendor/nhimc-design/upstream.json").read_text(encoding="utf-8"))
     return manifest, {item["destination"]: item["sha256"] for item in manifest["files"]}
 
 
@@ -91,10 +91,8 @@ def _font_css(root: Path, digests: dict[str, str]) -> str:
 
 
 def _strip_core_imports(script: str) -> str:
-    script = re.sub(r"^\s*import\s+['\"][^'\"]*src/frame/nhimc-frame\.js['\"]\s*;?\s*", "", script, flags=re.M)
-    script = re.sub(r"\s*import\s*\{.*?\}\s*from\s*['\"][^'\"]*src/components/controllers\.js['\"]\s*;?", "", script, flags=re.S)
     if re.search(r"(^|[;\n])\s*import\s", script):
-        raise ValueError("business script contains an unsupported module import")
+        raise ValueError("business script cannot import runtime sidecars")
     forbidden = {
         "dynamic import": r"\bimport\s*\(",
         "network request": r"\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(",

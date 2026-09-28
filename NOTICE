@@ -1,12 +1,16 @@
-NHIMC UI Core
+NHIMC UI Core 2.0.0
 Copyright 2026 NHIMC UI Core contributors
 
-Newly authored source code and documentation are provided under the Apache
-License 2.0 in LICENSE.
+새로 작성된 소스 코드와 문서는 LICENSE의 Apache License 2.0에 따라
+제공됩니다.
 
-The bundled Noto Sans KR font files are distributed under the SIL Open Font
-License 1.1 in src/assets/fonts/OFL.txt.
+정본 디자인 스냅샷은 upstream commit
+08c45402eece8a7c55afc60385e8671c9f13081a 에 고정되어 있으며,
+파일별 출처와 SHA-256은 vendor/nhimc-design/upstream.json에 기록됩니다.
 
-The supplied NHIMC logo, favicon, and icon sprite are included for public use
-with user-confirmed permission. Their review record and integrity scope are in
-PUBLIC_ASSET_REVIEW.md and registry/assets.json.
+Noto Sans KR Font는 SIL Open Font License 1.1에 따라 배포됩니다.
+라이선스 사본은 src/assets/fonts/OFL.txt에 있습니다.
+
+NHIMC Logo, Favicon, Icon sprite와 Font는 사용자가 2026-09-28에 공개 사용
+가능하다고 확인했습니다. 검토 범위는 PUBLIC_ASSET_REVIEW.md와
+registry/assets.json에 기록됩니다.

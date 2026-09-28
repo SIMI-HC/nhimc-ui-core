@@ -36,6 +36,7 @@ LOCAL_NETWORK_ALLOWLIST = {
     "README.md",
     "scripts/run_browser_tests.py",
     "scripts/verify_standalone_browser.mjs",
+    "scripts/verify_canonical_parity.mjs",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
 }
 

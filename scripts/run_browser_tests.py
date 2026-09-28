@@ -59,37 +59,7 @@ def find_browser() -> Path:
 
 
 def _run_browser_test(browser: Path, root: Path, width: int, height: int) -> int:
-    with local_server(root) as port:
-        url = f"http://127.0.0.1:{port}/tests/browser/runner.html"
-        result = subprocess.run(
-            [
-                str(browser),
-                "--headless",
-                "--disable-gpu",
-                "--disable-extensions",
-                "--no-first-run",
-                "--force-prefers-reduced-motion=reduce",
-                "--virtual-time-budget=4000",
-                f"--window-size={width},{height}",
-                "--dump-dom",
-                url,
-            ],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=30,
-            check=False,
-        )
-    print(f"browser: {browser.name} {width}x{height}")
-    if 'name="nhimc-test-result" content="PASS"' in result.stdout:
-        print("browser: PASS")
-        return 0
-    print("browser: FAIL")
-    print(result.stdout[-4000:])
-    if result.stderr:
-        print(result.stderr[-2000:])
-    return 1
+    return _run_canonical_components(browser, root, width, height)
 
 
 def _canonical_payload() -> FramePayload:

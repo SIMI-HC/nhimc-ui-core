@@ -47,7 +47,7 @@ def build_release(root: Path, output: Path) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a deterministic NHIMC UI Core archive")
-    parser.add_argument("output", type=Path, nargs="?", default=Path("release/nhimc-ui-core-1.0.0.zip"))
+    parser.add_argument("output", type=Path, nargs="?", default=Path("release/nhimc-ui-core-2.0.0.zip"))
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     build_release(args.root, args.output)

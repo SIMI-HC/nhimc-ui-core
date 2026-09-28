@@ -113,6 +113,15 @@ def validate_design(root: Path) -> list[Finding]:
         if not path.is_file():
             findings.append(Finding("design.missing-theme", relative, "Registered theme is missing"))
             continue
+        canonical_source = theme.get("canonicalSource", "")
+        canonical_digest = theme.get("canonicalDigest", "")
+        if canonical_source.startswith("vendor/nhimc-design/") and len(canonical_digest) == 64:
+            font_file = theme.get("fontFile")
+            if font_file and not (root / font_file).is_file():
+                findings.append(
+                    Finding("design.missing-font-styles", font_file, "Canonical font stylesheet is missing")
+                )
+            continue
         text = _without_comments(path.read_text(encoding="utf-8"))
         font_file = theme.get("fontFile")
         if font_file and not (root / font_file).is_file():

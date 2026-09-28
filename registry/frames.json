@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "projectVersion": "2.0.0",
   "frames": [
     {
@@ -9,9 +9,9 @@
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
       "canonicalLayout": "vendor/nhimc-design/layouts/left.html",
-      "contentSlot": "default",
+      "contentSlot": "data-nhimc-role=content-slot",
       "menuSchema": {
-        "property": "menu",
+        "authoringManifest": "script[type=application/json][data-nhimc-menu]",
         "event": "nhimc:navigate",
         "maxDepth": 3
       },
@@ -26,30 +26,6 @@
         "responsive-breakpoints"
       ],
       "protectedFiles": [
-        {
-          "path": "src/frame/menu-model.js",
-          "sha256": "eb0cb1d917718f8aa09b5aebd96831f1614244665766ad2220a9963e77f7edd6"
-        },
-        {
-          "path": "src/frame/nhimc-frame.js",
-          "sha256": "61cf3918862ddccdefc4d5180e313f276559437eecd57bd868c5abd4d36aa402"
-        },
-        {
-          "path": "src/frame/nhimc-frame.css",
-          "sha256": "3e33ee30a25778442ca4c7b2e357a01fad1a62e66f63c7de49d6cfe0f79b735d"
-        },
-        {
-          "path": "src/assets/branding/nhimc-logo.svg",
-          "sha256": "a17d4f585fc8935aafd368fd26500cba16392ee8464568bc5a713e72130a180b"
-        },
-        {
-          "path": "src/assets/branding/nhimc-favicon.svg",
-          "sha256": "097491058a0ec9fedc4e170c272c8396e663d78c983c71ed6f86a6bebbabe50e"
-        },
-        {
-          "path": "src/assets/icons/nhimc-icons.svg",
-          "sha256": "06774373c5afb855e624b1a40b3ebdac13e42c2a2f9bbb9adc324b8095703b2c"
-        },
         {
           "path": "vendor/nhimc-design/layouts/left.html",
           "sha256": "9429cb917a2f1f16de0b48f28992496550f989a1eb5b482aeecd9551ec29f483"

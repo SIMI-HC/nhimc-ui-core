@@ -60,6 +60,10 @@ class ReleaseBuildTests(unittest.TestCase):
         self.assertIn("PUBLIC_ASSET_REVIEW.md", text)
         self.assertIn("게시 작업은 별도 절차입니다", text)
         self.assertNotIn("already published", text.lower())
+        self.assertIn("정본", text)
+        self.assertIn("단일 HTML", text)
+        self.assertIn("08c45402eece8a7c55afc60385e8671c9f13081a", text)
+        self.assertIn("게시 작업은 별도 절차입니다.", text)
 
 
 if __name__ == "__main__":

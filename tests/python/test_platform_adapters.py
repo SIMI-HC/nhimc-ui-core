@@ -7,6 +7,39 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class PlatformAdapterTests(unittest.TestCase):
+    def test_no_approximate_v1_frame_or_component_fallback_remains(self):
+        for relative in (
+            "src/frame/nhimc-frame.js",
+            "src/frame/nhimc-frame.css",
+            "src/components/components.css",
+            "src/themes/nhimc-light.css",
+            "src/themes/nhimc-fonts.css",
+            "src/layouts/application.css",
+            "src/layouts/primitives.css",
+        ):
+            self.assertFalse((ROOT / relative).exists(), relative)
+        for relative in (
+            "registry/project.json",
+            "registry/frames.json",
+            "registry/themes.json",
+            "registry/components.json",
+            "bootstrap.md",
+            "README.md",
+            "skills/nhimc-ui/SKILL.md",
+        ):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            self.assertNotIn("UI Core 1.0", text, relative)
+            self.assertNotIn("src/frame/nhimc-frame.js", text, relative)
+
+    def test_skill_requires_canonical_builder_and_fail_closed_delivery(self):
+        skill = (ROOT / "skills/nhimc-ui/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("canonical", skill.lower())
+        self.assertIn("single HTML", skill)
+        self.assertIn("MUST NOT DELIVER", skill)
+        self.assertIn("context-only", skill)
+        self.assertIn("scripts/build_single_html.py", skill)
+        self.assertIn("scripts/run_browser_tests.py", skill)
+
     def test_all_manifests_use_version_and_shared_skill(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         for relative in [
@@ -41,6 +74,8 @@ class PlatformAdapterTests(unittest.TestCase):
         for status in ("READY", "WEB_BOOTSTRAP", "UNSUPPORTED"):
             self.assertIn(status, text)
         self.assertNotIn("INSTALLED", text)
+        self.assertIn("bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.", text)
+        self.assertIn("이송업무 관리 화면 만들어줘.", text)
 
     def test_gemini_web_without_install_capability_is_not_ready(self):
         table = json.loads(

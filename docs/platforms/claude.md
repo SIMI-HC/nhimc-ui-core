@@ -1,9 +1,7 @@
-# Claude
+# Claude Web과 Claude Code
 
-Claude Code uses `.claude-plugin/plugin.json`; its `skills` path resolves to the repository's shared `skills/` directory. Reload Claude Code after adding or updating the plugin.
+Claude Code는 `.claude-plugin/plugin.json`을 사용하며 저장소의 공통 `skills/`를 읽습니다. 설치나 갱신 뒤에는 Claude Code를 다시 로드하고 v2 registry, 정본 커밋, 빌더와 브라우저 검증기를 확인해야 `READY`입니다.
 
-Claude Web uses the same `skills/nhimc-ui` directory as an uploaded custom Skill package. An upload is a separate host action, so repository presence alone is not a successful readiness check.
+Claude Web은 같은 `skills/nhimc-ui`를 custom Skill로 업로드하고 검증했을 때만 `READY`입니다. 저장소 내용을 현재 대화에서만 읽는 경우 `WEB_BOOTSTRAP`입니다.
 
-Distribution of this source or its release archive does not perform either host action.
-
-References: [Claude plugin reference](https://code.claude.com/docs/en/plugins-reference), [create custom Skills](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills), and [use plugins in Claude](https://support.claude.com/en/articles/13837440-use-plugins-in-claude).
+canonical builder 또는 정확한 최종 파일 검증을 실행할 수 없으면 `context-only`라고 보고하고, 비슷하게 다시 만든 HTML을 검증된 NHIMC 결과로 전달하지 않습니다. 저장소 배포와 외부 게시 작업은 별도 절차입니다.

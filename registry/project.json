@@ -1,6 +1,11 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "projectVersion": "2.0.0",
+  "architecture": "canonical-vendor-adapter",
+  "canonicalSnapshot": {
+    "manifest": "vendor/nhimc-design/upstream.json",
+    "commit": "08c45402eece8a7c55afc60385e8671c9f13081a"
+  },
   "defaultFrame": "nhimc-default",
   "defaultTheme": "nhimc-light",
   "defaultArtifact": {
@@ -8,6 +13,7 @@
     "filename": "index.html",
     "offline": true,
     "builder": "scripts/build_single_html.py",
+    "browserVerifier": "scripts/run_browser_tests.py",
     "sidecars": []
   },
   "bootstrapStatuses": [
