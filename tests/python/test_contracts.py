@@ -14,13 +14,13 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class ContractTests(unittest.TestCase):
-    def test_project_and_frame_contracts_are_version_2(self):
-        self.assertEqual("2.0.0", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
+    def test_project_and_frame_contracts_are_version_3(self):
+        self.assertEqual("3.0.0", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
         project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
         frames = json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"]
-        self.assertEqual("2.0.0", project["projectVersion"])
+        self.assertEqual("3.0.0", project["projectVersion"])
         self.assertEqual(7, len(frames))
-        self.assertTrue(all(frame["version"] == "2.0.0" for frame in frames))
+        self.assertTrue(all(frame["version"] == "3.0.0" for frame in frames))
 
     def test_repository_contract_is_consistent(self):
         self.assertEqual([], validate_contracts(ROOT))

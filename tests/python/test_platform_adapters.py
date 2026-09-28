@@ -37,8 +37,31 @@ class PlatformAdapterTests(unittest.TestCase):
         self.assertIn("single HTML", skill)
         self.assertIn("MUST NOT DELIVER", skill)
         self.assertIn("context-only", skill)
-        self.assertIn("scripts/build_single_html.py", skill)
-        self.assertIn("scripts/run_browser_tests.py", skill)
+        self.assertIn("data-template", skill)
+        self.assertIn("scripts/build_verified_artifact.py", skill)
+        self.assertIn("index.html", skill)
+        self.assertIn("저작용 원본을 완성 파일로 첨부", skill)
+
+    def test_chatgpt_web_ready_requires_callable_verified_bridge(self):
+        project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
+        chatgpt = next(
+            item for item in project["platformSupport"]
+            if item["environment"] == "chatgpt-web"
+        )
+        ready = [item for item in chatgpt["outcomes"] if item["status"] == "READY"]
+        self.assertEqual(
+            "verified-builder-bridge-connected-and-download-tested",
+            ready[0]["capability"],
+        )
+
+    def test_user_guides_describe_the_exact_v3_delivery_lifecycle(self):
+        for relative in ("README.md", "bootstrap.md", "skills/nhimc-ui/SKILL.md"):
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            for phrase in (
+                "data-template", "build_verified_artifact.py", "index.html",
+                "context-only", "저작용 원본을 완성 파일로 첨부",
+            ):
+                self.assertIn(phrase, text, relative)
 
     def test_all_manifests_use_version_and_shared_skill(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -80,7 +103,7 @@ class PlatformAdapterTests(unittest.TestCase):
     def test_gemini_web_without_install_capability_is_not_ready(self):
         table = json.loads(
             (ROOT / "registry/project.json").read_text(encoding="utf-8")
-        )["bootstrapMatrix"]
+        )["platformSupport"]
         row = next(item for item in table if item["environment"] == "gemini-web")
         self.assertTrue(
             all(
@@ -93,7 +116,7 @@ class PlatformAdapterTests(unittest.TestCase):
         project = json.loads(
             (ROOT / "registry/project.json").read_text(encoding="utf-8")
         )
-        rows = project["bootstrapMatrix"]
+        rows = project["platformSupport"]
         self.assertEqual(
             {
                 "chatgpt-web",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "2.0.0",
+  "projectVersion": "3.0.0",
   "architecture": "canonical-vendor-adapter",
   "canonicalSnapshot": {
     "manifest": "vendor/nhimc-design/upstream.json",
@@ -12,7 +12,7 @@
     "kind": "single-html",
     "filename": "index.html",
     "offline": true,
-    "builder": "scripts/build_single_html.py",
+    "builder": "scripts/build_verified_artifact.py",
     "browserVerifier": "scripts/run_browser_tests.py",
     "sidecars": []
   },
@@ -21,8 +21,8 @@
     "WEB_BOOTSTRAP",
     "UNSUPPORTED"
   ],
-  "bootstrapMatrix": [
-    {"environment":"chatgpt-web","outcomes":[{"capability":"portable-plugin-loaded-and-verified","status":"READY"},{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+  "platformSupport": [
+    {"environment":"chatgpt-web","outcomes":[{"capability":"verified-builder-bridge-connected-and-download-tested","status":"READY"},{"capability":"repository-context-only","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
     {"environment":"codex","outcomes":[{"capability":"portable-or-compatibility-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},
     {"environment":"claude-web","outcomes":[{"capability":"custom-skill-uploaded-and-verified","status":"READY"},{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
     {"environment":"claude-code","outcomes":[{"capability":"claude-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},

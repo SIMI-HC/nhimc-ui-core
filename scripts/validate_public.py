@@ -41,7 +41,9 @@ LOCAL_NETWORK_ALLOWLIST = {
     "scripts/run_browser_tests.py",
     "scripts/verify_standalone_browser.mjs",
     "scripts/verify_canonical_parity.mjs",
+    "scripts/verify_template_parity.mjs",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
+    "docs/superpowers/plans/2026-09-28-nhimc-web-builder-bridge.md",
 }
 
 
