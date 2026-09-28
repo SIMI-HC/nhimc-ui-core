@@ -67,6 +67,39 @@ class ContractTests(unittest.TestCase):
         self.assertTrue(all(len(asset["sha256"]) == 64 for asset in assets))
         self.assertTrue(all((ROOT / asset["path"]).is_file() for asset in assets))
 
+    def test_protected_text_files_are_checked_out_with_lf(self):
+        frames = json.loads(
+            (ROOT / "registry/frames.json").read_text(encoding="utf-8")
+        )["frames"]
+        assets = json.loads(
+            (ROOT / "registry/assets.json").read_text(encoding="utf-8")
+        )["assets"]
+        protected = {
+            entry["path"]
+            for frame in frames
+            for entry in frame["protectedFiles"]
+            if Path(entry["path"]).suffix in {".css", ".js", ".json", ".md", ".svg", ".txt"}
+        }
+        protected.update(
+            asset["path"]
+            for asset in assets
+            if Path(asset["path"]).suffix in {".css", ".js", ".json", ".md", ".svg", ".txt"}
+        )
+
+        result = subprocess.run(
+            ["git", "check-attr", "eol", "--", *sorted(protected)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        self.assertTrue(protected)
+        self.assertTrue(
+            all(line.endswith(": eol: lf") for line in result.stdout.splitlines()),
+            result.stdout,
+        )
+
     def test_changed_asset_is_detected(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
