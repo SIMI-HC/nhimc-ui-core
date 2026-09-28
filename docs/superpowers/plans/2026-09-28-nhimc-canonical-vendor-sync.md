@@ -108,7 +108,7 @@ class NhimcDesignSyncTests(unittest.TestCase):
     def test_sync_copies_only_allowlisted_paths_and_records_byte_digests(self):
         source, root = self._canonical_git_fixture()
         (source / "references/private.txt").parent.mkdir(parents=True)
-        (source / "references/private.txt").write_text("10.0.0.8", encoding="utf-8")
+        (source / "references/private.txt").write_text("must-not-copy", encoding="utf-8")
         manifest = sync_snapshot(source, root)
         destinations = {item["destination"] for item in manifest["files"]}
         self.assertNotIn("references/private.txt", destinations)
