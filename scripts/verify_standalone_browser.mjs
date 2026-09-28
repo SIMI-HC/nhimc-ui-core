@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const [browserPath, artifactUrl, runtimeToken] = process.argv.slice(2);
+// Per-frame expectations derived from the Frame layout (defaults match the LEFT frame).
+const expected = { statusbar: true, controls: ['sidebarToggle', 'mobileMenuOpen'], ...JSON.parse(process.argv[5] || '{}') };
 if (!browserPath || !artifactUrl || !/^[0-9a-f]{64}$/.test(runtimeToken ?? '')) {
   console.error('usage: node verify_standalone_browser.mjs <browser> <file-url> <runtime-token>');
   process.exit(2);
@@ -106,22 +108,40 @@ async function main() {
   ]);
   await delay(2000);
 
-  const expression = `(() => {
+  if (expected.controls.includes('slidePrev')) {
+    // A presentation is one slide on a 16:9 canvas: check that every page fits its Content Safe Area there.
+    await command('Emulation.setDeviceMetricsOverride', { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false });
+    await delay(400);
+  }
+  const expression = `(async () => {
     const fontCss = document.querySelector('style[data-nhimc-font-bundle="canonical"]')?.textContent || '';
     const upstream = document.querySelector('meta[name="nhimc-upstream-commit"]')?.content || '';
     const roleCount = role => document.querySelectorAll('[data-nhimc-role="' + role + '"]').length;
+    // PRESENTATION frames: every page must fit the Content Safe Area (no clipped, scrolling or hidden content).
+    const presentationOverflow = [];
+    if (${JSON.stringify(expected.controls)}.includes('slidePrev')) {
+      const slot = document.querySelector('[data-nhimc-role="content-slot"]');
+      const ids = [...document.querySelectorAll('[data-screen-panel]')].map(panel => panel.dataset.screenPanel);
+      for (const id of ids.length ? ids : ['']) {
+        if (id) document.querySelector('[data-screen-target="' + id + '"]')?.click();
+        await new Promise(resolve => setTimeout(resolve, 150));
+        const panel = [...slot.children].find(node => !node.hidden);
+        if (panel && panel.scrollHeight - panel.clientHeight > 1) presentationOverflow.push(id || 'page');
+      }
+      if (ids.length) document.querySelector('[data-screen-target="' + ids[0] + '"]')?.click();
+    }
     return {
+      presentationOverflow,
       protocol: location.protocol,
       href: location.href,
       hasCanonicalShell: roleCount('app-shell') === 1,
       hasContentSlot: roleCount('content-slot') === 1,
-      hasStatusbar: roleCount('statusbar') === 1,
+      hasStatusbar: roleCount('statusbar') === ${expected.statusbar ? 1 : 0},
       hasCanonicalComponents: Boolean(document.querySelector('style[data-nhimc-component-bundle="canonical"]')),
       upstreamCommit: upstream,
       fontFaceCount: (fontCss.match(/@font-face/g) || []).length,
       fontCount: document.fonts.size,
-      svgControls: Boolean(document.querySelector('#sidebarToggle svg')) &&
-        Boolean(document.querySelector('#mobileMenuOpen svg')),
+      svgControls: ${JSON.stringify(expected.controls)}.every(id => Boolean(document.querySelector('#' + id + ' svg'))),
       unicodeSubstitutes: document.body.textContent.includes('☰') || document.body.textContent.includes('‹'),
       linkedResources: document.querySelectorAll('link[rel="stylesheet"], script[src]').length,
       marker: document.documentElement.getAttribute('data-nhimc-standalone-ready'),
@@ -145,6 +165,7 @@ async function main() {
     state.fontFaceCount === 6,
     state.fontCount === 6,
     state.svgControls === true,
+    (state.presentationOverflow ?? []).length === 0,
     state.unicodeSubstitutes === false,
     state.linkedResources === 0,
     state.marker === runtimeToken,
@@ -155,6 +176,7 @@ async function main() {
     documentRequests.length === 1 && documentRequests[0] === artifactUrl,
   ];
   const report = {
+    evaluationError: evaluated.exceptionDetails?.exception?.description ?? evaluated.exceptionDetails?.text ?? '',
     checks,
     state,
     exceptions,

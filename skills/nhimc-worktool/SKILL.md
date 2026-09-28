@@ -52,9 +52,17 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 
+## 스킬·플러그인 등록 확인
+
+등록되어 있지 않으면 공식 등록 경로가 있는 환경에서 **먼저 사용자에게 등록할지 묻고**, 이미 등록되어 있고 저장소 VERSION이 더 새로우면 스킬·플러그인도 함께 업데이트합니다. 절차는 `bootstrap.md`의 “스킬·플러그인 등록 확인”을 따릅니다.
+
 ## 이미 준비되어 있는 경우
 
 남아 있는 사본·스킬이 있어도 재준비를 생략하기 전에 원격 `VERSION`(raw)과 비교해 더 새로울 때만 갱신하고, 결과(갱신함 / 이미 최신 / 확인 못함)를 보고합니다. 절차는 `bootstrap.md`의 “이미 준비되어 있는 경우 (항상 먼저 확인)”를 따릅니다.
+
+## PRESENTATION Frame
+
+`presentation`, `presentation-vertical`은 Frame이 Header·Controller 밖에 Content Safe Area를 제공합니다. Content(`main[data-nhimc-role="content"]`)만 작성하고 헤더·컨트롤러를 피하는 margin/padding/position을 쓰지 않으며, 사용자에게 그런 별도 프롬프트를 요구하지 않습니다. 한 화면에 안 들어가면 검증이 Safe Area 초과를 알리므로 내용을 줄이거나 페이지를 나눕니다.
 
 ## Design Guide와 프롬프트 힌트
 
@@ -63,7 +71,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Web(context-only)에서는 Web Runtime 사용
 
-빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.0/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime 화면 오른쪽 아래의 “오프라인 HTML 저장” 버튼으로 CSS·스크립트·폰트가 모두 든 파일을 받을 수 있다고 안내하되, 브라우저 검증을 거친 `index.html`이라고 말하지 마세요.
+빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.1.1/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime 화면 오른쪽 아래의 “오프라인 HTML 저장” 버튼으로 CSS·스크립트·폰트가 모두 든 파일을 받을 수 있다고 안내하되, 브라우저 검증을 거친 `index.html`이라고 말하지 마세요.
 
 ## Self-check (완료 전 5개 계약)
 

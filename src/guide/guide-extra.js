@@ -1,6 +1,11 @@
 (function(){
   "use strict";
   // Sandboxed viewers (Claude, ChatGPT) can block the clipboard API: select the text so Ctrl+C works.
+  // "정본 보기" opens the canonical file of this release on GitHub.
+  window.nhimcSourceUrl=source=>window.NHIMC_SOURCE_BASE+source
+    .replace("../../assets/layouts/","vendor/nhimc-design/layouts/")
+    .replace("../../components/","vendor/nhimc-design/components/")
+    .replace("../../assets/icons/","vendor/nhimc-design/icons/");
   window.nhimcSelectText=element=>{
     const range=document.createRange();
     range.selectNodeContents(element);

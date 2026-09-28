@@ -79,7 +79,7 @@ BUILDER_PROMPT_JS = """  function updateBuilderPrompt(){
     const theme=builderState.theme?themeById.get(builderState.theme):null;
     const skipInstall=document.getElementById("builderSkipInstall").checked;
     const lines=[];
-    if(!skipInstall){lines.push("__REPO__","bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.","이미 준비돼 있으면 원격 VERSION과 비교해 최신이 아닐 때만 업데이트해줘.","준비가 끝나면 아래 조건으로 화면을 만들어줘.")}
+    if(!skipInstall){lines.push("__REPO__","bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.","준비가 끝나면 아래 조건으로 화면을 만들어줘.")}
     else{lines.push("NHIMC UI Core로 화면을 만들어줘.")}
     lines.push(`frame: ${builderState.frame||"(미선택 - AI 추천)"}${frame?` — ${frame.name}`:""}`);
     lines.push(`theme: ${builderState.theme||"(미선택 - AI 추천)"}${theme?` — ${theme.label}`:""}`);
@@ -106,6 +106,7 @@ def build_guide(root: Path) -> Path:
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")
     extra_js = (root / "src/guide/guide-extra.js").read_text(encoding="utf-8")
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    source_base = f"https://github.com/SIMI-HC/nhimc-ui-core/blob/v{version}/"
     row = _data_uri(root / "vendor/nhimc-design/branding/brandmark-row-logo.svg", "image/svg+xml")
     solo = _data_uri(root / "vendor/nhimc-design/branding/brandmark-solo-logo-1.svg", "image/svg+xml")
 
@@ -131,7 +132,11 @@ def build_guide(root: Path) -> Path:
     html = _sub(html, r'<button type="button" class="filter" data-filter="template"[^>]*>Templates</button>\s*', "")
     html = _sub(html, r'\s*<a class="doc-inline-link"[^>]*>[^<]*</a>', "", count=20)
     html = re.sub(r"\s*·\s*(?=</p>)", "", html)
-    html = _sub(html, r'<footer><a href="\.\./\.\./assets/icons/[^>]*>[^<]*</a></footer>', "")
+    html = _sub(
+        html,
+        r'<footer><a href="\.\./\.\./assets/icons/[^>]*>[^<]*</a></footer>',
+        f'<footer><a href="{source_base}vendor/nhimc-design/icons/nhimc-icons.svg" target="_blank" rel="noopener">SVG 정본 보기</a></footer>',
+    )
     html = _sub(
         html,
         r"Template은 참고용일 뿐이라 항상 AI 추천으로 고정됩니다\.",
@@ -182,13 +187,18 @@ def build_guide(root: Path) -> Path:
         'if(!copied&&window.nhimcSelectText)window.nhimcSelectText(builderPrompt);'
         'builderCopyStatus.textContent=copied?"복사됐습니다.":"이 환경은 복사 버튼이 막혀 있어요. 프롬프트를 선택해 두었으니 Ctrl+C(맥은 ⌘C)로 복사하세요.";',
     )
+    script = _replace(
+        script,
+        'source.href=item.source;source.textContent="정본 열기";',
+        'source.href=window.nhimcSourceUrl(item.source);source.textContent="정본 보기";',
+    )
     script = script.replace("Template은 참고용일 뿐", "")
 
     payload = data.replace("</", "<\\/")
     body_scripts = (
         f"<script>\nwindow.NHIMC_DESIGN_GALLERY = Object.freeze({payload});\n</script>\n"
         f"<script>\n{script.replace('</script', '<\\/script')}\n</script>\n"
-        f"<script>\n{extra_js}\n</script>\n"
+        f"<script>\nwindow.NHIMC_SOURCE_BASE={json.dumps(source_base)};\n{extra_js}\n</script>\n"
     )
     styles = (
         f'<meta name="nhimc-core-version" content="{version}">\n'

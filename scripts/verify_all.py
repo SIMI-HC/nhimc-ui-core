@@ -32,6 +32,10 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
                 "content layout",
                 [sys.executable, "scripts/run_browser_tests.py", "--content-layout-only"],
             ),
+            (
+                "presentation safe area",
+                [sys.executable, "scripts/run_browser_tests.py", "--presentation-safe-area-only"],
+            ),
         ]
     results = []
     for label, command in checks:

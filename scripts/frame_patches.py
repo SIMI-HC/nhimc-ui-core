@@ -1,10 +1,14 @@
 """NHIMC UI Core patches applied on top of the vendored canonical Frame layouts.
 
 The vendor mirror stays byte-identical to the pinned upstream commit. Every consumer (offline builder,
-Web Runtime, Design Guide previews) applies the same patches through this one function, so a frameVersion
-always means the same Frame.
+Web Runtime, Design Guide previews, parity tests) applies the same patches through apply_frame_patches(), so a
+frameVersion always means the same Frame.
 
-1.0.0: the Ilsan Hospital logo tile (white border) uses an 8px radius instead of 10px/9px.
+1.0.0  the Ilsan Hospital logo tile (white border) uses an 8px radius instead of 10px/9px.
+1.0.1  PRESENTATION frames (presentation, presentation-vertical) own a Content Safe Area. Their Header
+       (utility buttons) and Controller (slide dots and arrows) float above a full-bleed content slot, so AI
+       Content ran under them. The content slot is now inset by the space those controls occupy, and Content
+       scrolls inside it. Only the frames that have the presentation controller are touched.
 """
 from __future__ import annotations
 
@@ -13,9 +17,32 @@ import re
 LOGO_SELECTORS = ("brand-asset", "hospital-brand-logo", "brand-mark")
 LOGO_RADIUS = "8px"
 _OLD_RADIUS = re.compile(r"border-radius:(?:9|10)px")
+_SLIDE_DOTS_COLUMN = re.compile(r"\.slide-dots\s*\{[^}]*flex-direction:\s*column")
+
+SAFE_AREA_MARKER = "nhimc-presentation-safe-area"
+
+# Sizes come from the Frame's own control rules: .utility (top/right 20px, 40px buttons),
+# .slide-dots (20px from the edge, 26px thick pill) and .nav-arrow (20px from the edge, 48px; 8px and 38px
+# below 768px). GAP is the breathing room between a control and Content.
+_HORIZONTAL_SAFE_AREA = """
+/* nhimc-presentation-safe-area: horizontal. Header = utility (top), Controller = slide dots (bottom) and arrows (sides). */
+.app-shell{--presentation-safe-top:calc(20px + 40px + 12px);--presentation-safe-bottom:calc(20px + 26px + 12px);--presentation-safe-inline:calc(20px + 48px + 12px)}
+@media(max-width:767px){.app-shell{--presentation-safe-inline:calc(8px + 38px + 8px)}}
+"""
+
+_VERTICAL_SAFE_AREA = """
+/* nhimc-presentation-safe-area: vertical. Header = utility (top right), Controller = prev/next arrows (top/bottom) and slide dots (right). */
+.app-shell{--presentation-safe-top:calc(20px + 48px + 12px);--presentation-safe-bottom:calc(20px + 48px + 12px);--presentation-safe-inline:calc(20px + 26px + 12px)}
+@media(max-width:767px){.app-shell{--presentation-safe-top:calc(20px + 40px + 12px);--presentation-safe-bottom:calc(8px + 38px + 8px)}}
+"""
+
+_SAFE_AREA_RULES = """.content-slot{inset:var(--presentation-safe-top) var(--presentation-safe-inline) var(--presentation-safe-bottom);min-width:0;min-height:0;overflow:hidden}
+.content-slot>*{position:absolute;inset:0;box-sizing:border-box;min-width:0;min-height:0;overflow:auto}
+.content-slot>[hidden]{display:none}
+"""
 
 
-def apply_frame_patches(layout: str) -> str:
+def _patch_logo_radius(layout: str) -> str:
     parts = layout.split("}")
     patched: list[str] = []
     for part in parts:
@@ -26,3 +53,19 @@ def apply_frame_patches(layout: str) -> str:
                 part = selector + "{" + body
         patched.append(part)
     return "}".join(patched)
+
+
+def is_presentation_layout(layout: str) -> bool:
+    return 'class="slide-dots"' in layout and ".content-slot" in layout and 'data-nhimc-role="content-slot"' in layout
+
+
+def _patch_presentation_safe_area(layout: str) -> str:
+    if not is_presentation_layout(layout) or SAFE_AREA_MARKER in layout:
+        return layout
+    block = (_VERTICAL_SAFE_AREA if _SLIDE_DOTS_COLUMN.search(layout) else _HORIZONTAL_SAFE_AREA) + _SAFE_AREA_RULES
+    end = layout.rindex("</style>")
+    return layout[:end] + block + layout[end:]
+
+
+def apply_frame_patches(layout: str) -> str:
+    return _patch_presentation_safe_area(_patch_logo_radius(layout))

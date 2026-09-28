@@ -17,7 +17,12 @@ import threading
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.build_single_html import _inventory, _validate_standalone, build_single_html
+from scripts.build_single_html import (
+    _inventory,
+    _validate_standalone,
+    build_single_html,
+    inspect_completion_manifest,
+)
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
 from scripts.frame_patches import apply_frame_patches
 
@@ -299,6 +304,23 @@ def run_canonical_components(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> 
     return 0
 
 
+FRAME_CONTROL_IDS = ("sidebarToggle", "mobileMenuOpen", "slidePrev", "slideNext", "themeToggle")
+
+
+def _frame_expectations(root: Path, frame_id: str) -> dict:
+    """What the exact verifier must find in an artifact of this Frame, read from the Frame layout itself."""
+    from scripts.canonical_frame import FRAME_FILES
+    from scripts.frame_patches import apply_frame_patches
+
+    layout = apply_frame_patches(
+        (root / "vendor/nhimc-design/layouts" / FRAME_FILES[frame_id]).read_text(encoding="utf-8")
+    )
+    return {
+        "statusbar": 'data-nhimc-role="statusbar"' in layout,
+        "controls": [name for name in FRAME_CONTROL_IDS if f'id="{name}"' in layout],
+    }
+
+
 def _run_standalone_artifact(
     browser: Path, output: Path, receipt: Path | None = None, root: Path = ROOT
 ) -> int:
@@ -315,6 +337,11 @@ def _run_standalone_artifact(
     if 'name="nhimc-core-version"' not in html:
         print("standalone file: FAIL (artifact is not finalized)")
         return 1
+    try:
+        expected = _frame_expectations(root, inspect_completion_manifest(html)["frameId"])
+    except (ValueError, KeyError, OSError) as error:
+        print(f"standalone file: FAIL ({error})")
+        return 1
     tags = _inventory(html).tags
     role_count = lambda role: sum(attrs.get("data-nhimc-role") == role for _, attrs in tags)
     static_contract = {
@@ -325,7 +352,7 @@ def _run_standalone_artifact(
         )),
         "six embedded font faces": html.count("@font-face") == 6,
         "canonical component bundle": 'data-nhimc-component-bundle="canonical"' in html,
-        "SVG frame controls": 'id="sidebarToggle"' in html and 'id="mobileMenuOpen"' in html,
+        "SVG frame controls": all(f'id="{name}"' in html for name in expected["controls"]),
         "no Unicode control substitutes": "☰" not in html and "‹" not in html,
     }
     failures = [label for label, passed in static_contract.items() if not passed]
@@ -345,6 +372,7 @@ def _run_standalone_artifact(
             str(browser),
             output.as_uri(),
             token_match.group(1),
+            json.dumps(expected),
         ],
         capture_output=True,
         text=True,
@@ -389,6 +417,16 @@ def _run_standalone_artifact(
     print(result.stdout[-5000:])
     if result.stderr:
         print(result.stderr[-2000:])
+    try:
+        overflow = json.loads(result.stdout.strip().splitlines()[-1])["state"].get("presentationOverflow") or []
+    except (IndexError, KeyError, json.JSONDecodeError):
+        overflow = []
+    if overflow:
+        print(
+            "presentation Content exceeds the Safe Area on page(s): "
+            + ", ".join(overflow)
+            + " - shorten the Content or split it into more pages"
+        )
     return 1
 
 
@@ -491,6 +529,7 @@ def main() -> int:
     parser.add_argument("--canonical-parity-only", action="store_true")
     parser.add_argument("--canonical-components-only", action="store_true")
     parser.add_argument("--content-layout-only", action="store_true")
+    parser.add_argument("--presentation-safe-area-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
@@ -499,6 +538,7 @@ def main() -> int:
         args.standalone_only, args.standalone_file, args.canonical_parity_only,
         args.canonical_components_only,
         args.content_layout_only,
+        args.presentation_safe_area_only,
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
@@ -518,6 +558,14 @@ def main() -> int:
         return run_canonical_parity(viewports=viewports)
     if args.canonical_components_only:
         return run_canonical_components(viewports=viewports)
+    if args.presentation_safe_area_only:
+        from scripts.presentation_safe_area import run_presentation_safe_area
+
+        report = run_presentation_safe_area(ROOT)
+        for item in report["problems"]:
+            print(f"  {item}")
+        print(f"presentation safe area: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
+        return 0 if report["all_passed"] else 1
     if args.content_layout_only:
         report = run_content_layout(ROOT, viewports=viewports)
         for cell in report["results"]:

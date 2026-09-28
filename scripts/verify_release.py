@@ -47,6 +47,10 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
                 "content layout",
                 [sys.executable, "scripts/run_browser_tests.py", "--content-layout-only"],
             ),
+            (
+                "presentation safe area",
+                [sys.executable, "scripts/run_browser_tests.py", "--presentation-safe-area-only"],
+            ),
         )
         for label, command in canonical_gates:
             if subprocess.run(command, cwd=root, check=False).returncode:

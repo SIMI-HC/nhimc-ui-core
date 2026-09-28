@@ -43,6 +43,7 @@ LOCAL_NETWORK_ALLOWLIST = {
     "scripts/verify_canonical_parity.mjs",
     "scripts/verify_content_layout.mjs",
     "scripts/probe_console.mjs",
+    "scripts/verify_presentation_safe_area.mjs",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
     "docs/superpowers/plans/2026-09-28-nhimc-web-builder-bridge.md",
 }

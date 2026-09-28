@@ -69,6 +69,19 @@ class DesignGuideTests(unittest.TestCase):
         self.assertEqual("guide/nhimc-design-guide.html", project["designGuide"])
         self.assertTrue((ROOT / project["designGuide"]).is_file())
 
+    def test_guide_keeps_the_canonical_source_buttons_and_the_prompt_is_short(self):
+        html = GUIDE.read_text(encoding="utf-8")
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        self.assertIn("window.nhimcSourceUrl(item.source)", html)
+        self.assertIn('textContent="정본 보기"', html)
+        self.assertIn(f"https://github.com/SIMI-HC/nhimc-ui-core/blob/v{version}/", html)
+        self.assertNotIn("#previewSource{display:none}", html)
+        self.assertNotIn("이미 준비돼 있으면 원격 VERSION과 비교해", html)
+        bootstrap = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
+        for phrase in ("항상 먼저 확인", "raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION", "등록할지 사용자에게 먼저 묻습니다", "스킬·플러그인도 같은 버전으로 업데이트", "Content Safe Area"):
+            self.assertIn(phrase, bootstrap)
+        self.assertIn("별도 프롬프트를 요구하지 않습니다", bootstrap)
+
     def test_guide_links_use_the_release_tag_and_a_host_that_renders_html(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         for relative in ("bootstrap.md", "README.md"):

@@ -1,5 +1,14 @@
 # 변경 이력
 
+## [1.1.1] - 2026-09-29
+
+- **PRESENTATION Frame(`presentation`, `presentation-vertical`) Content Safe Area** (Frame 1.0.1). 원인: Header(도움말·테마 버튼)와 Controller(슬라이드 점·화살표)가 전체 화면을 덮는 Content 슬롯 위에 떠 있어 AI Content가 그 아래로 들어갔습니다. `scripts/frame_patches.py`가 콘텐츠 슬롯을 컨트롤이 차지하는 공간만큼 안쪽으로 들이고(Frame 소유 CSS 변수 `--presentation-safe-*`) Content는 그 안에서만 스크롤합니다. 개별 화면에 margin/padding을 넣을 필요가 없습니다. 다른 Frame은 바뀌지 않습니다.
+- Web Runtime(`dist/nhimc-web.js`)도 같은 패치를 씁니다.
+- 검증: 오프라인 빌더와 Web Runtime 결과를 두 PRESENTATION Frame × light/dark × 데스크톱·좁은 세로 화면에서 측정(`scripts/presentation_safe_area.py`)하고, 지나치게 긴 Content가 Safe Area 초과로 감지되며 Header·Controller 위치는 그대로인지 확인합니다. `verify_all`과 `verify_release`에 게이트를 추가했습니다.
+- 정확한 완료 검증(`build_verified_artifact`)이 Frame별 기대값을 쓰도록 고쳤습니다. 이전에는 LEFT 계열만 통과하고 top·top-left·blog·presentation은 실패했습니다. PRESENTATION 산출물은 16:9 캔버스에서 모든 페이지가 Safe Area에 들어가는지도 확인합니다.
+- Design Guide: “정본 보기” 버튼(GitHub의 해당 릴리스 정본 파일)을 되살렸고, 프롬프트에서 버전 확인 문구를 뺐습니다(`bootstrap.md`가 담당).
+- `bootstrap.md`: 스킬·플러그인이 등록돼 있지 않으면 사용자에게 먼저 묻고, 등록돼 있고 더 새 버전이 있으면 스킬·플러그인도 함께 업데이트합니다.
+
 ## [1.1.0] - 2026-09-29
 
 - Web Runtime 화면 오른쪽 아래에 “오프라인 HTML 저장” 버튼을 추가했습니다. 누르면 CSS·스크립트·폰트를 모두 안에 넣은 단일 HTML 파일을 내려받으며(외부 URL·`<script src>` 없음), 인터넷 없이 열립니다. 저장 버튼은 저장된 파일에 포함되지 않습니다.
