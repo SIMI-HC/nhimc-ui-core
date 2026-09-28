@@ -8,6 +8,14 @@
     "WEB_BOOTSTRAP",
     "UNSUPPORTED"
   ],
+  "bootstrapMatrix": [
+    {"environment":"chatgpt-web","persistentInstall":true,"status":"READY","mechanism":"portable-plugin"},
+    {"environment":"codex","persistentInstall":true,"status":"READY","mechanism":"portable-plugin"},
+    {"environment":"claude-web","persistentInstall":true,"status":"READY","mechanism":"custom-skill-upload"},
+    {"environment":"claude-code","persistentInstall":true,"status":"READY","mechanism":"claude-plugin"},
+    {"environment":"gemini-web","persistentInstall":false,"status":"WEB_BOOTSTRAP","mechanism":"repository-context"},
+    {"environment":"gemini-cli","persistentInstall":true,"status":"READY","mechanism":"gemini-extension"}
+  ],
   "registries": [
     "registry/frames.json",
     "registry/themes.json",

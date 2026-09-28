@@ -1,0 +1,6 @@
+{
+  "name": "nhimc-ui-core",
+  "version": "1.0.0",
+  "description": "NHIMC application-frame and design-system contracts for Gemini CLI.",
+  "contextFileName": "GEMINI.md"
+}
