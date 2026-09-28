@@ -5,7 +5,20 @@
     {
       "id": "nhimc-default",
       "version": "1.0.0",
-      "protectedFiles": []
+      "protectedFiles": [
+        {
+          "path": "src/assets/branding/nhimc-logo.svg",
+          "sha256": "7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea"
+        },
+        {
+          "path": "src/assets/branding/nhimc-favicon.svg",
+          "sha256": "33a30ee0ec515ce2e3d3d17b560440096b32cb6a2bffd29655543317caf4e982"
+        },
+        {
+          "path": "src/assets/icons/nhimc-icons.svg",
+          "sha256": "897bc9d319a81bf232924dcdef087511661ca1a369a4981ffe2ab0aa6f73cf10"
+        }
+      ]
     }
   ]
 }

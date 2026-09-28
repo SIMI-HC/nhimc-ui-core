@@ -5,7 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.validate_contracts import validate_contracts
+from scripts.common import sha256_file
+from scripts.update_integrity import refresh_integrity
+from scripts.validate_contracts import check_integrity, validate_contracts
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +54,37 @@ class ContractTests(unittest.TestCase):
         )
 
         self.assertEqual(0, result.returncode, result.stderr)
+
+    def test_registered_asset_hashes_match_files(self):
+        findings = validate_contracts(ROOT)
+        self.assertNotIn(
+            "contract.integrity-mismatch", {item.rule for item in findings}
+        )
+        assets = json.loads(
+            (ROOT / "registry/assets.json").read_text(encoding="utf-8")
+        )["assets"]
+        self.assertGreaterEqual(len(assets), 3)
+        self.assertTrue(all(len(asset["sha256"]) == 64 for asset in assets))
+        self.assertTrue(all((ROOT / asset["path"]).is_file() for asset in assets))
+
+    def test_changed_asset_is_detected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            asset = root / "logo.svg"
+            asset.write_bytes(b"original")
+            entries = [{"path": "logo.svg", "sha256": sha256_file(asset)}]
+            asset.write_bytes(b"changed")
+
+            findings = check_integrity(root, entries)
+
+            self.assertEqual(
+                ["contract.integrity-mismatch"], [item.rule for item in findings]
+            )
+            self.assertEqual("logo.svg", findings[0].path)
+
+    def test_integrity_refresh_requires_exact_frame_version(self):
+        with self.assertRaisesRegex(ValueError, "frame version confirmation"):
+            refresh_integrity(ROOT, "nhimc-default", "9.9.9")
 
 
 if __name__ == "__main__":
