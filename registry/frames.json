@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "projectVersion": "1.0.0",
+  "frames": [
+    {
+      "id": "nhimc-default",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/left.html",
+      "contentSlot": "data-nhimc-role=content-slot",
+      "menuSchema": {
+        "authoringManifest": "script[type=application/json][data-nhimc-menu]",
+        "event": "nhimc:navigate",
+        "maxDepth": 3
+      },
+      "owns": [
+        "header",
+        "branding",
+        "left-navigation",
+        "sidebar-collapse",
+        "mobile-drawer",
+        "statusbar",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/left.html",
+          "sha256": "9429cb917a2f1f16de0b48f28992496550f989a1eb5b482aeecd9551ec29f483"
+        },
+        {
+          "path": "scripts/canonical_frame.py",
+          "sha256": "89b11a530469d63f7cf53637d2479a26b032f07c644f27ea963605ba45eec9a5"
+        },
+        {
+          "path": "src/generated/frame/frame-runtime.js",
+          "sha256": "415ca296c4ddacb428e5f5f183d82f9c0d07d566f2d55b05dae0c78f61c9249d"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-left-blank",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/left-blank.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "left-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/left-blank.html",
+          "sha256": "63ff0349c3e9173680bcbe6cb40b9296d97d2a630ca7c11bd07e6a97b67f5282"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-top",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/top.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "top-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/top.html",
+          "sha256": "aaa6ec2a99cf64a83da231238ff83c90e6fe9bbd1bb9cc42c80b4b5ef113016c"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-top-left",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/top-left.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "top-navigation",
+        "left-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/top-left.html",
+          "sha256": "a1ca877e3a8135b579fa2a4e493d8da6a4eeb4fb4d3dfefaa9caa65278dbbfef"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-presentation",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/presentation.html",
+      "contentSlot": "default",
+      "owns": [
+        "presentation-canvas",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/presentation.html",
+          "sha256": "86264e6d5e779760906846786d6fad8ce0fffbc46657470e4345b4230995b2cd"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-presentation-vertical",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/presentation-vertical.html",
+      "contentSlot": "default",
+      "owns": [
+        "presentation-canvas",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/presentation-vertical.html",
+          "sha256": "d05c2e543ce25986e72f40256c9ff1f66366015b2f1fd02867eb50b992e1f1d8"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    },
+    {
+      "id": "nhimc-blog",
+      "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/blog.html",
+      "contentSlot": "default",
+      "owns": [
+        "blog-header",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/blog.html",
+          "sha256": "abe80cc2a96e92feb3f0a325b183577b5a35c897f8f83d038a267dd11ad59f01"
+        },
+        {
+          "path": "scripts/frame_patches.py",
+          "sha256": "af357f7221057d519199db14ef1415429a20b451fe7de3be6e7b0b528b046314"
+        }
+      ]
+    }
+  ]
+}

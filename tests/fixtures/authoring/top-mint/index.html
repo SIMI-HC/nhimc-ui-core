@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ko" data-theme="light" data-frame="top" data-theme-color="mint">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>병동 현황</title></head>
+<body>
+<section data-screen-panel="beds"><main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-component="PageHeader"><div><h1>병동 현황</h1><p>병동별 병상 사용 현황입니다.</p></div><div class="nhimc-actions"><button class="btn primary" type="button" data-nhimc-component="Button">병상 배정</button></div></section>
+  <div class="nhimc-grid" data-nhimc-component="Grid"><div class="card" data-nhimc-component="Card"><strong>72병동</strong><p>가용 4 / 전체 40</p></div><div class="card" data-nhimc-component="Card"><strong>63병동</strong><p>가용 9 / 전체 36</p></div></div>
+</main></section>
+<section data-screen-panel="wards"><main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-component="PageHeader"><div><h1>병동 관리</h1></div></section>
+  <label class="field" data-nhimc-component="Field" for="ward-name">병동명<input id="ward-name" data-nhimc-component="Input"></label>
+</main></section>
+<script type="application/json" data-nhimc-menu>[{"id":"beds","label":"병상 현황","icon":"bed","href":"#beds"},{"id":"wards","label":"병동 관리","icon":"building","href":"#wards"}]</script>
+</body></html>

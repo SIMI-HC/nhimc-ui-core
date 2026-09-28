@@ -1,0 +1,518 @@
+{
+  "commit": "08c45402eece8a7c55afc60385e8671c9f13081a",
+  "counts": {
+    "components": 49,
+    "fonts": 6,
+    "layouts": 7,
+    "logos": 9,
+    "templates": 9
+  },
+  "files": [
+    {
+      "bytes": 47531,
+      "destination": "vendor/nhimc-design/components/showcase.html",
+      "mediaType": "text/html",
+      "role": "component",
+      "sha256": "da217dd2ff47a7f231effd4598c608ca3e84a68ed9786c6f1e039007b3c9b1fc",
+      "source": "assets/components/showcase.html"
+    },
+    {
+      "bytes": 24403,
+      "destination": "vendor/nhimc-design/icons/nhimc-icons.svg",
+      "mediaType": "image/svg+xml",
+      "role": "icon",
+      "sha256": "897bc9d319a81bf232924dcdef087511661ca1a369a4981ffe2ab0aa6f73cf10",
+      "source": "assets/icons/nhimc-icons.svg"
+    },
+    {
+      "bytes": 106587,
+      "destination": "vendor/nhimc-design/layouts/blog.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "abe80cc2a96e92feb3f0a325b183577b5a35c897f8f83d038a267dd11ad59f01",
+      "source": "assets/layouts/blog.html"
+    },
+    {
+      "bytes": 164968,
+      "destination": "vendor/nhimc-design/layouts/left-blank.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "63ff0349c3e9173680bcbe6cb40b9296d97d2a630ca7c11bd07e6a97b67f5282",
+      "source": "assets/layouts/left-blank.html"
+    },
+    {
+      "bytes": 164879,
+      "destination": "vendor/nhimc-design/layouts/left.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "9429cb917a2f1f16de0b48f28992496550f989a1eb5b482aeecd9551ec29f483",
+      "source": "assets/layouts/left.html"
+    },
+    {
+      "bytes": 75504,
+      "destination": "vendor/nhimc-design/layouts/presentation-vertical.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "d05c2e543ce25986e72f40256c9ff1f66366015b2f1fd02867eb50b992e1f1d8",
+      "source": "assets/layouts/presentation-vertical.html"
+    },
+    {
+      "bytes": 75479,
+      "destination": "vendor/nhimc-design/layouts/presentation.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "86264e6d5e779760906846786d6fad8ce0fffbc46657470e4345b4230995b2cd",
+      "source": "assets/layouts/presentation.html"
+    },
+    {
+      "bytes": 110016,
+      "destination": "vendor/nhimc-design/layouts/top-left.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "a1ca877e3a8135b579fa2a4e493d8da6a4eeb4fb4d3dfefaa9caa65278dbbfef",
+      "source": "assets/layouts/top-left.html"
+    },
+    {
+      "bytes": 108145,
+      "destination": "vendor/nhimc-design/layouts/top.html",
+      "mediaType": "text/html",
+      "role": "layout",
+      "sha256": "aaa6ec2a99cf64a83da231238ff83c90e6fe9bbd1bb9cc42c80b4b5ef113016c",
+      "source": "assets/layouts/top.html"
+    },
+    {
+      "bytes": 69837,
+      "destination": "vendor/nhimc-design/assets/templates/admin/master-detail.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "6cfdc5a4315c93172ac7cfea7337b2cc645cd2dee2eb535af6ca5dee5c8e4b6d",
+      "source": "assets/templates/admin/master-detail.html"
+    },
+    {
+      "bytes": 8523,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/analytics.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "42fc0aa325f02668f2807eb383f9da575a7ae8addc6d3ccf207b8786f8a29b86",
+      "source": "assets/templates/dashboard/analytics.html"
+    },
+    {
+      "bytes": 69591,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/monitoring.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "9322fbe035b5f3942dc4b1cfd502ce0a65c986bb071f5f51e5b939f476ec0ccb",
+      "source": "assets/templates/dashboard/monitoring.html"
+    },
+    {
+      "bytes": 11064,
+      "destination": "vendor/nhimc-design/assets/templates/dashboard/workflow.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "1a180b51541134403246f94b100838ca42d7307bc471ccdc7f79d6935b24c734",
+      "source": "assets/templates/dashboard/workflow.html"
+    },
+    {
+      "bytes": 68967,
+      "destination": "vendor/nhimc-design/assets/templates/detail/default.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "5c821daf88a96ae1c1c3343a853dda43b7df5fc836e98993593cfa801ab95bff",
+      "source": "assets/templates/detail/default.html"
+    },
+    {
+      "bytes": 70763,
+      "destination": "vendor/nhimc-design/assets/templates/form/sections.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "e3f4c1d903eb96bfdcc1dc8103af85f089fd0f5e317547475a5da8ac5487c225",
+      "source": "assets/templates/form/sections.html"
+    },
+    {
+      "bytes": 74360,
+      "destination": "vendor/nhimc-design/assets/templates/list/default.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "ffdf1640663d869bcea23dee9962523adfc24bfe4e41a75e5b83cd31007dd1b3",
+      "source": "assets/templates/list/default.html"
+    },
+    {
+      "bytes": 71022,
+      "destination": "vendor/nhimc-design/assets/templates/list/dense.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "73ad9ba7c71fcd551285749e61fee57df70ab2f326179024927b162e1119a4be",
+      "source": "assets/templates/list/dense.html"
+    },
+    {
+      "bytes": 73907,
+      "destination": "vendor/nhimc-design/assets/templates/list/with-tabs.html",
+      "mediaType": "text/html",
+      "role": "template-asset",
+      "sha256": "5905f2d521e8cd78677a60da98505895563c747352e076c53d99066061b2bf77",
+      "source": "assets/templates/list/with-tabs.html"
+    },
+    {
+      "bytes": 8793,
+      "destination": "vendor/nhimc-design/components/icons.md",
+      "mediaType": "text/markdown",
+      "role": "component",
+      "sha256": "ca2f9bcf004ad439ac836dbfa26df8d5a80d053c55b1999ab21a7347446fb7b0",
+      "source": "components/icons.md"
+    },
+    {
+      "bytes": 40601,
+      "destination": "vendor/nhimc-design/components/registry.md",
+      "mediaType": "text/markdown",
+      "role": "component",
+      "sha256": "f215d63ae703f779c8bba406eebcbdc7ed3d8046ed9ac3367d5be1b020c0cd44",
+      "source": "components/registry.md"
+    },
+    {
+      "bytes": 511332,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-korean-300.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "df0d071a9c147a0b4f77f54e7e64d0d28f68797fb400be5cd8ba8558137a2acf",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-korean-300.woff2"
+    },
+    {
+      "bytes": 541864,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-korean-400.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "3aa0d1d63f3b5b2a33053a41a34512eac63abfb1dc2112aeda04733656a1a6d9",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-korean-400.woff2"
+    },
+    {
+      "bytes": 559192,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-korean-700.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "dab3d492daa687386292cff1499225db580f931f800ee0d124eb0636378c6020",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-korean-700.woff2"
+    },
+    {
+      "bytes": 13704,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-latin-300.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "84ea75b16f7b0ad379cee22451a688b50495ef5d44f109239ef7d6445bb5182d",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-latin-300.woff2"
+    },
+    {
+      "bytes": 13716,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-latin-400.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "f5b09bfccde07555802c5c990acb7f0d6bf349362f406ed89769958d3e607b82",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-latin-400.woff2"
+    },
+    {
+      "bytes": 13812,
+      "destination": "vendor/nhimc-design/fonts/noto-sans-kr-latin-700.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "452945755d9531ef349b9fe01cb54e77c1f3c933e999f6088d77a44b2456b5a6",
+      "source": "docs/design-docs/assets/font/noto-sans-kr-latin-700.woff2"
+    },
+    {
+      "bytes": 1348,
+      "destination": "vendor/nhimc-design/fonts/fonts.css",
+      "mediaType": "text/css",
+      "role": "font-styles",
+      "sha256": "88af9b035053a9a1d8a1721ea826336ababaa8a48043d7496916244035089dc6",
+      "source": "docs/design-docs/assets/fonts.css"
+    },
+    {
+      "bytes": 71960,
+      "destination": "vendor/nhimc-design/branding/brandmark-eng-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "17fd4f2cb0b6385c18d7cb8970244cded1f08592c95c786662aec0b667a2bb55",
+      "source": "docs/design-docs/assets/logo/brandmark-eng-logo-1.svg"
+    },
+    {
+      "bytes": 71960,
+      "destination": "vendor/nhimc-design/branding/brandmark-eng-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "8b7482380104e377e6f9dbdfa1edc5643e3811e10bc5a7ccb2644f6041f03df9",
+      "source": "docs/design-docs/assets/logo/brandmark-eng-logo-2.svg"
+    },
+    {
+      "bytes": 71973,
+      "destination": "vendor/nhimc-design/branding/brandmark-eng-logo-3.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "ca0302d1b58fd27b38160f5afe16f2bc285b616faa3f00d34f48cb646d7e1a20",
+      "source": "docs/design-docs/assets/logo/brandmark-eng-logo-3.svg"
+    },
+    {
+      "bytes": 34274,
+      "destination": "vendor/nhimc-design/branding/brandmark-normal-logo.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "b5028533554288e90e9e02655e31d58f42e1cbc98d1ca98a1baeb040f67fb991",
+      "source": "docs/design-docs/assets/logo/brandmark-normal-logo.svg"
+    },
+    {
+      "bytes": 28603,
+      "destination": "vendor/nhimc-design/branding/brandmark-row-logo.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea",
+      "source": "docs/design-docs/assets/logo/brandmark-row-logo.svg"
+    },
+    {
+      "bytes": 51613,
+      "destination": "vendor/nhimc-design/branding/brandmark-solo-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "33a30ee0ec515ce2e3d3d17b560440096b32cb6a2bffd29655543317caf4e982",
+      "source": "docs/design-docs/assets/logo/brandmark-solo-logo-1.svg"
+    },
+    {
+      "bytes": 51613,
+      "destination": "vendor/nhimc-design/branding/brandmark-solo-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "78b3805cadd1016fa631ad3b9e82ae1a1cbf9aac9fce1a5325362626fc56ad14",
+      "source": "docs/design-docs/assets/logo/brandmark-solo-logo-2.svg"
+    },
+    {
+      "bytes": 56552,
+      "destination": "vendor/nhimc-design/branding/brandmark-verti-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "99d46b097a323cb6c0bd81a61622c93469c7a65a86eac0ccbc4196faf0f0c691",
+      "source": "docs/design-docs/assets/logo/brandmark-verti-logo-1.svg"
+    },
+    {
+      "bytes": 56554,
+      "destination": "vendor/nhimc-design/branding/brandmark-verti-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "logo",
+      "sha256": "3f89ef650a97053d477996f63859d529d6b9439f366ba5ac00cefe2a350f7e25",
+      "source": "docs/design-docs/assets/logo/brandmark-verti-logo-2.svg"
+    },
+    {
+      "bytes": 3142,
+      "destination": "vendor/nhimc-design/branding/catalog.yaml",
+      "mediaType": "application/yaml",
+      "role": "logo",
+      "sha256": "92956d0bd2b641c5605236c87825af0276084fcdf0c18055e6d153d31bd24276",
+      "source": "docs/design-docs/assets/logo/catalog.yaml"
+    },
+    {
+      "bytes": 12961,
+      "destination": "vendor/nhimc-design/patterns/registry.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "22c6c77ebc7bd9ad0b79efdada8b3fed270d9fbeab09339fa9f70a53e8686f9f",
+      "source": "patterns/registry.md"
+    },
+    {
+      "bytes": 1058,
+      "destination": "vendor/nhimc-design/rules/accessibility.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "baaecc5c167ace163cafa57ae407442359e2db27d61ed60cc4754ee1275d52dc",
+      "source": "rules/accessibility.md"
+    },
+    {
+      "bytes": 8691,
+      "destination": "vendor/nhimc-design/rules/anti-patterns.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "8e50d0ac6942d9d8c96956bb4e2f1afc5c377260eb809f2c0e5c50d833f0243e",
+      "source": "rules/anti-patterns.md"
+    },
+    {
+      "bytes": 5612,
+      "destination": "vendor/nhimc-design/rules/app-structure.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "6c09755347efffdc9ecd9528e51c074bdf6d12dc3820205628db77fd5ea075c2",
+      "source": "rules/app-structure.md"
+    },
+    {
+      "bytes": 8948,
+      "destination": "vendor/nhimc-design/rules/compliance.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "d5252303d978c36b85bf934529a025df2beb053fcd8ec885f5a5bc7b1fc96ba5",
+      "source": "rules/compliance.md"
+    },
+    {
+      "bytes": 4801,
+      "destination": "vendor/nhimc-design/rules/component-selection.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "3173fdfd8485a6c5b896538ddabdeb62b5a82ddac037861e29b5601c0bae1e43",
+      "source": "rules/component-selection.md"
+    },
+    {
+      "bytes": 5742,
+      "destination": "vendor/nhimc-design/rules/implementation-gate.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "9547fe931012db95bdbe36e7b20146579c6d9980a32cfa12634693a7fe077a86",
+      "source": "rules/implementation-gate.md"
+    },
+    {
+      "bytes": 21330,
+      "destination": "vendor/nhimc-design/rules/layout.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "ac9a7a83d3cf7c1a5205c2a8444042de5a96e1341646ab69ffb842ce7a3a515c",
+      "source": "rules/layout.md"
+    },
+    {
+      "bytes": 2104,
+      "destination": "vendor/nhimc-design/rules/offline.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "ecaf8895555e90320b92432444ff53f20512a657b346cce4265313e6013c97d2",
+      "source": "rules/offline.md"
+    },
+    {
+      "bytes": 3322,
+      "destination": "vendor/nhimc-design/rules/print.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "b414f66a9a5c802af73498cfe7c800c827b2e3c81e17e6682c07d24f30c6c4a3",
+      "source": "rules/print.md"
+    },
+    {
+      "bytes": 2286,
+      "destination": "vendor/nhimc-design/rules/responsive.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "48bac4738cbb558efb5c9e53d7769adffbbc492cae18dad6e642ef1ec654f174",
+      "source": "rules/responsive.md"
+    },
+    {
+      "bytes": 1362,
+      "destination": "vendor/nhimc-design/rules/states.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "06b8ce812673e4e0b0f910257d0becbce53fe4d26fff8baad250bd0d2d43ccf4",
+      "source": "rules/states.md"
+    },
+    {
+      "bytes": 4962,
+      "destination": "vendor/nhimc-design/rules/taste-gate.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "5c0ef775e255dd4581b1e340dfff3224e1f604a75a20d781e8d2005897911d2c",
+      "source": "rules/taste-gate.md"
+    },
+    {
+      "bytes": 11864,
+      "destination": "vendor/nhimc-design/scripts/validate_deliverable.py",
+      "mediaType": "text/plain",
+      "role": "canonical-validator",
+      "sha256": "e050d85fa39ddc9ce183435f4776f10f4c4571f40660ba77018b3ae33fb1243e",
+      "source": "scripts/validate_deliverable.py"
+    },
+    {
+      "bytes": 39778,
+      "destination": "vendor/nhimc-design/scripts/validate_templates.py",
+      "mediaType": "text/plain",
+      "role": "canonical-validator",
+      "sha256": "2e7e873add3f1b7cb57a5d2c38ed81e19b88b0ef2f376935bd3eb513fb9c6029",
+      "source": "scripts/validate_templates.py"
+    },
+    {
+      "bytes": 590,
+      "destination": "vendor/nhimc-design/templates/admin-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "cbb65d157e642406d2b750ba655117ec26d2bfbd2e0506873883d6205b38221e",
+      "source": "templates/admin-page.md"
+    },
+    {
+      "bytes": 6729,
+      "destination": "vendor/nhimc-design/templates/authoring.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "8b6f1477b349acaa55da7070fcae6c605142e41b647ac18e1e7df792bac8896a",
+      "source": "templates/authoring.md"
+    },
+    {
+      "bytes": 32012,
+      "destination": "vendor/nhimc-design/templates/catalog.yaml",
+      "mediaType": "application/yaml",
+      "role": "template-contract",
+      "sha256": "747c30ed7587d0672e7f64abba93cbd899a2cab6a3dba2dbd98413c6f2344c57",
+      "source": "templates/catalog.yaml"
+    },
+    {
+      "bytes": 878,
+      "destination": "vendor/nhimc-design/templates/dashboard-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "04093b0a3973197a986f02fed42c013e76afbe91a6342c6db0c5547ce7ee3feb",
+      "source": "templates/dashboard-page.md"
+    },
+    {
+      "bytes": 665,
+      "destination": "vendor/nhimc-design/templates/detail-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "eb04d9b8972c4a72c2bbbf68907ee4ecbe12ae90d77ba5ec3ddf8f2da13bbc23",
+      "source": "templates/detail-page.md"
+    },
+    {
+      "bytes": 698,
+      "destination": "vendor/nhimc-design/templates/form-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "1109f29e7e69845210f84db4d929578a1bee5d125328bf2f5b6f758091790bcf",
+      "source": "templates/form-page.md"
+    },
+    {
+      "bytes": 1342,
+      "destination": "vendor/nhimc-design/templates/list-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "27329eb92da387e2c0132ae41b58c3dbc05b9c85eaa840f007b3e8aa097ef884",
+      "source": "templates/list-page.md"
+    },
+    {
+      "bytes": 2236,
+      "destination": "vendor/nhimc-design/templates/registry.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "f1850c67e6bd1debc56281a80e9c10ebe5a7e2b1980f5247127c88b62ca9e6dd",
+      "source": "templates/registry.md"
+    },
+    {
+      "bytes": 697,
+      "destination": "vendor/nhimc-design/templates/settings-page.md",
+      "mediaType": "text/markdown",
+      "role": "template-contract",
+      "sha256": "ed9986097155a9db56418af2198ab1a0ae2fee4c1543df7fde7ea9e2ce07547c",
+      "source": "templates/settings-page.md"
+    },
+    {
+      "bytes": 10896,
+      "destination": "vendor/nhimc-design/tokens/registry.md",
+      "mediaType": "text/markdown",
+      "role": "contract",
+      "sha256": "95d7b23c200d253b8edaf9f4687cef7df26f840a6f7163af4543ecb5bc16905b",
+      "source": "tokens/registry.md"
+    },
+    {
+      "bytes": 5987,
+      "destination": "vendor/nhimc-design/tokens/themes/catalog.yaml",
+      "mediaType": "application/yaml",
+      "role": "contract",
+      "sha256": "0c7b1bdee0c449aeb06191839843cbc7fcf9f9b4292dbd8bd12f3366265365e3",
+      "source": "tokens/themes/catalog.yaml"
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceRoot": ".agents/skills/nhimc-worktool"
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 2,
+  "projectVersion": "1.0.0",
+  "themes": [
+    {
+      "id": "nhimc-light",
+      "mode": "light",
+      "file": "vendor/nhimc-design/layouts/left.html",
+      "fontFile": "vendor/nhimc-design/fonts/fonts.css",
+      "canonicalSource": "vendor/nhimc-design/tokens/themes/catalog.yaml",
+      "canonicalDigest": "0c7b1bdee0c449aeb06191839843cbc7fcf9f9b4292dbd8bd12f3366265365e3",
+      "embeddedBy": "scripts/build_single_html.py",
+      "tokens": []
+    },
+    {
+      "id": "nhimc-dark",
+      "mode": "dark",
+      "file": "vendor/nhimc-design/layouts/left.html",
+      "fontFile": "vendor/nhimc-design/fonts/fonts.css",
+      "canonicalSource": "vendor/nhimc-design/tokens/themes/catalog.yaml",
+      "canonicalDigest": "0c7b1bdee0c449aeb06191839843cbc7fcf9f9b4292dbd8bd12f3366265365e3",
+      "embeddedBy": "scripts/build_single_html.py",
+      "tokens": []
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "nhimc-worktool",
+  "version": "1.0.0",
+  "description": "NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트. 일산병원 업무 화면을 정본 Frame·Theme·Component로 조합하는 디자인 시스템 스킬.",
+  "author": {
+    "name": "NHIMC UI Core contributors"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "nhimc",
+    "design-system",
+    "web-ui"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "NHIMC UI Core",
+    "shortDescription": "NHIMC frame and design-system guidance",
+    "longDescription": "Preserve the registered NHIMC frame, assets, theme, components, and validation contracts while building business interfaces.",
+    "developerName": "NHIMC UI Core contributors",
+    "category": "Developer Tools",
+    "capabilities": [
+      "NHIMC interface implementation",
+      "contract validation"
+    ],
+    "defaultPrompt": "Use the NHIMC UI Core contracts to implement this interface as one offline index.html artifact.",
+    "brandColor": "#003D94",
+    "logo": "./src/assets/branding/nhimc-logo.svg"
+  }
+}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>재고관리</title></head>
+<body>
+<nhimc-frame id="app-frame" data-frame="left" data-project-title="재고관리" data-active-id="dashboard">
+<section data-screen-panel="dashboard"><main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-component="PageHeader"><div><h1>재고 대시보드</h1><p>품목과 입출고 현황을 한눈에 봅니다.</p></div></section>
+  <div class="nhimc-grid" data-nhimc-component="Grid"><div class="card" data-nhimc-component="Card"><strong>전체 품목</strong><p>128</p></div><div class="card" data-nhimc-component="Card"><strong>부족 품목</strong><p>7</p></div></div>
+</main></section>
+<section data-screen-panel="items"><main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-component="PageHeader"><div><h1>품목 관리</h1><p>등록된 품목을 조회합니다.</p></div><div class="nhimc-actions"><button class="btn primary" type="button" data-nhimc-component="Button">품목 등록</button></div></section>
+  <section class="card nhimc-card" data-nhimc-component="ContentCard"><div class="nhimc-scroll"><table data-nhimc-component="Table"><caption>시연용 품목</caption><thead><tr><th scope="col">품목</th><th scope="col">수량</th></tr></thead><tbody><tr><td>거즈</td><td>120</td></tr></tbody></table></div></section>
+</main></section>
+<section data-screen-panel="orders"><main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-component="PageHeader"><div><h1>발주 관리</h1></div></section>
+  <div class="nhimc-form-grid" data-nhimc-component="FormGrid"><label class="field" data-nhimc-component="Field" for="o-name">품목명<input id="o-name" data-nhimc-component="Input"></label><label class="field" data-nhimc-component="Field" for="o-qty">수량<input id="o-qty" type="number" data-nhimc-component="Input"></label></div>
+</main></section>
+</nhimc-frame>
+<script type="application/json" data-nhimc-menu>[{"id":"dashboard","label":"대시보드","icon":"dashboard","href":"#dashboard"},{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"},{"id":"orders","label":"발주 관리","icon":"hospital","href":"#orders"}]</script>
+</body></html>

@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "themes": [
+    {
+      "id": "nhimc-default",
+      "label": "NHIMC 기본",
+      "summary": "기본 병원 업무 시스템에 적합한 안정적인 색상 체계",
+      "recommended_for": "일반 업무 전반, 이미 검증된 기본 브랜드",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#003D94",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#6B9DDD",
+          "primary-90": "rgba(0, 61, 148, 0.9)",
+          "primary-20": "rgba(0, 61, 148, 0.2)"
+        },
+        "dark": {
+          "primary": "#6BA6E4",
+          "primary-foreground": "#08182B",
+          "ring": "#6BA6E4",
+          "primary-90": "rgba(107, 166, 228, 0.9)",
+          "primary-20": "rgba(107, 166, 228, 0.2)"
+        }
+      }
+    },
+    {
+      "id": "mint",
+      "label": "Mint",
+      "summary": "청량하고 차분한 두 번째 공식 주색(IH MINT) — 부드러운 강조가 필요한 업무형",
+      "recommended_for": "안내·공지, 예약·접수 등 부드러운 톤이 필요한 화면",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#417F84",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#C8E7E9",
+          "primary-90": "rgba(65, 127, 132, 0.9)",
+          "primary-20": "rgba(65, 127, 132, 0.2)"
+        },
+        "dark": {
+          "primary": "#C8E7E9",
+          "primary-foreground": "#14253A",
+          "ring": "#C8E7E9",
+          "primary-90": "rgba(200, 231, 233, 0.9)",
+          "primary-20": "rgba(200, 231, 233, 0.2)"
+        }
+      }
+    },
+    {
+      "id": "pear",
+      "label": "Pear",
+      "summary": "안정감과 의료·상태 정보 표현에 적합(IH PEAR 주색)",
+      "recommended_for": "의료 업무, 상태 모니터링",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#627F33",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#8DB84A",
+          "primary-90": "rgba(98, 127, 51, 0.9)",
+          "primary-20": "rgba(98, 127, 51, 0.2)"
+        },
+        "dark": {
+          "primary": "#8DB84A",
+          "primary-foreground": "#14253A",
+          "ring": "#8DB84A",
+          "primary-90": "rgba(141, 184, 74, 0.9)",
+          "primary-20": "rgba(141, 184, 74, 0.2)"
+        }
+      }
+    },
+    {
+      "id": "apricot",
+      "label": "Apricot",
+      "summary": "따뜻하고 친근한 톤(IH APRICOT 주색) — 환자 응대 중심 업무에 적합",
+      "recommended_for": "환자 응대, 접수·안내 데스크",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#A9653B",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#E2874F",
+          "primary-90": "rgba(169, 101, 59, 0.9)",
+          "primary-20": "rgba(169, 101, 59, 0.2)"
+        },
+        "dark": {
+          "primary": "#E2874F",
+          "primary-foreground": "#14253A",
+          "ring": "#E2874F",
+          "primary-90": "rgba(226, 135, 79, 0.9)",
+          "primary-20": "rgba(226, 135, 79, 0.2)"
+        }
+      }
+    },
+    {
+      "id": "neutral",
+      "label": "Neutral",
+      "summary": "색상 사용을 최소화한 고밀도 관리 업무형",
+      "recommended_for": "대량 데이터 관리 화면",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#27272A",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#6B7280",
+          "primary-90": "rgba(39, 39, 42, 0.9)",
+          "primary-20": "rgba(39, 39, 42, 0.2)"
+        },
+        "dark": {
+          "primary": "#E4E4E7",
+          "primary-foreground": "#18181B",
+          "ring": "#A1A1AA",
+          "primary-90": "rgba(228, 228, 231, 0.9)",
+          "primary-20": "rgba(228, 228, 231, 0.2)"
+        }
+      }
+    },
+    {
+      "id": "color-mix",
+      "label": "Color Mix",
+      "summary": "NHIMC 기본 주요색과 공식 보조색 7종(IH SKY/PURPLE/PINK/PEAR/YELLOW/APRICOT/AMBER)을 조합한 활기찬 업무형",
+      "recommended_for": "대시보드, 부서·업무 구분이 많은 화면, 시각적 탐색이 중요한 업무",
+      "selectable": true,
+      "tokens": {
+        "light": {
+          "primary": "#003D94",
+          "primary-foreground": "#FFFFFF",
+          "ring": "#6B9DDD",
+          "primary-90": "rgba(0, 61, 148, 0.9)",
+          "primary-20": "rgba(0, 61, 148, 0.2)",
+          "chip-sky": "#C7E1F5",
+          "chip-pear": "#D7E7A4",
+          "chip-apricot": "#FCC8AC",
+          "chip-yellow": "#FFE787",
+          "chip-purple": "#DEE2F2",
+          "chip-pink": "#F9D2DC",
+          "chip-amber": "#FCD29C",
+          "accent-sky-foreground": "#1E4E7A",
+          "accent-pear-foreground": "#4B6B1F",
+          "accent-apricot-foreground": "#9A4B1F",
+          "accent-yellow-foreground": "#7A5A00",
+          "accent-purple-foreground": "#3B3F73",
+          "accent-pink-foreground": "#8A2F49",
+          "accent-amber-foreground": "#8E550B"
+        },
+        "dark": {
+          "primary": "#6BA6E4",
+          "primary-foreground": "#08182B",
+          "ring": "#6BA6E4",
+          "primary-90": "rgba(107, 166, 228, 0.9)",
+          "primary-20": "rgba(107, 166, 228, 0.2)",
+          "chip-sky": "#C7E1F5",
+          "chip-pear": "#D7E7A4",
+          "chip-apricot": "#FCC8AC",
+          "chip-yellow": "#FFE787",
+          "chip-purple": "#DEE2F2",
+          "chip-pink": "#F9D2DC",
+          "chip-amber": "#FCD29C",
+          "accent-sky-foreground": "#1E4E7A",
+          "accent-pear-foreground": "#4B6B1F",
+          "accent-apricot-foreground": "#9A4B1F",
+          "accent-yellow-foreground": "#7A5A00",
+          "accent-purple-foreground": "#3B3F73",
+          "accent-pink-foreground": "#8A2F49",
+          "accent-amber-foreground": "#8E550B"
+        }
+      }
+    }
+  ]
+}

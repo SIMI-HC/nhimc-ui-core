@@ -1,0 +1,16 @@
+NHIMC UI Core 1.0.0
+Copyright 2026 NHIMC UI Core contributors. All rights reserved.
+
+이 저장소의 소프트웨어와 문서는 LICENSE(사용 허가서, 재배포·수정 금지)에 따라 제공됩니다.
+
+정본 디자인 스냅샷은 NhimcDesign v1.3.29의 upstream commit
+08c45402eece8a7c55afc60385e8671c9f13081a 에 고정되어 있으며,
+파일별 출처와 SHA-256은 vendor/nhimc-design/upstream.json에 기록됩니다.
+정본 디자인과 일산병원 로고의 권리는 각 권리자에게 있습니다.
+
+Noto Sans KR Font는 SIL Open Font License 1.1에 따라 배포됩니다.
+라이선스 사본은 src/assets/fonts/OFL.txt에 있습니다.
+
+NHIMC Logo, Favicon, Icon sprite와 Font는 사용자가 2026-09-28에 공개 사용
+가능하다고 확인했습니다. 검토 범위는 PUBLIC_ASSET_REVIEW.md와
+registry/assets.json에 기록됩니다.

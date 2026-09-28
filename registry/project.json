@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "projectVersion": "1.0.0",
+  "architecture": "frame-registry-layout-primitives",
+  "canonicalSnapshot": {
+    "manifest": "vendor/nhimc-design/upstream.json",
+    "commit": "08c45402eece8a7c55afc60385e8671c9f13081a"
+  },
+  "designGuide": "guide/nhimc-design-guide.html",
+  "defaultFrame": "nhimc-default",
+  "defaultTheme": "nhimc-light",
+  "defaultArtifact": {
+    "kind": "single-html",
+    "filename": "index.html",
+    "offline": true,
+    "builder": "scripts/build_verified_artifact.py",
+    "browserVerifier": "scripts/run_browser_tests.py",
+    "sidecars": []
+  },
+  "bootstrapStatuses": [
+    "READY",
+    "WEB_BOOTSTRAP",
+    "UNSUPPORTED"
+  ],
+  "platformSupport": [
+    {"environment":"chatgpt-web","outcomes":[{"capability":"verified-builder-bridge-connected-and-download-tested","status":"READY"},{"capability":"repository-context-only","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"codex","outcomes":[{"capability":"portable-or-compatibility-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},
+    {"environment":"claude-web","outcomes":[{"capability":"custom-skill-uploaded-and-verified","status":"READY"},{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"claude-code","outcomes":[{"capability":"claude-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},
+    {"environment":"gemini-web","outcomes":[{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"gemini-cli","outcomes":[{"capability":"gemini-extension-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]}
+  ],
+  "registries": [
+    "registry/frames.json",
+    "registry/themes.json",
+    "registry/components.json",
+    "registry/layouts.json",
+    "registry/assets.json"
+  ]
+}

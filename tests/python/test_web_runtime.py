@@ -1,0 +1,118 @@
+import json
+from pathlib import Path
+import re
+import subprocess
+import tempfile
+import unittest
+
+from scripts.build_single_html import build_single_html
+from scripts.build_web_runtime import build_web_runtime
+from scripts.run_browser_tests import find_browser
+
+ROOT = Path(__file__).resolve().parents[2]
+WEB_FIXTURE = ROOT / "tests/fixtures/web/index.html"
+
+
+def _dump(browser: Path, url: str) -> str:
+    with tempfile.TemporaryDirectory() as profile:
+        result = subprocess.run(
+            [
+                str(browser), "--headless", "--disable-gpu", "--no-first-run",
+                f"--user-data-dir={profile}", "--virtual-time-budget=8000",
+                "--allow-file-access-from-files", "--dump-dom", url,
+            ],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120, check=False,
+        )
+    return result.stdout
+
+
+def _frame_markup(dom: str) -> str:
+    """Frame structure only: drop scripts, sprite, head, status text and inline runtime state."""
+    body = dom[dom.index("<body") :]
+    body = re.sub(r"<script\b.*?</script>", "", body, flags=re.S)
+    body = re.sub(r"<svg hidden.*?</svg>", "", body, flags=re.S)
+    body = re.sub(r"준비됨 · (?:오프라인 문서|웹 실행)", "STATUS", body)
+    return re.sub(r"\s+", " ", body)
+
+
+class WebRuntimeTests(unittest.TestCase):
+    def test_committed_runtime_matches_canonical_sources(self):
+        committed = (ROOT / "dist/nhimc-web.js").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as folder:
+            temporary = Path(folder)
+            for name in ("src", "registry", "vendor", "VERSION"):
+                source = ROOT / name
+                target = temporary / name
+                if source.is_dir():
+                    __import__("shutil").copytree(source, target)
+                else:
+                    target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8", newline="")
+            generated = build_web_runtime(temporary).read_text(encoding="utf-8")
+        self.assertEqual(committed, generated, "run python scripts/build_web_runtime.py")
+
+    def test_runtime_frame_matches_offline_builder_frame(self):
+        browser = find_browser()
+        with tempfile.TemporaryDirectory() as folder:
+            built = Path(folder) / "index.html"
+            build_single_html(ROOT, ROOT / "tests/fixtures/authoring/transport-management/index.html", built)
+            offline = _frame_markup(_dump(browser, built.resolve().as_uri()))
+        web = _frame_markup(_dump(browser, WEB_FIXTURE.resolve().as_uri()))
+        self.assertIn('data-nhimc-role="app-shell"', web)
+        self.assertEqual(offline, web)
+
+    def test_runtime_multi_page_frame_matches_offline_builder_frame(self):
+        browser = find_browser()
+        with tempfile.TemporaryDirectory() as folder:
+            built = Path(folder) / "index.html"
+            build_single_html(ROOT, ROOT / "tests/fixtures/authoring/multi-page/index.html", built)
+            offline = _frame_markup(_dump(browser, built.resolve().as_uri()))
+        web = _frame_markup(_dump(browser, (ROOT / "tests/fixtures/web/multi-page.html").resolve().as_uri()))
+        self.assertIn('data-menu-id="orders"', web)
+        self.assertEqual(offline, web)
+
+    def test_runtime_top_frame_and_theme_color_match_offline_builder(self):
+        browser = find_browser()
+        with tempfile.TemporaryDirectory() as folder:
+            built = Path(folder) / "index.html"
+            build_single_html(ROOT, ROOT / "tests/fixtures/authoring/top-mint/index.html", built)
+            offline_dom = _dump(browser, built.resolve().as_uri())
+        web_dom = _dump(browser, (ROOT / "tests/fixtures/web/top-mint.html").resolve().as_uri())
+        for dom in (offline_dom, web_dom):
+            self.assertIn('data-theme-color="mint"', dom[:400])
+            self.assertIn('data-menu-id="wards"', dom)
+        self.assertEqual(_frame_markup(offline_dom), _frame_markup(web_dom))
+        self.assertNotEqual(_frame_markup(web_dom), "")
+
+    def test_runtime_page_opened_from_a_korean_file_name_logs_no_console_errors(self):
+        browser = find_browser()
+        runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
+        with tempfile.TemporaryDirectory() as folder:
+            for fixture in ("index.html", "multi-page.html", "top-mint.html"):
+                source = (ROOT / "tests/fixtures/web" / fixture).read_text(encoding="utf-8")
+                page = Path(folder) / f"이송업무-관리-{fixture}"
+                page.write_text(source.replace("../../../dist/nhimc-web.js", runtime), encoding="utf-8")
+                result = subprocess.run(
+                    ["node", str(ROOT / "scripts/probe_console.mjs"), str(browser), page.resolve().as_uri()],
+                    capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
+                )
+                report = json.loads(result.stdout.strip().splitlines()[-1])
+                self.assertTrue(report["shell"], fixture)
+                self.assertEqual([], report["messages"], fixture)
+
+    def test_runtime_rejects_forbidden_content(self):
+        browser = find_browser()
+        with tempfile.TemporaryDirectory() as folder:
+            page = Path(folder) / "bad.html"
+            page.write_text(
+                '<!doctype html><html><head><meta charset="utf-8"></head><body>'
+                '<main data-nhimc-role="content"><style>body{}</style></main>'
+                f'<script src="{(ROOT / "dist/nhimc-web.js").resolve().as_uri()}"></script></body></html>',
+                encoding="utf-8",
+            )
+            dom = _dump(browser, page.resolve().as_uri())
+        self.assertIn("NHIMC UI Core:", dom)
+        self.assertNotIn('data-nhimc-role="app-shell"', dom)
+
+
+if __name__ == "__main__":
+    unittest.main()

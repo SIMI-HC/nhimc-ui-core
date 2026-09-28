@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>병원 권한 관리</title></head>
+<body>
+<nhimc-frame id="app-frame" data-frame="left" data-project-title="병원 권한 관리" data-active-id="roles">
+<main data-nhimc-role="content">
+  <section class="nhimc-page-header" data-nhimc-role="page-header" data-nhimc-component="PageHeader"><div><h1>역할 관리</h1><p>병원 업무 역할과 권한을 관리합니다.</p></div></section>
+  <div class="nhimc-grid" style="--grid-min:300px" data-nhimc-component="Grid">
+    <aside class="card nhimc-stack" data-nhimc-component="Card Stack"><label class="field" data-nhimc-component="Field" for="role-search">역할 검색<input id="role-search" type="search" data-nhimc-component="Input"></label><button class="btn" type="button" data-nhimc-component="Button">이송 관리자</button></aside>
+    <section class="card nhimc-stack" data-nhimc-component="Card Stack">
+      <h2>이송 관리자 <span class="badge ok" data-nhimc-component="Badge">사용 중</span></h2>
+      <fieldset class="nhimc-field-group" data-nhimc-component="FieldGroup CheckboxGroup"><legend>허용 업무</legend><label class="check" data-nhimc-component="CheckboxField"><input type="checkbox" checked> <span>이송 요청 조회</span></label><label class="check" data-nhimc-component="CheckboxField"><input type="checkbox" checked> <span>이송 배정</span></label><label class="check" data-nhimc-component="CheckboxField"><input type="checkbox"> <span>완료 내역 삭제</span></label></fieldset>
+      <div class="nhimc-actions"><button class="btn primary" type="button" data-nhimc-component="Button">변경 저장</button></div>
+    </section>
+  </div>
+</main>
+</nhimc-frame>
+<script type="application/json" data-nhimc-menu>[{"id":"roles","label":"역할 관리","icon":"user-check","href":"#roles"}]</script>
+</body></html>

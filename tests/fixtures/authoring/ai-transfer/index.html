@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이송업무 관리</title>
+</head>
+<body>
+<main data-nhimc-role="content">
+  <div class="nhimc-page-header">
+    <div>
+      <h1>이송업무 관리</h1>
+      <p>이송 신청부터 배정, 출발, 진행, 완료까지 현재 상태를 조회하고 처리합니다.</p>
+    </div>
+    <div class="nhimc-actions">
+      <button class="btn primary" type="button" data-nhimc-component="Button">신규 이송 신청</button>
+    </div>
+  </div>
+
+  <section class="nhimc-section" aria-labelledby="search-title">
+    <h2 id="search-title">조회 조건</h2>
+    <div class="card nhimc-card">
+      <div class="nhimc-card-body">
+        <div class="nhimc-form-grid">
+          <label class="field" for="transfer-date" data-nhimc-component="Field">
+            이송일자
+            <input id="transfer-date" type="date" value="2026-09-28">
+          </label>
+          <label class="field" for="transfer-status" data-nhimc-component="Select">
+            진행상태
+            <select id="transfer-status">
+              <option value="">전체</option>
+              <option value="RESN">신청</option>
+              <option value="ASGN">배정</option>
+              <option value="DPRR">출발대기</option>
+              <option value="STR">이송중</option>
+              <option value="END">완료</option>
+            </select>
+          </label>
+          <label class="field" for="ward" data-nhimc-component="Field">
+            병동 / 부서
+            <input id="ward" type="text" placeholder="병동 또는 부서명">
+          </label>
+          <label class="field" for="patient" data-nhimc-component="Field">
+            환자
+            <input id="patient" type="text" placeholder="환자명 또는 등록번호">
+          </label>
+        </div>
+        <div class="nhimc-toolbar">
+          <div class="nhimc-toolbar-end">
+            <button class="btn ghost-subtle" type="button" data-nhimc-component="Button">초기화</button>
+            <button class="btn primary" type="button" data-nhimc-component="Button">조회</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nhimc-section" aria-labelledby="summary-title">
+    <h2 id="summary-title">오늘 이송 현황</h2>
+    <div class="nhimc-grid">
+      <div class="card nhimc-card">
+        <div class="nhimc-card-head"><strong>신청</strong><span class="badge warn" data-nhimc-component="Badge">RESN</span></div>
+        <div class="nhimc-card-body"><strong>8건</strong><p>배정 대기 중인 이송 요청</p></div>
+      </div>
+      <div class="card nhimc-card">
+        <div class="nhimc-card-head"><strong>배정</strong><span class="badge" data-nhimc-component="Badge">ASGN</span></div>
+        <div class="nhimc-card-body"><strong>5건</strong><p>담당자가 배정된 요청</p></div>
+      </div>
+      <div class="card nhimc-card">
+        <div class="nhimc-card-head"><strong>이송중</strong><span class="badge warn" data-nhimc-component="Badge">STR</span></div>
+        <div class="nhimc-card-body"><strong>3건</strong><p>현재 이동 중인 요청</p></div>
+      </div>
+      <div class="card nhimc-card">
+        <div class="nhimc-card-head"><strong>완료</strong><span class="badge ok" data-nhimc-component="Badge">END</span></div>
+        <div class="nhimc-card-body"><strong>21건</strong><p>오늘 완료된 이송 요청</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nhimc-section" aria-labelledby="list-title">
+    <div class="nhimc-toolbar">
+      <h2 id="list-title">이송 요청 목록</h2>
+      <div class="nhimc-toolbar-end">
+        <span>총 37건</span>
+        <button class="btn" type="button" data-nhimc-component="Button">새로고침</button>
+      </div>
+    </div>
+
+    <div class="card nhimc-card">
+      <div class="nhimc-scroll">
+        <table data-nhimc-component="Table" aria-label="이송 요청 목록">
+          <thead>
+            <tr>
+              <th scope="col">상태</th>
+              <th scope="col">신청시간</th>
+              <th scope="col">환자</th>
+              <th scope="col">출발지</th>
+              <th scope="col">도착지</th>
+              <th scope="col">이송유형</th>
+              <th scope="col">담당자</th>
+              <th scope="col">처리</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge warn" data-nhimc-component="Badge">신청</span></td>
+              <td>09:12</td>
+              <td>김○○ / 12345678</td>
+              <td>72병동</td>
+              <td>CT실</td>
+              <td>휠체어</td>
+              <td>-</td>
+              <td><button class="btn primary" type="button" data-nhimc-component="Button">배정</button></td>
+            </tr>
+            <tr>
+              <td><span class="badge" data-nhimc-component="Badge">배정</span></td>
+              <td>09:05</td>
+              <td>박○○ / 23456789</td>
+              <td>응급실</td>
+              <td>MRI실</td>
+              <td>침대</td>
+              <td>이민수</td>
+              <td><button class="btn" type="button" data-nhimc-component="Button">출발처리</button></td>
+            </tr>
+            <tr>
+              <td><span class="badge warn" data-nhimc-component="Badge">이송중</span></td>
+              <td>08:58</td>
+              <td>최○○ / 34567890</td>
+              <td>63병동</td>
+              <td>재활치료실</td>
+              <td>휠체어</td>
+              <td>정우진</td>
+              <td><button class="btn primary" type="button" data-nhimc-component="Button">완료</button></td>
+            </tr>
+            <tr>
+              <td><span class="badge ok" data-nhimc-component="Badge">완료</span></td>
+              <td>08:31</td>
+              <td>윤○○ / 45678901</td>
+              <td>51병동</td>
+              <td>내시경실</td>
+              <td>침대</td>
+              <td>한지훈</td>
+              <td><button class="btn ghost" type="button" data-nhimc-component="Button">상세</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav class="nhimc-pagination" aria-label="이송 목록 페이지">
+        <button class="btn ghost" type="button">이전</button>
+        <button class="btn primary" type="button" aria-current="page">1</button>
+        <button class="btn ghost" type="button">2</button>
+        <button class="btn ghost" type="button">3</button>
+        <button class="btn ghost" type="button">다음</button>
+      </nav>
+    </div>
+  </section>
+</main>
+
+<script type="application/json" data-nhimc-menu>[{"id":"transfer","label":"이송업무 관리","icon":"ambulance","href":"#transfer"}]</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+NHIMC UI Core 사용 허가서 (All Rights Reserved)
+
+Copyright (c) 2026 NHIMC UI Core contributors. All rights reserved.
+
+※ 이 문서는 초안이며 법무 검토를 거치지 않았습니다. 공개 배포 전에 검토가 필요합니다.
+
+1. 허가되는 사용
+   이 저장소의 소프트웨어, 스킬, 문서와 정본 자산(이하 "소프트웨어")은 다음 목적으로만 사용할 수 있습니다.
+   (a) 소프트웨어를 읽고 AI 도구·스킬·플러그인으로 불러와 사용하는 것
+   (b) 소프트웨어로 생성한 화면과 파일(index.html 등, 이하 "산출물")을 업무 목적으로 사용하는 것
+
+2. 금지되는 행위
+   사전 서면 허락 없이 다음을 할 수 없습니다.
+   (a) 소프트웨어의 전부 또는 일부를 복제하여 재배포, 재게시, 재판매하거나 서비스로 제공하는 것
+   (b) 소프트웨어를 수정하거나 수정본·파생물을 만들어 배포하는 것
+   (c) 저작권 및 라이선스 표기를 제거하거나 변경하는 것
+   (d) 소프트웨어를 다른 제품·서비스의 구성 요소로 제공하는 것
+
+3. 제3자 구성요소와 별도 권리
+   - Noto Sans KR 폰트는 SIL Open Font License 1.1을 따르며 사본은 src/assets/fonts/OFL.txt에 있습니다. 이 허가서는 해당 라이선스를 바꾸지 않습니다.
+   - 일산병원 로고, 상표, 정본 디자인(vendor/nhimc-design)에 대한 권리는 각 권리자에게 있으며 이 허가서로 부여되지 않습니다.
+   - GitHub 이용약관이 공개 저장소에 대해 허용하는 열람과 포크 기능은 이 허가서로 제한되지 않으나, 그 사본에도 이 허가서가 적용됩니다.
+
+4. 산출물
+   소프트웨어로 생성한 산출물의 사용은 1항(b)에 따라 허용되며, 산출물에 포함된 폰트·로고 등 제3자 구성요소는 3항을 따릅니다.
+
+5. 보증 없음 및 책임 제한
+   소프트웨어는 "있는 그대로" 제공되며 어떠한 명시적·묵시적 보증도 없습니다. 소프트웨어 사용으로 발생한 손해에 대해 저작권자는 책임을 지지 않습니다.
+
+6. 종료
+   이 허가서를 위반하면 허가는 자동으로 종료됩니다.
+
+--------------------------------------------------------------------------------
+English summary (the Korean text above governs)
+
+NHIMC UI Core is proprietary software. All rights reserved. You may read it, load it into AI tools as a skill or
+plugin, and use the screens it generates for work. You may not redistribute, republish, sell, modify, or create and
+distribute derivative works, and you may not remove notices, without prior written permission. Noto Sans KR is
+licensed under the SIL OFL 1.1 (src/assets/fonts/OFL.txt). Hospital logos, trademarks, and the canonical design in
+vendor/nhimc-design belong to their respective rights holders. Provided "AS IS" without warranty. This document is a
+draft and has not been reviewed by counsel.

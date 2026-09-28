@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "projectVersion": "1.0.0",
+  "implementation": "src/layouts/primitives.css",
+  "primitives": [
+    {
+      "id": "Page",
+      "selector": "main[data-nhimc-role=\"content\"]",
+      "purpose": "Content 루트. 폭·패딩·섹션 간격을 자동으로 부여"
+    },
+    {
+      "id": "PageHeader",
+      "selector": ".nhimc-page-header",
+      "purpose": "제목·설명(div>h1+p)과 오른쪽 주요 액션(.nhimc-actions)"
+    },
+    {
+      "id": "Section",
+      "selector": ".nhimc-section",
+      "purpose": "제목(h2)과 내용을 묶는 세로 영역"
+    },
+    {
+      "id": "Stack",
+      "selector": ".nhimc-stack",
+      "purpose": "세로 간격 묶음"
+    },
+    {
+      "id": "Grid",
+      "selector": ".nhimc-grid",
+      "purpose": "반응형 카드 그리드. --grid-min으로 최소폭 지정"
+    },
+    {
+      "id": "FormGrid",
+      "selector": ".nhimc-form-grid",
+      "purpose": "입력 필드 반응형 격자"
+    },
+    {
+      "id": "Toolbar",
+      "selector": ".nhimc-toolbar",
+      "purpose": "검색조건·필터·버튼 한 줄. 우측 정렬은 .nhimc-toolbar-end"
+    },
+    {
+      "id": "FieldGroup",
+      "selector": ".nhimc-field-group",
+      "purpose": "fieldset 대체 관련 필드 묶음"
+    },
+    {
+      "id": "ContentCard",
+      "selector": ".card.nhimc-card",
+      "purpose": "머리(.nhimc-card-head)+본문(.nhimc-card-body 또는 .nhimc-scroll 표)를 가진 카드"
+    }
+  ]
+}

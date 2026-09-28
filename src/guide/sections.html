@@ -1,0 +1,68 @@
+<main class="gallery-main install-main" id="installView" hidden>
+  <section class="hero install-hero" aria-labelledby="installTitle">
+    <p class="eyebrow">GETTING STARTED</p>
+    <h1 id="installTitle">설치 가이드</h1>
+    <p>NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트입니다. URL 하나로 6개 환경(ChatGPT Web · Claude Web · Gemini Web · Codex · Claude Code · Gemini CLI)을 준비하고, 이후에는 자연어로 화면을 요청합니다. ZIP 업로드는 필요 없습니다.</p>
+  </section>
+
+  <section class="guide-panel" aria-labelledby="stepTitle">
+    <div class="theme-panel-heading"><div><p class="eyebrow">STEP BY STEP</p><h2 id="stepTitle">설치하고 사용하기</h2></div></div>
+    <ol class="guide-steps">
+      <li>
+        <h3>1. 준비 — AI에게 저장소 주소와 아래 문장만 전달하고 결과 확인</h3>
+        <div class="copy-block"><pre id="installPrompt">https://github.com/SIMI-HC/nhimc-ui-core.git
+bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
+이미 준비돼 있으면 원격 VERSION과 비교해 최신이 아닐 때만 업데이트해줘.</pre><button class="copy-button" type="button" data-copy-target="installPrompt">복사</button></div>
+        <p class="guide-note">AI가 환경을 스스로 판별해 공식적으로 가능한 방식으로 준비합니다. 승인 창이 뜨면 승인하세요. 지원되지 않는 설치를 우회하거나 성공했다고 가정하지 않습니다. 기존 NhimcDesign 스킬(<code>nhimc-worktool</code>)이 있으면 같은 이름으로 업데이트됩니다.</p>
+        <p>AI가 <code>platform</code>, <code>projectVersion</code>, <code>defaultFrame</code>, <code>defaultTheme</code>, <code>installationMode</code>와 상태를 보고하고 이 Design Guide를 열어 줍니다. 열 수 없는 환경이면 파일이 다운로드됩니다.</p>
+        <ul class="guide-list">
+          <li><strong>READY</strong> — 이 환경에서 빌더를 실제로 호출해 검증된 <code>index.html</code>을 전달할 수 있습니다.</li>
+          <li><strong>WEB_BOOTSTRAP</strong> — 저장소와 Skill만 읽는 <code>context-only</code> 상태입니다. Web Runtime이 정본 Frame·폰트·아이콘을 씌우며 오프라인 검증 파일은 아닙니다.</li>
+          <li><strong>UNSUPPORTED</strong> — 저장소 또는 Skill을 읽을 수 없습니다.</li>
+        </ul>
+      </li>
+      <li>
+        <h3>2. 화면 요청 — 자연어 또는 프롬프트 만들기</h3>
+        <div class="copy-block"><pre id="firstRequest">병원 이송업무 관리 화면 만들어줘.</pre><button class="copy-button" type="button" data-copy-target="firstRequest">복사</button></div>
+        <p>Layout·Theme까지 직접 고르려면 <strong>프롬프트 만들기</strong>로 만든 프롬프트를 붙여 넣으세요. AI가 업무에 맞는 <strong>메뉴</strong>와 <strong>Page</strong>를 정하고, Page마다 등록 Component와 Layout Primitive로 화면을 채웁니다.</p>
+        <button class="builder-open builder-open-inline" type="button" data-open-builder>프롬프트 만들기 — Layout·Theme 선택해서 붙여넣을 프롬프트 만들기</button>
+      </li>
+      <li>
+        <h3>3. 결과 받기</h3>
+        <p><strong>로컬 호스트</strong>(Claude Code · Codex · Gemini CLI)에서는 AI가 Content만 조합한 저작 원본을 만든 뒤 브라우저 검증과 다운로드 전달까지 수행합니다. 정상 결과는 정확히 하나의 <code>index.html</code>이며 더블클릭하면 열리고 인터넷, 서버, 저장소, <code>app.js</code>, CSS, 이미지, 폰트 폴더가 필요하지 않습니다.</p>
+        <p><strong>웹 AI</strong>(ChatGPT Web · Claude Web · Gemini Web)는 빌더를 실행할 수 없으므로 Content와 <code>&lt;script src&gt;</code> 한 줄로 프롬프트 안에서 끝냅니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하며, 오프라인 검증 파일은 아닙니다. 오프라인 <code>index.html</code>이 필요하면 Claude Code · Codex · Gemini CLI에서 요청하세요.</p>
+        <div class="copy-block"><pre id="usageFollowup">메뉴에 '재고 현황'과 '발주 관리'를 추가하고, 각 Page는 검색조건과 표, 페이지네이션으로 구성해줘.</pre><button class="copy-button" type="button" data-copy-target="usageFollowup">복사</button></div>
+        <p class="guide-note">위는 이어서 요청하는 예시입니다. 메뉴를 바꿔도 Frame 소스는 수정되지 않습니다.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="guide-panel" aria-labelledby="envTitle">
+    <div class="theme-panel-heading"><div><p class="eyebrow">PLATFORMS</p><h2 id="envTitle">환경별 준비 방식</h2></div></div>
+    <div class="guide-table-wrap">
+      <table class="guide-table">
+        <caption>환경별 준비 방식과 결과</caption>
+        <thead><tr><th scope="col">환경</th><th scope="col">준비 방식</th><th scope="col">화면 결과</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Claude Code</th><td>저장소 체크아웃 또는 <code>.claude-plugin</code> 플러그인 + 공통 Skill</td><td>빌더 실행 → 검증된 오프라인 <code>index.html</code></td></tr>
+          <tr><th scope="row">Codex</th><td>저장소 체크아웃 또는 <code>.codex-plugin</code> 호환 플러그인 + 공통 Skill</td><td>빌더 실행 → 검증된 오프라인 <code>index.html</code></td></tr>
+          <tr><th scope="row">Gemini CLI</th><td><code>gemini-extension.json</code> + <code>GEMINI.md</code>로 공통 Skill 로드</td><td>빌더 실행 → 검증된 오프라인 <code>index.html</code></td></tr>
+          <tr><th scope="row">ChatGPT Web</th><td><code>bootstrap.md</code>를 읽는 Web Bootstrap</td><td>Web Runtime 한 줄로 프롬프트 안에서 완성(인터넷 필요)</td></tr>
+          <tr><th scope="row">Claude Web</th><td>공통 Skill 업로드 또는 Web Bootstrap</td><td>Web Runtime 한 줄로 프롬프트 안에서 완성(인터넷 필요)</td></tr>
+          <tr><th scope="row">Gemini Web</th><td>Web Bootstrap (영구 등록 경로 없음)</td><td>Web Runtime 한 줄로 프롬프트 안에서 완성(인터넷 필요)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="guide-grid">
+      <article class="guide-card">
+        <h3>AI가 정하는 것</h3>
+        <ul class="guide-list"><li>업무 요구에 맞는 메뉴와 Page 수</li><li>Page마다 검색조건 · 표 · 카드 · 폼 · 차트 구성</li><li>등록 Component 재사용, Layout Primitive로 여백·격자 통일</li></ul>
+      </article>
+      <article class="guide-card">
+        <h3>고정되어 바뀌지 않는 것</h3>
+        <ul class="guide-list"><li>Frame · Header · 왼쪽 메뉴 · 상태 표시줄</li><li>일산병원 로고 · 아이콘 · Noto Sans KR · Theme</li><li>Component 모양과 상태(hover · focus · disabled)</li></ul>
+      </article>
+    </div>
+    <p class="guide-note">이 가이드는 저장소의 <code>guide/nhimc-design-guide.html</code>입니다. 다시 열려면 <code>open-guide.cmd</code>(Windows)를 실행하거나 파일을 더블클릭하세요.</p>
+  </section>
+</main>

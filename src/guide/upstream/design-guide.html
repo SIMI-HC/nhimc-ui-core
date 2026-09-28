@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko" data-theme="light" data-theme-color="nhimc-default">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Design Guide · NHIMC Design System</title>
+  <link rel="icon" href="assets/logo/brandmark-solo-logo-1.svg">
+  <link rel="stylesheet" href="design-tokens.css">
+  <link rel="stylesheet" href="design-guide.css">
+</head>
+<body>
+  <a class="skip-link" href="#galleryGrid">갤러리 본문 바로가기</a>
+  <nav class="section-nav" id="sectionNav" aria-label="페이지 섹션 이동">
+    <a href="#sectionBrand" data-nav-target="sectionBrand" aria-label="HIP"><span class="section-nav-tooltip" aria-hidden="true">HIP</span></a>
+    <a href="#sectionTheme" data-nav-target="sectionTheme" aria-label="Color Theme"><span class="section-nav-tooltip" aria-hidden="true">Color Theme</span></a>
+    <a href="#sectionIcons" data-nav-target="sectionIcons" aria-label="Icon Library"><span class="section-nav-tooltip" aria-hidden="true">Icon Library</span></a>
+    <a href="#sectionLibrary" data-nav-target="sectionLibrary" aria-label="Frame · Template · Component"><span class="section-nav-tooltip" aria-hidden="true">Frame · Template · Component</span></a>
+  </nav>
+  <header class="gallery-header">
+    <a class="brand" href="../../SKILL.md" aria-label="NHIMC Worktool 스킬 문서로 이동">
+      <img src="assets/logo/brandmark-row-logo.svg" alt="">
+      <span><strong>Design Guide</strong><small>NHIMC Design System</small></span>
+    </a>
+    <nav class="doc-links" aria-label="디자인 문서">
+      <a href="design.md">Design</a>
+      <a href="../../components/registry.md">Components</a>
+      <a href="../../components/icons.md">Icons</a>
+      <a href="../../templates/catalog.yaml">Catalog</a>
+      <a href="../../SKILL.md">Skill</a>
+    </nav>
+    <button class="icon-button theme-button" id="themeToggle" type="button" aria-label="다크 Preview로 전환" title="다크 Preview로 전환">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span id="themeLabel">다크 Preview</span>
+    </button>
+  </header>
+
+  <main class="gallery-main">
+    <section class="hero" aria-labelledby="galleryTitle">
+      <p class="eyebrow">CANONICAL PREVIEW</p>
+      <div class="hero-title-row">
+        <h1 id="galleryTitle">Design Guide</h1>
+        <dl class="counts" id="galleryCounts" aria-label="등록 항목 수"></dl>
+      </div>
+      <p>NHIMC Design System의 Frame, Template, Component, Icon을 한눈에 확인할 수 있습니다.</p>
+      <button class="builder-open" id="builderOpen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="18" r="2"/></svg> 프롬프트 만들기 — Layout·Theme 선택해서 바로 붙여넣을 프롬프트 추출하기</button>
+    </section>
+
+    <section class="brand-panel" id="sectionBrand" aria-labelledby="brandPanelTitle">
+      <div class="theme-panel-heading">
+        <div><p class="eyebrow">HOSPITAL IDENTITY</p><h2 id="brandPanelTitle">HIP</h2></div>
+        <p>일산병원 공식 로고와 폰트를 확인합니다.</p>
+      </div>
+      <div class="brand-subsection">
+        <h3 id="brandLogoSubtitle">Brand Logo</h3>
+        <p>일산병원 공식 로고만 사용합니다. 상황별 변형은 참고용이며 기본값은 가로형·단독형 1입니다.</p>
+      </div>
+      <div class="brand-options" id="brandLogoOptions" role="group" aria-label="일산병원 로고 변형"></div>
+      <div class="brand-subsection font-subsection">
+        <h3 id="fontSubtitle">Font</h3>
+        <p>모든 화면은 이 폰트 스택만 사용하며 다른 폰트로 대체하지 않습니다.</p>
+      </div>
+      <div class="font-options" id="fontOptions" role="group" aria-label="사용 가능한 폰트 굵기"></div>
+    </section>
+
+    <section class="theme-panel" id="sectionTheme" aria-labelledby="themePanelTitle">
+      <div class="theme-panel-heading">
+        <div><p class="eyebrow">SEMANTIC COLOR</p><h2 id="themePanelTitle">Color Theme</h2></div>
+        <p><span id="themeDescription" aria-live="polite"></span> · <a class="doc-inline-link" href="design.md">design.md 열기</a></p>
+      </div>
+      <div class="theme-options" id="themeOptions" role="group" aria-label="색상 테마 선택"></div>
+      <p class="theme-recommendation"><strong>추천:</strong> <span id="themeRecommendation"></span></p>
+    </section>
+
+    <section class="icon-library" id="sectionIcons" aria-labelledby="iconLibraryTitle">
+      <div class="icon-library-head"><div><p class="eyebrow">CANONICAL SVG</p><h2 id="iconLibraryTitle">Icon Library</h2><p>24×24 · stroke-width=2 · round cap/join 규격의 업무용 SVG 아이콘을 검색하고 확대 확인합니다. <a class="doc-inline-link" href="../../components/icons.md">icons.md 열기</a></p></div><div class="icon-library-controls"><label class="icon-search"><span class="sr-only">아이콘 검색</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="iconSearch" type="search" placeholder="아이콘 이름·용도 검색" autocomplete="off"></label></div></div>
+      <div class="icon-library-body" id="iconLibraryBody">
+        <div class="icon-categories" id="iconCategories" role="group" aria-label="아이콘 분류"></div>
+        <p class="icon-status" id="iconStatus" role="status" aria-live="polite"></p>
+        <div class="icon-grid" id="iconGrid"></div>
+      </div>
+    </section>
+
+    <section class="library-panel" id="sectionLibrary" aria-labelledby="libraryPanelTitle">
+      <div class="theme-panel-heading">
+        <div><p class="eyebrow">CANONICAL PREVIEW</p><h2 id="libraryPanelTitle">Frame · Template · Component</h2></div>
+        <p>Layout Frame, Golden Template, 재사용 Component를 한 화면에서 확인합니다. <a class="doc-inline-link" href="../../templates/catalog.yaml">catalog.yaml 열기</a> · <a class="doc-inline-link" href="../../components/registry.md">registry.md 열기</a></p>
+      </div>
+      <section class="toolbar" aria-label="갤러리 검색과 필터">
+        <div class="filters" role="group" aria-label="종류 필터">
+          <button type="button" class="filter active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="filter" data-filter="frame" aria-pressed="false">Frames</button>
+          <button type="button" class="filter" data-filter="template" aria-pressed="false">Templates</button>
+          <button type="button" class="filter" data-filter="component" aria-pressed="false">Components</button>
+        </div>
+        <label class="search"><span class="sr-only">Guide 검색</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="gallerySearch" type="search" placeholder="이름, 설명, 태그 검색" autocomplete="off"></label>
+      </section>
+
+      <p class="result-status" id="resultStatus" role="status" aria-live="polite"></p>
+      <div class="gallery-grid" id="galleryGrid"></div>
+      <section class="empty-state" id="emptyState" hidden><h2>검색 결과가 없습니다.</h2><p>검색어를 바꾸거나 All 필터를 선택해 보세요.</p></section>
+    </section>
+  </main>
+
+  <dialog class="preview-dialog" id="previewDialog" aria-labelledby="previewTitle">
+    <header><div><span class="type-badge" id="previewType"></span><h2 id="previewTitle"></h2><p id="previewDescription"></p></div><button class="icon-button" id="previewClose" type="button" aria-label="상세 Preview 닫기" title="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div class="preview-tabs" id="previewTabs" role="tablist" aria-label="상세 보기 전환">
+      <button type="button" class="preview-tab active" data-preview-tab="preview" role="tab" aria-selected="true">Preview</button>
+      <button type="button" class="preview-tab" data-preview-tab="structure" role="tab" aria-selected="false">구조 보기</button>
+      <button type="button" class="preview-tab" data-preview-tab="contract" role="tab" aria-selected="false">Contract</button>
+    </div>
+    <div class="dialog-preview" id="previewPanelPreview" role="tabpanel"><iframe id="detailFrame" title="상세 UI Preview"></iframe><div class="preview-loading" id="detailLoading" aria-hidden="true"><span class="preview-loading-dot"></span></div><div class="lock-overlay" id="previewStructureOverlay" aria-hidden="true" hidden></div></div>
+    <div class="dialog-structure" id="previewPanelStructure" role="tabpanel" hidden></div>
+    <div class="dialog-contract" id="previewPanelContract" role="tabpanel" hidden></div>
+    <footer><span id="previewContext"></span><span id="previewLifecycle"></span><a id="previewSource" target="_blank" rel="noopener">정본 열기</a></footer>
+  </dialog>
+  <dialog class="builder-dialog" id="promptBuilderDialog" aria-labelledby="builderTitle">
+    <header><div><span class="type-badge">PROMPT</span><h2 id="builderTitle">프롬프트 만들기</h2><p>Layout·Theme을 고르면 그대로 다른 대화에 붙여넣을 수 있는 프롬프트를 만듭니다. Template은 참고용일 뿐이라 항상 AI 추천으로 고정됩니다.</p></div><button class="icon-button" id="builderClose" type="button" aria-label="프롬프트 만들기 닫기" title="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div class="builder-body">
+      <section class="builder-step" aria-labelledby="builderThemeTitle">
+        <h3 id="builderThemeTitle">1. Theme</h3>
+        <div class="builder-options" id="builderThemeOptions" role="group" aria-label="Theme 선택"></div>
+      </section>
+      <section class="builder-step" aria-labelledby="builderLayoutTitle">
+        <h3 id="builderLayoutTitle">2. Layout</h3>
+        <div class="builder-options" id="builderLayoutOptions" role="group" aria-label="Layout 선택"></div>
+      </section>
+      <section class="builder-step">
+        <h3>3. 요구사항 <span class="builder-hint">(선택 입력)</span></h3>
+        <textarea id="builderRequirements" placeholder="예: 사용자 목록 화면, 상태·부서 필터, 다크모드 확인"></textarea>
+      </section>
+    </div>
+    <footer class="builder-footer">
+      <pre id="builderPrompt" aria-live="polite"></pre>
+      <div class="builder-actions"><span id="builderCopyStatus" role="status" aria-live="polite"></span><button class="builder-copy" id="builderCopy" type="button" disabled>프롬프트 복사</button></div>
+    </footer>
+  </dialog>
+  <dialog class="icon-dialog" id="iconDialog" aria-labelledby="iconDialogTitle"><header><div><span class="type-badge">ICON</span><h2 id="iconDialogTitle"></h2><p id="iconDialogMeta"></p></div><button class="icon-button" id="iconDialogClose" type="button" aria-label="아이콘 상세 닫기" title="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></header><div class="icon-dialog-body"><div class="icon-large" id="iconLarge"></div><code id="iconCode"></code></div><footer><a href="../../assets/icons/nhimc-icons.svg" target="_blank" rel="noopener">SVG 정본 열기</a></footer></dialog>
+
+  <noscript>Design Guide를 표시하려면 JavaScript를 활성화해야 합니다.</noscript>
+  <script src="design-guide-data.js"></script>
+  <script src="design-guide.js"></script>
+</body>
+</html>

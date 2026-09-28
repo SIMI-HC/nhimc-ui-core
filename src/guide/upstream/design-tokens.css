@@ -1,0 +1,548 @@
+/* ============================================================
+   design-tokens.css — 디자인 토큰 CSS 미러
+   ------------------------------------------------------------
+   값의 정본(SSOT): ./design.md 의 YAML frontmatter
+   이 파일은 그 토큰을 CSS 변수로 옮긴 것뿐이며, 값이 어긋나면 design.md가 이긴다.
+
+   정본 출처: ui-main(shadcn/ui, apps/v4, new-york-v4 스타일) app/globals.css.
+   특정 조직의 CI/BI/HIP가 아니다 — [SOURCE] = ui-main 원본값, [EXT] = 이 시스템의 UI 확장.
+
+   primitive/scalar 토큰은 frontmatter 키와 1:1로 대응한다:
+     colors.primary   → --color-primary
+     spacing.lg       → --sp-lg
+     rounded.md       → --radius-md
+     shadow.sm        → --shadow-sm
+
+   typography의 복합 객체는 각 필드를 --type-<key>-*로 펼친다.
+   components의 복합 객체는 단일 CSS 변수로 직렬화하지 않고 사용하는 화면의
+   실제 selector로 구현한다. 그러므로 "frontmatter 전체가 CSS 변수와 1:1"이라는
+   종전 설명은 제거한다.
+
+   CSS 커스텀 프로퍼티는 @media/@container 조건식에서 평가되지 않는다. 따라서
+   --breakpoint-*·--cq-*는 정본 미러와 일반 속성/검증 스크립트용이고, 조건식에는
+   같은 px 리터럴을 쓴다. 이 예외는 design.md §4.3·§9와 ui-ux-guidelines.md §5에서
+   리터럴 집합을 토큰 값과 대조해 검증한다.
+
+   사용법 — HTML에서 폰트 → 토큰 → 화면 스타일 순으로 링크한다:
+     <link rel="stylesheet" href="assets/fonts.css">
+     <link rel="stylesheet" href="design-tokens.css">
+   ============================================================ */
+
+/* ---------- Light (기본) ---------- */
+:root {
+  /* colors — [SOURCE] app/globals.css :root */
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-card: #ffffff;
+  --color-card-foreground: #000000;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #000000;
+  --color-primary: #003d94; /* [NHIMC-SNAPSHOT] IH BLUE — 유일한 브랜드 전압. nhimc HIP 값을 한 번 복사, 실시간 참조 아님 */
+  --color-primary-foreground: #ffffff; /* [NHIMC-SNAPSHOT] */
+  --color-secondary: #f5f5f5; /* [SOURCE] ui-main 중립 그대로 */
+  --color-secondary-foreground: #171717;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-accent: #f5f5f5;
+  --color-accent-foreground: #171717;
+  --color-success: #1a6639; /* [NHIMC-SNAPSHOT] 신설 — ui-main엔 success 토큰이 없었다 */
+  --color-success-foreground: #ffffff; /* [NHIMC-SNAPSHOT] */
+  --color-warning: #e6a700; /* [NHIMC-SNAPSHOT] 신설 */
+  --color-warning-foreground: #14253a; /* [NHIMC-SNAPSHOT] 밝은 배경이라 흰 텍스트 대신 어두운 잉크 */
+  --color-destructive: #ae2222; /* [NHIMC-SNAPSHOT] ui-main 원본 oklch 대신 nhimc error로 교체 — 시맨틱 4색 통일 */
+  --color-destructive-foreground: #ffffff; /* [NHIMC-SNAPSHOT] */
+  --color-border: #e5e5e5; /* [SOURCE] 유일한 1px 경계선 톤 */
+  --color-border-strong: var(--color-border); /* [EXT] 라이트는 별칭 — 다크 전용 보정, §5 */
+  --color-border-accent: #cfdfed; /* [EXT] Card·Button·Input·Select·Table container의 연한 블루그레이 외곽선 */
+  --color-input: #bfd2e6; /* [EXT] 입력 컨트롤의 옅은 푸른 경계 */
+  --color-ring: #6b9ddd; /* [EXT] 브랜드 계열 포커스 링 */
+  --color-scrollbar-thumb: #9e9e9e; /* [EXT] 예전 TOP native scrollbar에 가까운 중립 회색 thumb */
+  --color-scrollbar-thumb-hover: #7d7d7d; /* [EXT] 라이트 중립 회색 thumb hover */
+  --color-scrollbar-track: transparent; /* [EXT] Frame 면을 유지하는 track */
+  --color-category-sky: #c7e1f5; /* [NHIMC-SNAPSHOT] 분류·차트 6색 1/6 */
+  --color-category-purple: #dee2f2; /* [NHIMC-SNAPSHOT] 2/6 */
+  --color-category-pink: #f9d2dc; /* [NHIMC-SNAPSHOT] 3/6 */
+  --color-category-pear: #d7e7a4; /* [NHIMC-SNAPSHOT] 4/6 */
+  --color-category-yellow: #ffe787; /* [NHIMC-SNAPSHOT] 5/6 */
+  --color-category-apricot: #fcc8ac; /* [NHIMC-SNAPSHOT] 6/6 */
+  --color-category-foreground: #14253a; /* [NHIMC-SNAPSHOT] 파스텔 위 텍스트 — 흰 텍스트 금지 */
+  --color-green-400: #05df72; /* [SOURCE-EXT] dashboard-01 source utility의 standalone 해소값 — nhimc와 무관 */
+  --color-green-500: #00c758;
+  --color-chart-1: var(--color-category-sky); /* [NHIMC-SNAPSHOT] 이전 blue 톤 사다리에서 category 다색상으로 교체 */
+  --color-chart-2: var(--color-category-purple);
+  --color-chart-3: var(--color-category-pink);
+  --color-chart-4: var(--color-category-pear);
+  --color-chart-5: var(--color-category-apricot);
+  --color-sidebar: #fafafa;
+  --color-sidebar-foreground: #000000;
+  --color-sidebar-primary: #171717;
+  --color-sidebar-primary-foreground: #fafafa;
+  --color-sidebar-accent: #f5f5f5;
+  --color-sidebar-accent-foreground: #171717;
+  --color-sidebar-border: #e5e5e5;
+  --color-sidebar-ring: #a1a1a1;
+  --color-surface: #f8f8f8;
+  --color-surface-foreground: var(--color-foreground);
+  --color-code: var(--color-surface);
+  --color-code-foreground: var(--color-surface-foreground);
+  --color-code-highlight: #f2f2f2;
+  --color-code-number: #747474;
+  --color-selection: #000000;
+  --color-selection-foreground: #ffffff;
+  --color-overlay: rgba(0, 0, 0, 0.5); /* [EXT] dialog/sheet 오버레이 리터럴(bg-black/50) */
+  --color-canvas: #f4f7fa; /* [EXT] 페이지 바닥 틴트 — HIP 팔레트에 없는 파생값(design.md §10) */
+  --color-sidebar-brand: var(--color-primary); /* [EXT] 브랜드 변형 사이드바 면 — primary 재사용 */
+  --color-sidebar-brand-foreground: var(--color-primary-foreground); /* [EXT] */
+  --color-sidebar-brand-foreground-70: rgba(255, 255, 255, 0.7); /* [EXT] 네이비 위 보조 텍스트 전용 — AA만 통과(AAA 미달) */
+  --color-sidebar-brand-10: rgba(255, 255, 255, 0.1); /* [EXT] 브랜드 사이드바 호버 */
+  --color-sidebar-brand-18: rgba(255, 255, 255, 0.18); /* [EXT] 브랜드 사이드바 활성 겸 장식선(3:1 미달 — 단독 의존 금지) */
+  --color-chip-sky: #c7e1f5; /* [EXT] 메뉴 아이콘 칩 — 다크에서도 고정(선례: chart-1..5) */
+  --color-chip-purple: #dee2f2; /* [EXT] */
+  --color-chip-pink: #f9d2dc; /* [EXT] */
+  --color-chip-pear: #d7e7a4; /* [EXT] */
+  --color-chip-yellow: #ffe787; /* [EXT] */
+  --color-chip-apricot: #fcc8ac; /* [EXT] */
+  --color-chip-amber: #fcd29c; /* [EXT] 참고: 환자경험 데이터허브 통합포털의 accent — 다크에서도 고정 */
+  --color-chip-foreground: #14253a; /* [EXT] 다크에서도 고정 — category-foreground(반전됨)를 가리키지 않는다 */
+  --color-band-sky: rgba(199, 225, 245, 0.3); /* [EXT] 표 열 그룹 본문 띠 — 알파여야 행 hover가 비쳐 보인다 */
+  --color-band-purple: rgba(222, 226, 242, 0.3); /* [EXT] */
+  --color-band-pink: rgba(249, 210, 220, 0.3); /* [EXT] */
+  --color-band-pear: rgba(215, 231, 164, 0.3); /* [EXT] */
+  --color-band-yellow: rgba(255, 231, 135, 0.3); /* [EXT] */
+  --color-band-apricot: rgba(252, 200, 172, 0.3); /* [EXT] */
+
+  /* color-mix() 대체 사전 계산값 — Edge 92는 color-mix()를 지원하지 않는다.
+     각 값은 "베이스 토큰 N% + 대상 M%"를 미리 섞어둔 것이며, 베이스 토큰이 바뀌면
+     이 값도 같이 재계산해야 한다(design.md 22번째 줄 주석 참고). */
+  --color-ring-50: rgba(161, 161, 161, 0.5); /* ring 50% + transparent */
+  --color-primary-90: rgba(0, 61, 148, 0.9); /* primary 90% + transparent — 버튼 hover */
+  --color-destructive-90: rgba(174, 34, 34, 0.9); /* destructive 90% + transparent — 버튼 hover, alert 텍스트 */
+  --color-secondary-80: rgba(245, 245, 245, 0.8); /* secondary 80% + transparent — 버튼 hover */
+  --color-muted-50: rgba(245, 245, 245, 0.5); /* muted 50% + transparent — 행 hover */
+  --color-border-50: rgba(229, 229, 229, 0.5); /* border 50% + transparent — 툴팁/카드 보더 */
+  --color-primary-20: rgba(0, 61, 148, 0.2); /* primary 20% + transparent — progress track */
+  --color-foreground-10: rgba(0, 0, 0, 0.1); /* foreground 10% + transparent — 콤보박스 그림자 */
+  --color-background-88: rgba(255, 255, 255, 0.88); /* background 88% + transparent — 반투명 헤더 */
+  --color-canvas-88: rgba(244, 247, 250, 0.88); /* [EXT] canvas 88% + transparent — 캔버스 위 반투명 상단바(스크롤 시 흰 이음매 방지) */
+  --color-alert-destructive-bg: #f9eded; /* destructive 8% + card */
+  --color-alert-destructive-border: #d2a1a1; /* destructive 35% + border */
+  --color-alert-warning-bg: #fcf4e0; /* warning 12% + card */
+  --color-alert-warning-border: #e5cc89; /* warning 40% + border */
+  --color-alert-success-bg: #edf3ef; /* success 8% + card */
+  --color-alert-success-border: #9eb9a9; /* success 35% + border */
+  --color-danger-zone-bg: #faf2f2; /* destructive 6% + card — 위험 구역 카드 배경 */
+
+  /* typography — source utility 조합을 문서용 복합 토큰으로 정규화 */
+  --font-sans:
+    Geist, "Noto Sans KR", ui-sans-serif, system-ui, -apple-system,
+    sans-serif; /* Geist [SOURCE] 미확보, "Noto Sans KR" [NHIMC-SNAPSHOT] 활성 폰트(assets/fonts.css) */
+  --font-heading:
+    Geist, "Noto Sans KR", ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-mono:
+    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace; /* font 파일 요청 weight는 400 */
+  --type-display-lg-family: var(--font-heading);
+  --type-display-lg-size: 30px;
+  --type-display-lg-weight: 600;
+  --type-display-lg-line: 36px;
+  --type-display-lg-tracking: 0em;
+  --type-display-md-family: var(--font-heading);
+  --type-display-md-size: 24px;
+  --type-display-md-weight: 600;
+  --type-display-md-line: 32px;
+  --type-display-md-tracking: 0em;
+  --type-display-sm-family: var(--font-heading);
+  --type-display-sm-size: 18px;
+  --type-display-sm-weight: 600;
+  --type-display-sm-line: 18px;
+  --type-display-sm-tracking: 0em;
+  --type-card-title-family: var(--font-heading);
+  --type-card-title-size: 16px;
+  --type-card-title-weight: 600;
+  --type-card-title-line: 16px;
+  --type-card-title-tracking: 0em;
+  --type-empty-title-family: var(--font-heading);
+  --type-empty-title-size: 18px;
+  --type-empty-title-weight: 500;
+  --type-empty-title-line: 28px;
+  --type-empty-title-tracking: -0.025em;
+  --type-body-md-family: var(--font-sans);
+  --type-body-md-size: 16px;
+  --type-body-md-weight: 400;
+  --type-body-md-line: 24px;
+  --type-body-md-tracking: 0em;
+  --type-body-sm-family: var(--font-sans);
+  --type-body-sm-size: 14px;
+  --type-body-sm-weight: 400;
+  --type-body-sm-line: 20px;
+  --type-body-sm-tracking: 0em;
+  --type-caption-family: var(--font-sans);
+  --type-caption-size: 12px;
+  --type-caption-weight: 400;
+  --type-caption-line: 16px;
+  --type-caption-tracking: 0em;
+  --type-badge-family: var(--font-sans);
+  --type-badge-size: 12px;
+  --type-badge-weight: 500;
+  --type-badge-line: 16px;
+  --type-badge-tracking: 0em;
+  --type-label-family: var(--font-sans);
+  --type-label-size: 14px;
+  --type-label-weight: 500;
+  --type-label-line: 14px;
+  --type-label-tracking: 0em;
+  --type-description-family: var(--font-sans);
+  --type-description-size: 14px;
+  --type-description-weight: 400;
+  --type-description-line: 21px;
+  --type-description-tracking: 0em;
+  --type-nav-link-family: var(--font-sans);
+  --type-nav-link-size: 14px;
+  --type-nav-link-weight: 400;
+  --type-nav-link-line: 20px;
+  --type-nav-link-tracking: 0em;
+  --type-nav-link-active-family: var(--font-sans);
+  --type-nav-link-active-size: 14px;
+  --type-nav-link-active-weight: 600;
+  --type-nav-link-active-line: 20px;
+  --type-nav-link-active-tracking: 0em;
+  --type-brand-label-family: var(--font-sans);
+  --type-brand-label-size: 14px;
+  --type-brand-label-weight: 700;
+  --type-brand-label-line: 20px;
+  --type-brand-label-tracking: 0em;
+  --type-button-md-family: var(--font-sans);
+  --type-button-md-size: 14px;
+  --type-button-md-weight: 500;
+  --type-button-md-line: 20px;
+  --type-button-md-tracking: 0em;
+  --type-metric-family: var(--font-sans);
+  --type-metric-size: 24px;
+  --type-metric-weight: 600;
+  --type-metric-line: 32px;
+  --type-metric-tracking: 0em;
+  --type-chart-value-family: var(--font-mono);
+  --type-chart-value-size: 12px;
+  --type-chart-value-weight: 500;
+  --type-chart-value-line: 16px;
+  --type-chart-value-tracking: 0em;
+  --type-alert-title-family: var(--font-heading);
+  --type-alert-title-size: 18px;
+  --type-alert-title-weight: 600;
+  --type-alert-title-line: 28px;
+  --type-alert-title-tracking: 0em;
+
+  /* spacing — 4px 기준 8단계 */
+  --sp-xs: 4px;
+  --sp-sm: 8px;
+  --sp-md: 12px;
+  --sp-base: 16px;
+  --sp-lg: 24px;
+  --sp-xl: 32px;
+  --sp-login: 40px;
+  --sp-xxl: 48px;
+  --sp-section: 64px; /* section = [EXT] */
+
+  /* rounded — [SOURCE] radius base 0.625rem(10px)에서 계산 */
+  --radius-none: 0px;
+  --radius-xs: 4px; /* [EXT-usage] checkbox 전용 고정 리터럴 */
+  --radius-2xs: 5px; /* [EXT] calc(var(--radius)-5px) — input-group xs 버튼·중첩 kbd 모서리 전용 */
+  --radius-sm: 6px;
+  --radius-md: 8px; /* 버튼·인풋·셀렉트·텍스트에어리어·스켈레톤·툴팁·드롭다운 기본 */
+  --radius-lg: 10px; /* 다이얼로그·드롭다운 서브메뉴 */
+  --radius-xl: 14px; /* 카드·탭 리스트 */
+  --radius-2xl: 18px;
+  --radius-3xl: 22px;
+  --radius-4xl: 26px;
+  --radius-full: 9999px;
+
+  /* shadow — [EXT] source의 utility 이름을 Tailwind 기본 계산값으로 펼침 */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-xs-dark: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm-dark:
+    0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md-dark:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg-dark:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl-dark:
+    0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+
+  /* motion — 상한 500ms(design.md §4.7 Sheet 열림, 원 스캐폴드의 300ms 상한보다 큼) */
+  --motion-fast: 150ms;
+  --motion-base: 200ms;
+  --motion-slow: 300ms;
+  --motion-slower: 500ms;
+  --motion-max: 500ms;
+  --motion-easing: ease-in-out;
+  --motion-reduced-motion: "prefers-reduced-motion 시 스켈레톤 pulse·스피너 회전·아코디언 슬라이드 애니메이션 정지";
+
+  /* layout */
+  --container-max: 1400px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-3xl: 1600px;
+  --breakpoint-4xl: 2000px;
+  --cq-xl: 576px;
+  --cq-5xl: 1024px;
+  --cq-card-lg: 250px;
+  --header-height: 48px;
+  --sidebar-width: 256px;
+  --sidebar-width-icon: 64px;
+  --sidebar-width-mobile: 288px;
+  --dashboard-sidebar-width: 288px;
+  --dashboard-sidebar-width-icon: var(--sidebar-width-icon);
+  --sidebar-inset-gap: 8px;
+  --sidebar-inner-width: 272px;
+  --sidebar-user-height: 48px;
+}
+
+/* ---------- Dark ---------- */
+[data-theme="dark"] {
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-card: #171717;
+  --color-card-foreground: #fafafa;
+  --color-popover: #171717;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #6ba6e4; /* [NHIMC-SNAPSHOT] 다크 IH BLUE */
+  --color-primary-foreground: #08182b; /* [NHIMC-SNAPSHOT] */
+  --color-secondary: #262626; /* [SOURCE] */
+  --color-secondary-foreground: #fafafa;
+  --color-muted: #262626;
+  --color-muted-foreground: #a1a1a1;
+  --color-accent: #404040;
+  --color-accent-foreground: #fafafa;
+  --color-success: #4fc183; /* [NHIMC-SNAPSHOT] */
+  --color-success-foreground: #08182b; /* [NHIMC-SNAPSHOT] */
+  --color-warning: #f2b330; /* [NHIMC-SNAPSHOT] */
+  --color-warning-foreground: #08182b; /* [NHIMC-SNAPSHOT] */
+  --color-destructive: #ff6b60; /* [NHIMC-SNAPSHOT] */
+  --color-destructive-foreground: #08182b; /* [NHIMC-SNAPSHOT] */
+  --color-border: rgba(255, 255, 255, 0.10); /* [SOURCE] */
+  --color-border-strong: rgba(255, 255, 255, 0.35); /* [EXT] card/canvas 명도차가 1.2:1뿐이고 검은 그림자가 다크에서 기능하지 않아 카드·알림·표 컨테이너 전용으로 보정(§5·§10) */
+  --color-border-accent: rgba(107, 166, 228, 0.42); /* [EXT] 다크의 Card·Button·Select·Table 연한 푸른 외곽선 */
+  --color-input: rgba(107, 166, 228, 0.48); /* [EXT] 다크 입력 컨트롤의 푸른 경계 */
+  --color-ring: #6ba6e4; /* [EXT] 다크 브랜드 계열 포커스 링 */
+  --color-scrollbar-thumb: #6f6f6f; /* [EXT] 다크 앱 내부 중립 회색 thumb */
+  --color-scrollbar-thumb-hover: #8a8a8a; /* [EXT] 다크 중립 회색 thumb hover */
+  --color-scrollbar-track: transparent; /* [EXT] 다크 Frame 면을 유지하는 track */
+  --color-category-sky: #16304d; /* [NHIMC-SNAPSHOT] nhimc는 라이트/다크 동일값이지만, 이 시스템은 다크 카드 위 대비를 위해 어두운 톤을 새로 짝지었다(design.md §10) */
+  --color-category-purple: #2a2e4d; /* [NHIMC-SNAPSHOT] */
+  --color-category-pink: #3b1f20; /* [NHIMC-SNAPSHOT] */
+  --color-category-pear: #1e3524; /* [NHIMC-SNAPSHOT] */
+  --color-category-yellow: #3a2e12; /* [NHIMC-SNAPSHOT] */
+  --color-category-apricot: #3d2a1e; /* [NHIMC-SNAPSHOT] */
+  --color-category-foreground: #e6edf5; /* [NHIMC-SNAPSHOT] */
+  /* 차트는 다크에서도 라이트 파스텔 그대로 쓴다 — 위 category-dark(배지 배경용
+     저채도 톤)를 그대로 재사용하면 어두운 배경에 묻힌다. 파스텔은 어두운 배경
+     위에서 오히려 선명하므로 리터럴로 라이트 값을 직접 넣는다(design.md §10). */
+  --color-chart-1: #c7e1f5;
+  --color-chart-2: #dee2f2;
+  --color-chart-3: #f9d2dc;
+  --color-chart-4: #d7e7a4;
+  --color-chart-5: #fcc8ac;
+  --color-sidebar: #171717;
+  --color-sidebar-foreground: #fafafa;
+  --color-sidebar-primary: #1447e6; /* 다크만 유채색 파랑 — 소스 원값 그대로 */
+  --color-sidebar-primary-foreground: #fafafa;
+  --color-sidebar-accent: #262626;
+  --color-sidebar-accent-foreground: #fafafa;
+  --color-sidebar-border: rgba(255, 255, 255, 0.10);
+  --color-sidebar-ring: #525252;
+  --color-surface: #161616;
+  --color-surface-foreground: #a1a1a1;
+  --color-code: var(--color-surface);
+  --color-code-foreground: var(--color-surface-foreground);
+  --color-code-highlight: #262626;
+  --color-code-number: #a4a4a4;
+  --color-selection: #e5e5e5;
+  --color-selection-foreground: #171717;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-canvas: var(--color-background); /* [EXT] 다크는 카드(#171717)가 이미 바닥보다 밝아 위계가 성립 — 바닥을 또 틴트하지 않는다(design.md §10) */
+  --color-sidebar-brand: var(--color-sidebar); /* [EXT] 다크에서는 네이비를 쓰지 않는다(design.md §10) */
+  --color-sidebar-brand-foreground: var(--color-sidebar-foreground); /* [EXT] */
+  --color-sidebar-brand-foreground-70: rgba(250, 250, 250, 0.7); /* [EXT] */
+  --color-sidebar-brand-10: rgba(255, 255, 255, 0.1); /* [EXT] */
+  --color-sidebar-brand-18: rgba(255, 255, 255, 0.18); /* [EXT] */
+  --color-chip-sky: #c7e1f5; /* [EXT] 라이트와 동일 값 고정 */
+  --color-chip-purple: #dee2f2; /* [EXT] */
+  --color-chip-pink: #f9d2dc; /* [EXT] */
+  --color-chip-pear: #d7e7a4; /* [EXT] */
+  --color-chip-yellow: #ffe787; /* [EXT] */
+  --color-chip-apricot: #fcc8ac; /* [EXT] */
+  --color-chip-amber: #fcd29c; /* [EXT] 라이트와 동일 값 고정 */
+  --color-chip-foreground: #14253a; /* [EXT] 라이트와 동일 값 고정 */
+  --color-band-sky: rgba(22, 48, 77, 0.45); /* [EXT] 다크 category 톤 기반, 카드보다 진한 톤 위 45% 알파 */
+  --color-band-purple: rgba(42, 46, 77, 0.45); /* [EXT] */
+  --color-band-pink: rgba(59, 31, 32, 0.45); /* [EXT] */
+  --color-band-pear: rgba(30, 53, 36, 0.45); /* [EXT] */
+  --color-band-yellow: rgba(58, 46, 18, 0.45); /* [EXT] */
+  --color-band-apricot: rgba(61, 42, 30, 0.45); /* [EXT] */
+
+  /* color-mix() 대체 사전 계산값 — 라이트와 동일한 이유(위 :root 주석 참고) */
+  --color-ring-50: rgba(115, 115, 115, 0.5);
+  --color-primary-90: rgba(107, 166, 228, 0.9);
+  --color-destructive-90: rgba(255, 107, 96, 0.9);
+  --color-secondary-80: rgba(38, 38, 38, 0.8);
+  --color-muted-50: rgba(38, 38, 38, 0.5);
+  --color-border-50: rgba(255, 255, 255, 0.05);
+  --color-primary-20: rgba(107, 166, 228, 0.2);
+  --color-foreground-10: rgba(250, 250, 250, 0.1);
+  --color-background-88: rgba(10, 10, 10, 0.88);
+  --color-canvas-88: rgba(10, 10, 10, 0.88); /* [EXT] 다크는 canvas = background라 background-88과 동일값 */
+  --color-alert-destructive-bg: #2a1e1d;
+  --color-alert-destructive-border: rgba(255, 130, 121, 0.415);
+  --color-alert-warning-bg: #312a1a;
+  --color-alert-warning-border: rgba(244, 189, 75, 0.46);
+  --color-alert-success-bg: #1b2520;
+  --color-alert-success-border: rgba(107, 203, 150, 0.415);
+  --color-danger-zone-bg: #251c1b;
+
+  /* 다크는 배경 자체가 어두워 옅은 그림자가 안 보이므로 알파를 강화한다 */
+  --shadow-xs: var(--shadow-xs-dark);
+  --shadow-sm: var(--shadow-sm-dark);
+  --shadow-md: var(--shadow-md-dark);
+  --shadow-lg: var(--shadow-lg-dark);
+  --shadow-xl: var(--shadow-xl-dark);
+}
+
+/* ============================================================
+   Theme Color — [data-theme-color] 오버레이
+   ------------------------------------------------------------
+   값의 정본(SSOT): ../../tokens/themes/catalog.yaml (이 파일이 아니다).
+   Theme은 Layout/Page Template과 독립된 축이며 위 :root/[data-theme="dark"]가
+   정의하는 무채색 중립(background/surface/border/text)과 status(success/warning/
+   destructive)은 그대로 공유한다. 일반 Theme은 classification(category/chart/
+   chip/band)도 공유한다. Color Mix만 탐색용 chip 6개를 함께 바꿀 수 있다.
+   모든 Theme이 바꾸는 브랜드 slot은 5개다:
+     --color-primary, --color-primary-foreground, --color-ring,
+     --color-primary-90(버튼 hover 알파), --color-primary-20(progress track 알파)
+   [data-theme-color]가 없으면 위 :root/[data-theme="dark"]의 nhimc-default 값을
+   그대로 쓴다. Theme × Mode는 독립 조합이므로 각 Theme은 Light/Dark 블록을
+   모두 제공한다(예: blue Light, blue Dark).
+   ============================================================ */
+
+[data-theme-color="mint"] {
+  --color-primary: #417f84;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #c8e7e9;
+  --color-primary-90: rgba(65, 127, 132, 0.9);
+  --color-primary-20: rgba(65, 127, 132, 0.2);
+}
+[data-theme-color="mint"][data-theme="dark"] {
+  --color-primary: #c8e7e9;
+  --color-primary-foreground: #14253a;
+  --color-ring: #c8e7e9;
+  --color-primary-90: rgba(200, 231, 233, 0.9);
+  --color-primary-20: rgba(200, 231, 233, 0.2);
+}
+
+[data-theme-color="pear"] {
+  --color-primary: #627f33;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #8db84a;
+  --color-primary-90: rgba(98, 127, 51, 0.9);
+  --color-primary-20: rgba(98, 127, 51, 0.2);
+}
+[data-theme-color="pear"][data-theme="dark"] {
+  --color-primary: #8db84a;
+  --color-primary-foreground: #14253a;
+  --color-ring: #8db84a;
+  --color-primary-90: rgba(141, 184, 74, 0.9);
+  --color-primary-20: rgba(141, 184, 74, 0.2);
+}
+
+[data-theme-color="apricot"] {
+  --color-primary: #a9653b;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #e2874f;
+  --color-primary-90: rgba(169, 101, 59, 0.9);
+  --color-primary-20: rgba(169, 101, 59, 0.2);
+}
+[data-theme-color="apricot"][data-theme="dark"] {
+  --color-primary: #e2874f;
+  --color-primary-foreground: #14253a;
+  --color-ring: #e2874f;
+  --color-primary-90: rgba(226, 135, 79, 0.9);
+  --color-primary-20: rgba(226, 135, 79, 0.2);
+}
+
+[data-theme-color="neutral"] {
+  --color-primary: #27272a;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #6b7280;
+  --color-primary-90: rgba(39, 39, 42, 0.9);
+  --color-primary-20: rgba(39, 39, 42, 0.2);
+}
+[data-theme-color="neutral"][data-theme="dark"] {
+  --color-primary: #e4e4e7;
+  --color-primary-foreground: #18181b;
+  --color-ring: #a1a1aa;
+  --color-primary-90: rgba(228, 228, 231, 0.9);
+  --color-primary-20: rgba(228, 228, 231, 0.2);
+}
+
+[data-theme-color="color-mix"] {
+  --color-primary: #003d94;
+  --color-primary-foreground: #ffffff;
+  --color-ring: #6b9ddd;
+  --color-primary-90: rgba(0, 61, 148, 0.9);
+  --color-primary-20: rgba(0, 61, 148, 0.2);
+  --color-chip-sky: #c7e1f5;
+  --color-chip-pear: #d7e7a4;
+  --color-chip-apricot: #fcc8ac;
+  --color-chip-yellow: #ffe787;
+  --color-chip-purple: #dee2f2;
+  --color-chip-pink: #f9d2dc;
+  --color-chip-amber: #fcd29c;
+  --color-accent-sky-foreground: #1e4e7a;
+  --color-accent-pear-foreground: #4b6b1f;
+  --color-accent-apricot-foreground: #9a4b1f;
+  --color-accent-yellow-foreground: #7a5a00;
+  --color-accent-purple-foreground: #3b3f73;
+  --color-accent-pink-foreground: #8a2f49;
+  --color-accent-amber-foreground: #8e550b;
+}
+[data-theme-color="color-mix"][data-theme="dark"] {
+  --color-primary: #6ba6e4;
+  --color-primary-foreground: #08182b;
+  --color-ring: #6ba6e4;
+  --color-primary-90: rgba(107, 166, 228, 0.9);
+  --color-primary-20: rgba(107, 166, 228, 0.2);
+  --color-chip-sky: #c7e1f5;
+  --color-chip-pear: #d7e7a4;
+  --color-chip-apricot: #fcc8ac;
+  --color-chip-yellow: #ffe787;
+  --color-chip-purple: #dee2f2;
+  --color-chip-pink: #f9d2dc;
+  --color-chip-amber: #fcd29c;
+  --color-accent-sky-foreground: #1e4e7a;
+  --color-accent-pear-foreground: #4b6b1f;
+  --color-accent-apricot-foreground: #9a4b1f;
+  --color-accent-yellow-foreground: #7a5a00;
+  --color-accent-purple-foreground: #3b3f73;
+  --color-accent-pink-foreground: #8a2f49;
+  --color-accent-amber-foreground: #8e550b;
+}
+
+/* Color Mix accent roles: classification/supporting emphasis only. Primary actions stay NHIMC blue. */
+[data-theme-color="color-mix"] [data-nhimc-accent="sky"]{--nhimc-accent-surface:var(--color-chip-sky);--nhimc-accent-foreground:var(--color-accent-sky-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="pear"]{--nhimc-accent-surface:var(--color-chip-pear);--nhimc-accent-foreground:var(--color-accent-pear-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="apricot"]{--nhimc-accent-surface:var(--color-chip-apricot);--nhimc-accent-foreground:var(--color-accent-apricot-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="yellow"]{--nhimc-accent-surface:var(--color-chip-yellow);--nhimc-accent-foreground:var(--color-accent-yellow-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="purple"]{--nhimc-accent-surface:var(--color-chip-purple);--nhimc-accent-foreground:var(--color-accent-purple-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="pink"]{--nhimc-accent-surface:var(--color-chip-pink);--nhimc-accent-foreground:var(--color-accent-pink-foreground)}
+[data-theme-color="color-mix"] [data-nhimc-accent="amber"]{--nhimc-accent-surface:var(--color-chip-amber);--nhimc-accent-foreground:var(--color-accent-amber-foreground)}
+[data-theme-color="color-mix"] .nhimc-accent-surface{background:var(--nhimc-accent-surface)!important;color:var(--nhimc-accent-foreground)!important}
+[data-theme-color="color-mix"] .nhimc-accent-icon{color:var(--nhimc-accent-foreground)!important}
