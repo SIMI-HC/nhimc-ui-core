@@ -10,6 +10,7 @@ from scripts.sync_nhimc_design import sync_snapshot
 from scripts.verify_nhimc_design_sync import verify_snapshot
 
 
+ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = (
     "blog.html",
     "left-blank.html",
@@ -168,6 +169,30 @@ class NhimcDesignSyncTests(unittest.TestCase):
 
         self.assertIn("upstream.digest", rules)
         self.assertIn("upstream.extra-file", rules)
+
+
+class RepositoryCanonicalSnapshotTests(unittest.TestCase):
+    def test_repository_contains_complete_pinned_snapshot(self):
+        manifest_path = ROOT / VENDOR_PREFIX / "upstream.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(
+            "08c45402eece8a7c55afc60385e8671c9f13081a", manifest["commit"]
+        )
+        self.assertEqual(EXPECTED_COUNTS, manifest["counts"])
+        self.assertEqual([], verify_snapshot(ROOT))
+
+    def test_repository_vendor_paths_disable_line_ending_conversion(self):
+        result = subprocess.run(
+            ["git", "check-attr", "text", "--", "vendor/nhimc-design/layouts/left.html"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=True,
+        )
+
+        self.assertTrue(result.stdout.rstrip().endswith("text: unset"), result.stdout)
 
 
 if __name__ == "__main__":

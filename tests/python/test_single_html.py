@@ -59,7 +59,8 @@ class SingleHtmlArtifactTests(unittest.TestCase):
             self.assertEqual(["index.html"], [path.name for path in output_dir.iterdir()])
 
             html = output.read_text(encoding="utf-8")
-            self.assertIn('name="nhimc-core-version" content="1.0.0"', html)
+            version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+            self.assertIn(f'name="nhimc-core-version" content="{version}"', html)
             self.assertIn("data:font/woff2;base64,", html)
             self.assertIn("data:image/svg+xml;base64,", html)
             self.assertIn("customElements.define('nhimc-frame'", html)

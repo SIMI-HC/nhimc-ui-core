@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "logos": [
+    {
+      "id": "row",
+      "file": "brandmark-row-logo.svg",
+      "label": "가로형",
+      "summary": "국문+영문 가로 조합, 헤더·사이드바 브랜드 영역 기본값",
+      "recommended_for": "LEFT/TOP/DEFAULT 헤더·사이드바 브랜드 영역(기본값)",
+      "role": "header-brand",
+      "default": true
+    },
+    {
+      "id": "solo-1",
+      "file": "brandmark-solo-logo-1.svg",
+      "label": "단독형 1 (테두리)",
+      "summary": "정사각형 테두리 안에 국문+영문 국·영문 병기, 파비콘과 LEFT 접힘 아이콘 기본값",
+      "recommended_for": "파비콘, LEFT 접힘 34px 아이콘(기본값)",
+      "role": "favicon-mark",
+      "default": true
+    },
+    {
+      "id": "solo-2",
+      "file": "brandmark-solo-logo-2.svg",
+      "label": "단독형 2 (영문 강조)",
+      "summary": "영문 병기를 크게 강조한 정사각형 조합",
+      "recommended_for": "정사각형 큰 배지(200px 이상) 공간, 영문 강조가 필요할 때",
+      "role": "square-badge",
+      "default": false
+    },
+    {
+      "id": "normal",
+      "file": "brandmark-normal-logo.svg",
+      "label": "조합형",
+      "summary": "가로형과 다른 비율의 국문+영문 조합 로고",
+      "recommended_for": "가로형이 맞지 않는 넓은 헤더의 대체 옵션",
+      "role": "header-brand-alt",
+      "default": false
+    },
+    {
+      "id": "eng-1",
+      "file": "brandmark-eng-logo-1.svg",
+      "label": "영문 가로형 1",
+      "summary": "NHIS 약자와 Ilsan Hospital 영문 조합, 가로",
+      "recommended_for": "영문 전용 화면의 가로 헤더",
+      "role": "header-brand-english",
+      "default": false
+    },
+    {
+      "id": "eng-2",
+      "file": "brandmark-eng-logo-2.svg",
+      "label": "영문 세로형",
+      "summary": "NHIS·Ilsan Hospital 영문 조합, 세로",
+      "recommended_for": "영문 전용 화면의 좁은 세로 공간",
+      "role": "vertical-brand-english",
+      "default": false
+    },
+    {
+      "id": "eng-3",
+      "file": "brandmark-eng-logo-3.svg",
+      "label": "영문 가로형 2 (와이드)",
+      "summary": "가장 넓은 비율의 영문 가로 조합",
+      "recommended_for": "매우 넓은 가로 공간의 영문 전용 화면",
+      "role": "header-brand-english-wide",
+      "default": false
+    },
+    {
+      "id": "verti-1",
+      "file": "brandmark-verti-logo-1.svg",
+      "label": "세로형 1",
+      "summary": "국문 국민건강보험 표기 + 일산병원 박스, 세로",
+      "recommended_for": "좁은 세로 공간(사이드 배너 등)",
+      "role": "vertical-brand",
+      "default": false
+    },
+    {
+      "id": "verti-2",
+      "file": "brandmark-verti-logo-2.svg",
+      "label": "세로형 2 (수직 텍스트)",
+      "summary": "일산병원 글자를 세로로 배치한 매우 좁고 긴 조합",
+      "recommended_for": "매우 좁고 긴 세로 공간",
+      "role": "vertical-brand-narrow",
+      "default": false
+    }
+  ]
+}

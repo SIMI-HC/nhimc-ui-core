@@ -16,7 +16,7 @@ def verify_all(root: Path = ROOT) -> int:
         ("contracts", [sys.executable, "scripts/validate_contracts.py"]),
         ("design rules", [sys.executable, "scripts/validate_design.py"]),
         ("public tree", [sys.executable, "scripts/validate_public.py"]),
-        ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py", "--allow-missing"]),
+        ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
         ("browser", [sys.executable, "scripts/run_browser_tests.py"]),
     ]
     results = []

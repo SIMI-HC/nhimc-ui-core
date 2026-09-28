@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "projectVersion": "1.0.0",
+  "projectVersion": "2.0.0",
   "components": [
     {"id":"button","selector":".nhimc-button","states":["default","hover","focus","active","disabled","busy"],"accessibility":["native button","visible focus"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:button","markup":"<button class=\"nhimc-button\" type=\"button\">Label</button>"},
     {"id":"input","selector":".nhimc-input","states":["default","focus","disabled","invalid"],"accessibility":["visible label","described error"],"tokens":["--nhimc-color-border-accent"],"implementation":"src/components/components.css","exampleMarker":"component:input","markup":"<label>Name <input class=\"nhimc-input\"></label>"},

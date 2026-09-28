@@ -40,7 +40,7 @@ REQUIRED_DECISION_HEADINGS = {
     "## Tests",
 }
 ALLOWED_THEME_SELECTORS = {":root", '[data-nhimc-theme="nhimc-light"]'}
-IGNORED_PARTS = {".git", ".superpowers", "__pycache__"}
+IGNORED_PARTS = {".git", ".superpowers", "__pycache__", "vendor"}
 
 
 def _without_comments(text: str) -> str:

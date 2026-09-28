@@ -110,6 +110,15 @@ class DesignRuleTests(unittest.TestCase):
                 "design.template-system", {item.rule for item in validate_design(root)}
             )
 
+    def test_vendored_canonical_templates_are_not_treated_as_authored_templates(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = make_minimal_design_root(Path(folder))
+            (root / "vendor/nhimc-design/templates").mkdir(parents=True)
+
+            self.assertNotIn(
+                "design.template-system", {item.rule for item in validate_design(root)}
+            )
+
     def test_hard_coded_color_outside_theme_is_rejected_case_insensitively(self):
         with tempfile.TemporaryDirectory() as folder:
             root = make_minimal_design_root(Path(folder))
