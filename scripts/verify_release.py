@@ -27,25 +27,26 @@ def unresolved_release_blockers(review: Path) -> list[str]:
     return blockers
 
 
-def verify_release(run_full_verification: bool = True) -> int:
+def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int:
+    root = root.resolve()
     categories: list[str] = []
-    if run_full_verification and verify_all():
+    if run_full_verification and verify_all(root):
         categories.append("verification gate")
 
-    if any(item.blocking for item in validate_contracts(ROOT)):
+    if any(item.blocking for item in validate_contracts(root)):
         categories.append("contract validation")
-    if any(item.blocking for item in validate_design(ROOT)):
+    if any(item.blocking for item in validate_design(root)):
         categories.append("design validation")
-    if any(item.blocking for item in scan_public_tree(ROOT)):
+    if any(item.blocking for item in scan_public_tree(root)):
         categories.append("public safety")
 
-    if unresolved_release_blockers(ROOT / "PUBLIC_ASSET_REVIEW.md"):
+    if unresolved_release_blockers(root / "PUBLIC_ASSET_REVIEW.md"):
         categories.append("public asset review")
-    if any(not (ROOT / relative).is_file() for relative in REQUIRED_LEGAL):
+    if any(not (root / relative).is_file() for relative in REQUIRED_LEGAL):
         categories.append("license or notice")
     integrity_rules = {
         finding.rule
-        for finding in validate_contracts(ROOT)
+        for finding in validate_contracts(root)
         if finding.rule in {"contract.integrity-mismatch", "contract.empty-digest"}
     }
     if integrity_rules:

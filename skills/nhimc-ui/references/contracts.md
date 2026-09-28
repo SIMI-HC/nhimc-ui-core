@@ -4,7 +4,7 @@ All paths are relative to the repository root.
 
 - `registry/project.json`: project version, default frame/theme, bootstrap vocabulary and matrix.
 - `registry/frames.json`: the `nhimc-default` custom element, content slot, menu property/event, owned shell regions, and protected hashes.
-- `registry/themes.json`: the `nhimc-light` stylesheet and registered custom-property tokens.
+- `registry/themes.json`: the `nhimc-light` token stylesheet, local font-face stylesheet, and registered custom-property tokens.
 - `registry/components.json`: reusable selectors, states, accessibility requirements, token dependencies, and implementations.
 - `registry/assets.json`: publishable asset paths, licenses, and integrity hashes.
 - `src/layouts/primitives.css`: reusable content-layout primitives.

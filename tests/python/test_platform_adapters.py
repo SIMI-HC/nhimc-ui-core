@@ -46,13 +46,13 @@ class PlatformAdapterTests(unittest.TestCase):
         table = json.loads(
             (ROOT / "registry/project.json").read_text(encoding="utf-8")
         )["bootstrapMatrix"]
-        row = next(
-            item
-            for item in table
-            if item["environment"] == "gemini-web"
-            and not item["persistentInstall"]
+        row = next(item for item in table if item["environment"] == "gemini-web")
+        self.assertTrue(
+            all(
+                outcome["status"] in {"WEB_BOOTSTRAP", "UNSUPPORTED"}
+                for outcome in row["outcomes"]
+            )
         )
-        self.assertIn(row["status"], {"WEB_BOOTSTRAP", "UNSUPPORTED"})
 
     def test_every_environment_has_a_deterministic_status(self):
         project = json.loads(
@@ -70,9 +70,16 @@ class PlatformAdapterTests(unittest.TestCase):
             },
             {row["environment"] for row in rows},
         )
-        self.assertTrue(
-            all(row["status"] in project["bootstrapStatuses"] for row in rows)
-        )
+        for row in rows:
+            self.assertNotIn("status", row)
+            outcomes = row["outcomes"]
+            self.assertGreaterEqual(len(outcomes), 2)
+            self.assertTrue(all(item["status"] in project["bootstrapStatuses"] for item in outcomes))
+            self.assertTrue(any(item["status"] != "READY" for item in outcomes))
+            if row["environment"] == "gemini-web":
+                self.assertNotIn("READY", {item["status"] for item in outcomes})
+            else:
+                self.assertIn("READY", {item["status"] for item in outcomes})
 
 
 if __name__ == "__main__":

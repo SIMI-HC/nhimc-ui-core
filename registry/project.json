@@ -9,12 +9,12 @@
     "UNSUPPORTED"
   ],
   "bootstrapMatrix": [
-    {"environment":"chatgpt-web","persistentInstall":true,"status":"READY","mechanism":"portable-plugin"},
-    {"environment":"codex","persistentInstall":true,"status":"READY","mechanism":"portable-plugin"},
-    {"environment":"claude-web","persistentInstall":true,"status":"READY","mechanism":"custom-skill-upload"},
-    {"environment":"claude-code","persistentInstall":true,"status":"READY","mechanism":"claude-plugin"},
-    {"environment":"gemini-web","persistentInstall":false,"status":"WEB_BOOTSTRAP","mechanism":"repository-context"},
-    {"environment":"gemini-cli","persistentInstall":true,"status":"READY","mechanism":"gemini-extension"}
+    {"environment":"chatgpt-web","outcomes":[{"capability":"portable-plugin-loaded-and-verified","status":"READY"},{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"codex","outcomes":[{"capability":"portable-or-compatibility-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},
+    {"environment":"claude-web","outcomes":[{"capability":"custom-skill-uploaded-and-verified","status":"READY"},{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"claude-code","outcomes":[{"capability":"claude-plugin-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]},
+    {"environment":"gemini-web","outcomes":[{"capability":"repository-context","status":"WEB_BOOTSTRAP"},{"capability":"no-compatible-loader","status":"UNSUPPORTED"}]},
+    {"environment":"gemini-cli","outcomes":[{"capability":"gemini-extension-loaded-and-verified","status":"READY"},{"capability":"readable-checkout","status":"WEB_BOOTSTRAP"},{"capability":"no-repository-access","status":"UNSUPPORTED"}]}
   ],
   "registries": [
     "registry/frames.json",

@@ -1,16 +1,16 @@
 # New Component Decision Record
 
-Use this record only when registered components and their compositions cannot meet a verified need.
+Copy this template to `docs/decisions/components/<component-id>.md`. Use it only when registered components and their compositions cannot meet a verified need. Replace every prompt and remove all TODO or unchecked checklist text before registering the component.
 
 ## Unmet use case
 
 Describe the user task and the observable behavior that is missing.
 
-## Registered compositions considered
+## Rejected registered composition
 
 List the registered components and compositions considered, and explain why each fails the use case.
 
-## Proposed public API
+## Proposed API
 
 Specify semantic markup, `.nhimc-*` selector, attributes, events, states, and controller behavior.
 

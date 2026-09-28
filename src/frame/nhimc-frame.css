@@ -6,9 +6,6 @@
   --frame-muted: var(--nhimc-color-text-muted);
   --frame-border: var(--nhimc-color-border-accent);
   --frame-focus: var(--nhimc-color-focus);
-  --frame-sidebar: var(--nhimc-frame-sidebar-width);
-  --frame-sidebar-collapsed: var(--nhimc-frame-sidebar-collapsed-width);
-  --frame-header: var(--nhimc-frame-header-height);
   --frame-radius: var(--nhimc-radius-frame);
   display: block;
   min-width: 0;
@@ -24,7 +21,7 @@ button:focus-visible { outline: 3px solid var(--frame-focus); outline-offset: 2p
 
 .frame-shell {
   display: grid;
-  grid-template-columns: var(--frame-sidebar) minmax(0, 1fr);
+  grid-template-columns: 15.5rem minmax(0, 1fr);
   width: 100%;
   height: 100%;
   padding: 8px 8px 8px 0;
@@ -32,7 +29,7 @@ button:focus-visible { outline: 3px solid var(--frame-focus); outline-offset: 2p
   transition: grid-template-columns 180ms ease;
 }
 
-:host([data-collapsed]) .frame-shell { grid-template-columns: var(--frame-sidebar-collapsed) minmax(0, 1fr); }
+:host([data-collapsed]) .frame-shell { grid-template-columns: 4.5rem minmax(0, 1fr); }
 .sidebar { min-width: 0; display: flex; flex-direction: column; padding: 2px 8px 10px; color: var(--nhimc-color-on-primary); overflow: hidden; }
 .brand { height: 58px; display: flex; align-items: center; margin-block-end: 6px; padding: 8px 10px; overflow: hidden; border-radius: 8px; background: var(--frame-surface); }
 .brand img { width: 184px; height: 40px; object-fit: contain; object-position: left center; }
@@ -58,7 +55,7 @@ button:focus-visible { outline: 3px solid var(--frame-focus); outline-offset: 2p
 
 .workspace {
   min-width: 0; min-height: 0; display: grid;
-  grid-template-rows: var(--frame-header) minmax(0, 1fr) 28px;
+  grid-template-rows: 3.5rem minmax(0, 1fr) 28px;
   border: 1px solid var(--frame-border); border-radius: var(--frame-radius);
   overflow: hidden; background: var(--frame-canvas);
 }
@@ -83,7 +80,7 @@ button:focus-visible { outline: 3px solid var(--frame-focus); outline-offset: 2p
 .mobile-navigation { padding-top: 12px; }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-  .frame-shell { grid-template-columns: var(--frame-sidebar-collapsed) minmax(0, 1fr); }
+  .frame-shell { grid-template-columns: 4.5rem minmax(0, 1fr); }
   .brand img { width: 38px; object-position: left center; }
   .menu-item { padding-inline: 8px; text-align: center; }
   .collapse { display: none; }

@@ -6,37 +6,19 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.public_inventory import iter_publishable_files
 from scripts.verify_release import verify_release
 
 
 FIXED_TIMESTAMP = (2026, 9, 28, 0, 0, 0)
-IGNORED_PARTS = {
-    ".git", ".superpowers", ".worktrees", "__pycache__", "node_modules",
-    ".pytest_cache", ".mypy_cache", "dist", "release",
-}
-UNSAFE_FIXTURE = ("tests", "fixtures", "public-safety")
-
-
 def _publishable_files(root: Path, output: Path) -> list[Path]:
-    files = []
-    for path in root.rglob("*"):
-        if not path.is_file() or path.resolve() == output.resolve():
-            continue
-        relative = path.relative_to(root)
-        if any(part in IGNORED_PARTS for part in relative.parts):
-            continue
-        if relative.parts[: len(UNSAFE_FIXTURE)] == UNSAFE_FIXTURE:
-            continue
-        if path.suffix.lower() == ".zip":
-            continue
-        files.append(path)
-    return sorted(files, key=lambda item: item.relative_to(root).as_posix())
+    return iter_publishable_files(root, excluded={output})
 
 
 def build_release(root: Path, output: Path) -> Path:
     root = root.resolve()
     output = output.resolve()
-    if verify_release(run_full_verification=False):
+    if verify_release(root=root, run_full_verification=True):
         raise RuntimeError("release gate failed; archive was not written")
 
     version = (root / "VERSION").read_text(encoding="utf-8").strip()

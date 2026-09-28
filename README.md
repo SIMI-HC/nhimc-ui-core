@@ -36,7 +36,7 @@ Open `http://localhost:8765/examples/operations/` or `http://localhost:8765/exam
 </script>
 ```
 
-Review [registered components](registry/components.json), [layout primitives](src/layouts/primitives.css), and the two complete examples at [examples/operations](examples/operations/) and [examples/administration](examples/administration/).
+Review [registered components and their canonical markup](registry/components.json), [layout primitives](src/layouts/primitives.css), and the two complete examples at [examples/operations](examples/operations/) and [examples/administration](examples/administration/). Load `src/themes/nhimc-fonts.css`, `src/themes/nhimc-light.css`, and `src/layouts/application.css` before application content.
 
 ## Themes and integrity
 
@@ -59,14 +59,14 @@ The public asset decision, including the supplied NHIMC logo and bundled Noto Sa
 
 `READY` means the host has a supported persistent loading path and passes its readiness checks. `WEB_BOOTSTRAP` is session-scoped context that must be repeated. `UNSUPPORTED` means the host cannot load the repository or shared Skill. A manifest in this repository is not proof that a user has loaded it.
 
-| Environment | Declared path | Adapter |
+| Environment | Verified persistent path | Fallback |
 | --- | --- | --- |
-| ChatGPT Web | `READY` after verified plugin loading | `plugin.json` |
-| Codex | `READY` after verified plugin loading | `plugin.json` / `.codex-plugin/plugin.json` |
-| Claude Web | `READY` after verified Skill upload | `skills/nhimc-ui` |
-| Claude Code | `READY` after verified plugin loading | `.claude-plugin/plugin.json` |
-| Gemini Web | `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` | repository session context |
-| Gemini CLI | `READY` after extension install, restart, and verification | `gemini-extension.json` / `GEMINI.md` |
+| ChatGPT Web | plugin loaded → `READY` | repository context → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
+| Codex | root/compatibility plugin loaded → `READY` | readable checkout → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
+| Claude Web | Skill uploaded → `READY` | repository context → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
+| Claude Code | plugin loaded → `READY` | readable checkout → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
+| Gemini Web | no persistent path declared | repository context → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
+| Gemini CLI | extension installed and restarted → `READY` | readable checkout → `WEB_BOOTSTRAP`; otherwise `UNSUPPORTED` |
 
 See [bootstrap.md](bootstrap.md) and `docs/platforms/` for exact host checks.
 

@@ -10,9 +10,9 @@
   --nhimc-color-text-muted: #60758b;
   --nhimc-color-border: #dce5ed;
   --nhimc-color-border-accent: #cfdfed;
-  --nhimc-color-focus: #6b9ddd;
+  --nhimc-color-focus: #2d659b;
   --nhimc-color-success: #1a6639;
-  --nhimc-color-warning: #b77900;
+  --nhimc-color-warning: #765000;
   --nhimc-color-danger: #ae2222;
   --nhimc-color-cyan: #087e8b;
   --nhimc-color-violet: #6d4fc2;
@@ -40,9 +40,6 @@
   --nhimc-control-height-sm: 2rem;
   --nhimc-control-height-md: 2.5rem;
   --nhimc-control-height-lg: 3rem;
-  --nhimc-frame-sidebar-width: 15.5rem;
-  --nhimc-frame-sidebar-collapsed-width: 4.5rem;
-  --nhimc-frame-header-height: 3.5rem;
   --nhimc-motion-fast: 120ms;
   --nhimc-motion-base: 180ms;
 }

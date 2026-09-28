@@ -116,9 +116,10 @@ export class NhimcFrame extends HTMLElement {
   }
 
   #closeDrawer() {
-    if (this.#drawer.open) this.#drawer.close();
+    const wasOpen = this.#drawer.open;
+    if (wasOpen) this.#drawer.close();
     this.#mobileButton.setAttribute('aria-expanded', 'false');
-    setTimeout(() => this.#mobileButton.focus(), 0);
+    if (wasOpen) setTimeout(() => this.#mobileButton.focus(), 0);
   }
 
   #makeMenuItem(item, level) {

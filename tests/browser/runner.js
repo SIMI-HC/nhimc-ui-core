@@ -60,11 +60,21 @@ async function verifyExample(name, expectedTitle, targetId, expectedHeading, pro
   for (const cell of exampleDocument.querySelectorAll('.nhimc-table th, .nhimc-table td')) {
     assert(cell.scrollWidth <= cell.clientWidth, `initial table cell clips content: ${name}/${cell.textContent.trim()}`);
   }
-  exampleFrame.shadowRoot.querySelector(`[data-menu-id="${targetId}"]`).click();
+  const target = exampleFrame.shadowRoot.querySelector(`[data-menu-id="${targetId}"]`);
+  if (exampleWindow.innerWidth > 767) target.focus();
+  target.click();
   await waitFor(() => exampleDocument.querySelector('h1')?.textContent === expectedHeading, `example route did not render: ${name}`);
+  if (exampleWindow.innerWidth > 767) {
+    await nextTask();
+    assert(exampleRoot.activeElement === target, `desktop navigation moved focus to a hidden control: ${name}`);
+  }
   assert(
     exampleDocument.documentElement.scrollWidth <= exampleDocument.documentElement.clientWidth,
     `example has horizontal document overflow: ${name}`,
+  );
+  assert(
+    exampleDocument.documentElement.scrollHeight <= exampleDocument.documentElement.clientHeight,
+    `example document owns vertical scrolling instead of the frame: ${name}`,
   );
   const contentViewport = exampleRoot.querySelector('.content');
   assert(
@@ -81,8 +91,26 @@ async function verifyExample(name, expectedTitle, targetId, expectedHeading, pro
 async function run() {
   const cleanupComponents = initNhimcComponents(document);
   assert(customElements.get('nhimc-frame'), 'custom element is not registered');
+  const componentRegistry = await fetch('../../registry/components.json').then((response) => response.json());
+  for (const component of componentRegistry.components) {
+    assert(document.querySelector(component.selector), `registered component specimen is missing: ${component.id}`);
+    const template = document.createElement('template');
+    template.innerHTML = component.markup;
+    assert(template.content.querySelector(component.selector), `canonical component markup is invalid: ${component.id}`);
+    if (component.id === 'tabs') {
+      const canonicalTab = template.content.querySelector('[role="tab"]');
+      assert(template.content.getElementById(canonicalTab.getAttribute('aria-controls')), 'canonical tabs markup lacks its panel');
+    }
+    if (component.id === 'dialog') {
+      assert(template.content.querySelector('[data-nhimc-dialog-open]'), 'canonical dialog markup lacks an opener');
+      assert(template.content.querySelector('[data-nhimc-dialog-close]'), 'canonical dialog markup lacks a closer');
+    }
+  }
 
   const frame = document.createElement('nhimc-frame');
+  frame.style.setProperty('--frame-sidebar', '999px');
+  frame.style.setProperty('--frame-sidebar-collapsed', '999px');
+  frame.style.setProperty('--frame-header', '999px');
   const content = document.createElement('section');
   content.textContent = 'Slotted business content';
   frame.append(content);
@@ -95,6 +123,8 @@ async function run() {
   assert(root, 'frame must expose an open shadow root for verification');
   assert(root.querySelector('slot').assignedElements().includes(content), 'slot did not receive content');
   assert(!root.querySelector('[part]'), 'frame exposed a part styling hook');
+  assert(!getComputedStyle(root.querySelector('.frame-shell')).gridTemplateColumns.startsWith('999px'), 'host CSS overrode protected sidebar dimensions');
+  assert(!getComputedStyle(root.querySelector('.workspace')).gridTemplateRows.startsWith('999px'), 'host CSS overrode protected header dimensions');
 
   const frameRegistry = await fetch('../../registry/frames.json').then((response) => response.json());
   const protectedFiles = frameRegistry.frames.find((item) => item.id === 'nhimc-default').protectedFiles;
@@ -158,6 +188,10 @@ async function run() {
   disabledButton.click();
   assert(disabledActivations === 0, 'disabled button activated');
 
+  const switchControl = document.querySelector('#test-switch');
+  switchControl.click();
+  assert(switchControl.checked, 'native switch did not toggle');
+
   const firstTab = document.querySelector('#tab-one');
   const secondTab = document.querySelector('#tab-two');
   firstTab.focus();
@@ -175,6 +209,8 @@ async function run() {
   await waitFor(() => !componentDialog.open && document.activeElement === opener, 'dialog did not close and restore focus');
 
   assert(matchMedia('(prefers-reduced-motion: reduce)').matches, 'browser test did not enable reduced motion');
+  await document.fonts.load('400 14px "Noto Sans KR"');
+  assert(document.fonts.check('400 14px "Noto Sans KR"'), 'bundled Noto Sans KR did not load');
   assert(getComputedStyle(disabledButton).transitionDuration === '0s', 'component motion was not disabled');
   cleanupComponents();
 

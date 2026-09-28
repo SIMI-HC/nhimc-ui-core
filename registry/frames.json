@@ -30,11 +30,11 @@
         },
         {
           "path": "src/frame/nhimc-frame.js",
-          "sha256": "99929999f49c5659eeffbb79620d4ae844b4c2ec56eef69fcb64ac4e3e532635"
+          "sha256": "61cf3918862ddccdefc4d5180e313f276559437eecd57bd868c5abd4d36aa402"
         },
         {
           "path": "src/frame/nhimc-frame.css",
-          "sha256": "97b06ac43b940cfad9c219c2237e00e830dbf98f4052129365e6f43791f34caf"
+          "sha256": "3e33ee30a25778442ca4c7b2e357a01fad1a62e66f63c7de49d6cfe0f79b735d"
         },
         {
           "path": "src/assets/branding/nhimc-logo.svg",

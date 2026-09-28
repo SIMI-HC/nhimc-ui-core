@@ -28,7 +28,7 @@ def _safe_relative_path(value: str) -> bool:
 def _iter_paths(value, key: str = "") -> Iterable[str]:
     if isinstance(value, dict):
         for child_key, child_value in value.items():
-            if child_key in {"path", "file", "implementation"} and isinstance(
+            if child_key in {"path", "file", "fontFile", "implementation"} and isinstance(
                 child_value, str
             ):
                 yield child_value

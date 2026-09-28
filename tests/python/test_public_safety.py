@@ -1,9 +1,11 @@
+import io
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 from scripts.validate_public import scan_public_tree
-from scripts.verify_release import unresolved_release_blockers
+from scripts.verify_release import unresolved_release_blockers, verify_release
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -64,6 +66,59 @@ class PublicSafetyTests(unittest.TestCase):
             review = Path(directory) / "review.md"
             review.write_text("- [ ] BLOCKING: ownership unknown\n", encoding="utf-8")
             self.assertEqual(["ownership unknown"], unresolved_release_blockers(review))
+
+    def test_sensitive_and_extensionless_text_files_are_scanned(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".env").write_text(
+                "API" + '_KEY="synthetic-secret-value-123456"\n', encoding="utf-8"
+            )
+            (root / "service.conf").write_text(
+                "host=db." + "internal\n", encoding="utf-8"
+            )
+            (root / "credentials").write_text(
+                "pass" + "word=synthetic-password-123456\n", encoding="utf-8"
+            )
+            (root / "private.pem").write_text(
+                "-----BEGIN " + "PRIVATE KEY-----\nsynthetic\n", encoding="utf-8"
+            )
+            rules = {item.rule for item in scan_public_tree(root)}
+            self.assertIn("public.possible-secret", rules)
+            self.assertIn("public.internal-host", rules)
+            self.assertIn("public.private-key", rules)
+
+    def test_single_label_internal_hosts_are_blocked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "service.conf").write_text(
+                "HOST=" + "intra" + "net\nCACHE=" + "local" + "host\n",
+                encoding="utf-8",
+            )
+            self.assertIn(
+                "public.internal-host", {item.rule for item in scan_public_tree(root)}
+            )
+
+    def test_unknown_binary_is_blocked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "mystery.bin").write_bytes(b"\x00\x01unregistered")
+            self.assertIn(
+                "public.unknown-binary", {item.rule for item in scan_public_tree(root)}
+            )
+            (root / "rogue.woff2").write_bytes(b"synthetic-unregistered-font")
+            self.assertIn(
+                "public.unknown-binary", {item.rule for item in scan_public_tree(root)}
+            )
+
+    def test_release_validation_uses_requested_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".env").write_text(
+                "API" + '_KEY="synthetic-secret-value-123456"\n', encoding="utf-8"
+            )
+            with redirect_stdout(io.StringIO()):
+                result = verify_release(root=root, run_full_verification=False)
+            self.assertNotEqual(0, result)
 
 
 if __name__ == "__main__":
