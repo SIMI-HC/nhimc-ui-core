@@ -1,7 +1,11 @@
 import argparse
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stdout
+from datetime import datetime, timezone
+import hashlib
+import io
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -269,8 +273,13 @@ def run_canonical_components(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> 
     return 0
 
 
-def _run_standalone_artifact(browser: Path, output: Path) -> int:
+def _run_standalone_artifact(
+    browser: Path, output: Path, receipt: Path | None = None, root: Path = ROOT
+) -> int:
     output = output.resolve()
+    if receipt is not None:
+        receipt = receipt.resolve()
+        receipt.unlink(missing_ok=True)
     try:
         html = output.read_text(encoding="utf-8")
         _validate_standalone(html)
@@ -306,7 +315,7 @@ def _run_standalone_artifact(browser: Path, output: Path) -> int:
     result = subprocess.run(
         [
             "node",
-            str(ROOT / "scripts/verify_standalone_browser.mjs"),
+            str(root / "scripts/verify_standalone_browser.mjs"),
             str(browser),
             output.as_uri(),
             token_match.group(1),
@@ -321,6 +330,33 @@ def _run_standalone_artifact(browser: Path, output: Path) -> int:
     print(f"standalone artifact: {output}")
     print(f"standalone file: {browser.name} file:// offline")
     if result.returncode == 0:
+        if receipt is not None:
+            try:
+                report = json.loads(result.stdout.strip().splitlines()[-1])
+                payload = output.read_bytes()
+                proof = {
+                    "schemaVersion": 1,
+                    "artifactSha256": hashlib.sha256(payload).hexdigest(),
+                    "artifactBytes": len(payload),
+                    "runtimeToken": report["runtimeToken"],
+                    "browserProduct": report["browserProduct"],
+                    "browserVersion": report["browserVersion"],
+                    "verifiedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                }
+                receipt.parent.mkdir(parents=True, exist_ok=True)
+                with tempfile.NamedTemporaryFile(
+                    mode="w", encoding="utf-8", newline="\n", delete=False,
+                    dir=receipt.parent, prefix=f".{receipt.name}.", suffix=".tmp",
+                ) as temporary:
+                    json.dump(proof, temporary, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+                    temporary.write("\n")
+                    temporary_name = temporary.name
+                os.replace(temporary_name, receipt)
+            except (KeyError, IndexError, json.JSONDecodeError, OSError) as error:
+                if receipt is not None:
+                    receipt.unlink(missing_ok=True)
+                print(f"standalone file: FAIL (receipt could not be written: {error})")
+                return 1
         print("standalone file: PASS")
         return 0
     print("standalone file: FAIL")
@@ -328,6 +364,19 @@ def _run_standalone_artifact(browser: Path, output: Path) -> int:
     if result.stderr:
         print(result.stderr[-2000:])
     return 1
+
+
+def run_exact_browser_verification(root: Path, artifact: Path, receipt: Path) -> None:
+    browser = find_browser()
+    output = io.StringIO()
+    with redirect_stdout(output):
+        result = _run_standalone_artifact(
+            browser, artifact, receipt, root.resolve()
+        )
+    if result:
+        detail = output.getvalue().strip().splitlines()
+        suffix = f": {detail[-1]}" if detail else ""
+        raise ValueError(f"exact browser verification failed{suffix}")
 
 
 def _run_standalone_browser_test(browser: Path, root: Path) -> int:
@@ -360,6 +409,7 @@ def main() -> int:
     parser.add_argument("--height", type=int)
     parser.add_argument("--standalone-only", action="store_true")
     parser.add_argument("--standalone-file", type=Path)
+    parser.add_argument("--receipt", type=Path)
     parser.add_argument("--canonical-parity-only", action="store_true")
     parser.add_argument("--canonical-components-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
@@ -374,9 +424,11 @@ def main() -> int:
         parser.error("standalone and canonical parity modes are mutually exclusive")
     if args.all_frames and not args.canonical_parity_only:
         parser.error("--all-frames requires --canonical-parity-only")
+    if args.receipt and not args.standalone_file:
+        parser.error("--receipt requires --standalone-file")
     browser = find_browser()
     if args.standalone_file:
-        return _run_standalone_artifact(browser, args.standalone_file)
+        return _run_standalone_artifact(browser, args.standalone_file, args.receipt)
     if args.standalone_only:
         return _run_standalone_browser_test(browser, ROOT)
     viewports = DEFAULT_VIEWPORTS if args.width is None else ((args.width, args.height),)

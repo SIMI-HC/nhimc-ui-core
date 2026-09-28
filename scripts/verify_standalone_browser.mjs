@@ -132,6 +132,7 @@ async function main() {
     returnByValue: true,
     awaitPromise: true,
   });
+  const browserInfo = await command('Browser.getVersion');
   const state = evaluated.result.value ?? {};
   const checks = [
     state.protocol === 'file:',
@@ -161,6 +162,9 @@ async function main() {
     failedLoads,
     externalResources,
     documentRequests,
+    runtimeToken,
+    browserProduct: browserInfo.product ?? '',
+    browserVersion: (browserInfo.product ?? '').split('/')[1] ?? browserInfo.revision ?? '',
   };
   console.log(JSON.stringify(report));
   if (!checks.every(Boolean)) process.exitCode = 1;
