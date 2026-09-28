@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-nhimc-theme="nhimc-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Northstar Administration</title>
+  <link rel="icon" href="../../src/assets/branding/nhimc-favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../src/themes/nhimc-light.css">
+  <link rel="stylesheet" href="../../src/layouts/primitives.css">
+  <link rel="stylesheet" href="../../src/components/components.css">
+</head>
+<body>
+  <nhimc-frame id="app-frame">
+    <div id="business-content" class="nhimc-page nhimc-stack" aria-live="polite">
+      <div class="nhimc-page-header">
+        <div><h1>Access administration</h1><p>Fictional roles and policies for Northstar Services.</p></div>
+        <div class="nhimc-toolbar"><button class="nhimc-button" type="button">Add role</button><span class="nhimc-status" data-status="success">Policy current</span></div>
+      </div>
+      <section class="nhimc-section nhimc-form-grid" aria-label="Role filters">
+        <div class="nhimc-field"><label for="role-search">Find a role</label><input id="role-search" class="nhimc-input" type="search"></div>
+        <div class="nhimc-field"><label for="role-state">State</label><select id="role-state" class="nhimc-select"><option>All states</option><option>Active</option></select></div>
+      </section>
+      <section class="nhimc-content-card"><h2>Role register</h2><table class="nhimc-table"><caption>Fictional administration roles</caption><thead><tr><th scope="col">Role</th><th scope="col">Members</th><th scope="col">State</th></tr></thead><tbody><tr><td>Workspace editor</td><td>12</td><td><span class="nhimc-badge">Active</span></td></tr><tr><td>Audit reader</td><td>4</td><td><span class="nhimc-badge">Active</span></td></tr></tbody></table></section>
+    </div>
+  </nhimc-frame>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

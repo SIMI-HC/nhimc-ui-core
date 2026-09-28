@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-nhimc-theme="nhimc-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Northstar Operations</title>
+  <link rel="icon" href="../../src/assets/branding/nhimc-favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../src/themes/nhimc-light.css">
+  <link rel="stylesheet" href="../../src/layouts/primitives.css">
+  <link rel="stylesheet" href="../../src/components/components.css">
+</head>
+<body>
+  <nhimc-frame id="app-frame">
+    <div id="business-content" class="nhimc-page nhimc-stack" aria-live="polite">
+      <div class="nhimc-page-header">
+        <div><h1>Operations overview</h1><p>Fictional work queues for Northstar Services.</p></div>
+        <div class="nhimc-toolbar"><button class="nhimc-button" type="button">Create task</button></div>
+      </div>
+      <section class="nhimc-section nhimc-grid" aria-label="Queue summary">
+        <article class="nhimc-card"><h2>Ready</h2><strong>18</strong><span class="nhimc-badge">Today</span></article>
+        <article class="nhimc-card"><h2>In progress</h2><strong>7</strong><span class="nhimc-status" data-status="success">On schedule</span></article>
+      </section>
+      <section class="nhimc-content-card"><h2>Recent tasks</h2><table class="nhimc-table"><caption>Fictional operations tasks</caption><thead><tr><th scope="col">Task</th><th scope="col">Owner</th><th scope="col">State</th></tr></thead><tbody><tr><td>Review intake</td><td>Alex Kim</td><td>Ready</td></tr><tr><td>Publish summary</td><td>Mina Park</td><td>In progress</td></tr></tbody></table></section>
+    </div>
+  </nhimc-frame>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

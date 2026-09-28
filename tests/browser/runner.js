@@ -26,6 +26,29 @@ async function sha256(url) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
+async function verifyExample(name, expectedTitle, targetId, expectedHeading, protectedHashes) {
+  const iframe = document.createElement('iframe');
+  iframe.src = `../../examples/${name}/index.html`;
+  document.body.append(iframe);
+  await new Promise((resolve, reject) => {
+    iframe.addEventListener('load', resolve, { once: true });
+    iframe.addEventListener('error', () => reject(new Error(`example failed to load: ${name}`)), { once: true });
+  });
+  const exampleDocument = iframe.contentDocument;
+  assert(exampleDocument.title === expectedTitle, `example title is wrong: ${name}`);
+  const frames = exampleDocument.querySelectorAll('nhimc-frame');
+  assert(frames.length === 1, `example must contain one frame: ${name}`);
+  const exampleFrame = frames[0];
+  await waitFor(() => exampleFrame.shadowRoot?.querySelector(`[data-menu-id="${targetId}"]`), `example menu did not render: ${name}`);
+  exampleFrame.shadowRoot.querySelector(`[data-menu-id="${targetId}"]`).click();
+  await waitFor(() => exampleDocument.querySelector('h1')?.textContent === expectedHeading, `example route did not render: ${name}`);
+  for (const [path, expected] of Object.entries(protectedHashes)) {
+    const url = new URL(`../../${path}`, iframe.contentWindow.location.href);
+    assert(await sha256(url) === expected, `example loaded a different protected frame file: ${name}/${path}`);
+  }
+  iframe.remove();
+}
+
 async function run() {
   const cleanupComponents = initNhimcComponents(document);
   assert(customElements.get('nhimc-frame'), 'custom element is not registered');
@@ -115,6 +138,12 @@ async function run() {
   assert(matchMedia('(prefers-reduced-motion: reduce)').matches, 'browser test did not enable reduced motion');
   assert(getComputedStyle(disabledButton).transitionDuration === '0s', 'component motion was not disabled');
   cleanupComponents();
+
+  const sharedFrameHashes = Object.fromEntries(
+    Object.entries(beforeIntegrity).filter(([path]) => path.endsWith('nhimc-frame.js') || path.endsWith('nhimc-frame.css')),
+  );
+  await verifyExample('operations', 'Northstar Operations', 'tasks', 'Task register', sharedFrameHashes);
+  await verifyExample('administration', 'Northstar Administration', 'policies', 'Policy library', sharedFrameHashes);
 
   resultMeta.content = 'PASS';
   results.textContent = 'PASS';
