@@ -23,6 +23,7 @@ from scripts.theme_colors import theme_color_css, theme_color_ids
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = Path("src/web/nhimc-web.template.js")
 OUTPUT = Path("dist/nhimc-web.js")
+CDN_BASE = "https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core"
 
 
 def build_web_runtime(root: Path = ROOT) -> Path:
@@ -34,16 +35,19 @@ def build_web_runtime(root: Path = ROOT) -> Path:
     }
     sprite = _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests).decode("utf-8")
     runtime = (root / "src/generated/frame/frame-runtime.js").read_text(encoding="utf-8")
+    version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    font_base = f"{CDN_BASE}@v{version}/vendor/nhimc-design/fonts"
     css = "\n".join(
         (
             (root / "src/generated/components/components.css").read_text(encoding="utf-8"),
-            _font_css(root, digests),
+            _font_css(root, digests, font_base),
             (root / "src/layouts/primitives.css").read_text(encoding="utf-8"),
             theme_color_css(root),
         )
     )
     data = {
-        "version": (root / "VERSION").read_text(encoding="utf-8").strip(),
+        "version": version,
+        "fontBase": font_base,
         "layouts": layouts,
         "themeColors": theme_color_ids(root),
         "sprite": sprite,

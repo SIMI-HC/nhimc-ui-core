@@ -4,7 +4,20 @@
   /*__DATA__*/
   const ID = /^[a-z][a-z0-9-]*$/;
   const esc = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+  // Keep the unframed Content invisible until the Frame is in place (no flash of unstyled content).
+  const root = document.documentElement;
+  const reveal = () => root.style.removeProperty('visibility');
+  root.style.visibility = 'hidden';
+  setTimeout(reveal, 10000);
+  // Start the fonts now, in parallel with the rest of the page: same verified files, loaded by URL.
+  for (const file of ['noto-sans-kr-latin-400.woff2', 'noto-sans-kr-korean-400.woff2', 'noto-sans-kr-latin-700.woff2', 'noto-sans-kr-korean-700.woff2']) {
+    const link = document.createElement('link');
+    link.rel = 'preload'; link.as = 'font'; link.type = 'font/woff2'; link.crossOrigin = 'anonymous';
+    link.href = D.fontBase + '/' + file;
+    document.head.appendChild(link);
+  }
   const fail = (message) => {
+    reveal();
     document.body.innerHTML = '<pre style="white-space:pre-wrap;padding:16px;font:14px monospace">NHIMC UI Core: ' + esc(message) + '</pre>';
     throw new Error(message);
   };
@@ -139,6 +152,10 @@
     old.replaceWith(script);
   }
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(render, 0), { once: true });
-  else setTimeout(render, 0);
+  const run = () => {
+    try { render(); } catch (error) { reveal(); throw error; }
+    reveal();
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(run, 0), { once: true });
+  else setTimeout(run, 0);
 })();

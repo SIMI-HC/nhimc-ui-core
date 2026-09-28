@@ -22,6 +22,7 @@ let socket;
 let nextId = 1;
 const pending = new Map();
 const messages = [];
+const fontErrors = [];
 const command = (method, params = {}) => new Promise((resolve, reject) => {
   const id = nextId++;
   pending.set(id, { resolve, reject });
@@ -45,7 +46,10 @@ try {
       return;
     }
     if (message.method === 'Log.entryAdded' && ['error', 'warning'].includes(message.params.entry.level)) {
-      messages.push(`${message.params.entry.level}: ${message.params.entry.text}`);
+      const entry = message.params.entry;
+      // Fonts come from the release tag on the CDN; report their failures separately (a tag may not exist yet).
+      if ((entry.url || '').includes('.woff2')) fontErrors.push(`${entry.text} ${entry.url}`);
+      else messages.push(`${entry.level}: ${entry.text}`);
     }
     if (message.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(message.params.type)) {
       messages.push(`console.${message.params.type}: ${(message.params.args || []).map((item) => item.value ?? item.description).join(' ')}`);
@@ -64,7 +68,7 @@ try {
   const shell = await command('Runtime.evaluate', {
     expression: 'Boolean(document.querySelector("[data-nhimc-role=app-shell]"))', returnByValue: true,
   });
-  console.log(JSON.stringify({ shell: shell.result.value, messages }));
+  console.log(JSON.stringify({ shell: shell.result.value, messages, fontErrors }));
 } finally {
   try { await command('Browser.close'); } catch { browser.kill(); }
   await delay(500);

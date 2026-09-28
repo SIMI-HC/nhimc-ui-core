@@ -99,6 +99,37 @@ class WebRuntimeTests(unittest.TestCase):
                 self.assertTrue(report["shell"], fixture)
                 self.assertEqual([], report["messages"], fixture)
 
+    def test_runtime_is_small_and_loads_fonts_by_verified_url(self):
+        runtime = (ROOT / "dist/nhimc-web.js").read_text(encoding="utf-8")
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        self.assertNotIn("data:font/woff2", runtime)
+        self.assertLess(len(runtime.encode("utf-8")), 1_500_000)
+        base = f"https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v{version}/vendor/nhimc-design/fonts"
+        self.assertIn(base, runtime)
+        for weight in (300, 400, 700):
+            for subset in ("latin", "korean"):
+                name = f"noto-sans-kr-{subset}-{weight}.woff2"
+                self.assertIn(f"{base}/{name}", runtime)
+                self.assertTrue((ROOT / "vendor/nhimc-design/fonts" / name).is_file(), name)
+        # the page stays hidden until the Frame replaces the Content, and is always revealed
+        self.assertIn("root.style.visibility = 'hidden'", runtime)
+        self.assertGreaterEqual(runtime.count("reveal()"), 3)
+
+    def test_head_placed_script_renders_the_frame_and_reveals_the_page(self):
+        browser = find_browser()
+        with tempfile.TemporaryDirectory() as folder:
+            page = Path(folder) / "head.html"
+            source = (ROOT / "tests/fixtures/web/index.html").read_text(encoding="utf-8")
+            page.write_text(source.replace("../../../dist/nhimc-web.js", (ROOT / "dist/nhimc-web.js").resolve().as_uri()), encoding="utf-8")
+            self.assertLess(source.index("nhimc-web.js"), source.index("<body>"))
+            result = subprocess.run(
+                ["node", str(ROOT / "scripts/probe_console.mjs"), str(browser), page.resolve().as_uri()],
+                capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
+            )
+            report = json.loads(result.stdout.strip().splitlines()[-1])
+            self.assertTrue(report["shell"])
+            self.assertEqual([], report["messages"])
+
     def test_runtime_rejects_forbidden_content(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:

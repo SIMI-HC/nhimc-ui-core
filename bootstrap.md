@@ -39,9 +39,9 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" guide\nhimc-design-guide.html`(또는 `open-guide.cmd`), macOS `open guide/nhimc-design-guide.html`, Linux `xdg-open guide/nhimc-design-guide.html`.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅):
 
-   `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.0.0/guide/nhimc-design-guide.html`
+   `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.0.1/guide/nhimc-design-guide.html`
 
-   버전 태그(`v1.0.0`)는 저장소 `VERSION`에 맞춰 바꿉니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.0.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   버전 태그(`v1.0.1`)는 저장소 `VERSION`에 맞춰 바꿉니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.0.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## 프롬프트 힌트 해석
@@ -114,15 +114,16 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 ```html
 <!doctype html>
 <html lang="ko" data-theme="light">
-<head><meta charset="utf-8"><title>화면 제목</title></head>
+<head><meta charset="utf-8"><title>화면 제목</title>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.0.1/dist/nhimc-web.js"></script>
+</head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>
 <script type="application/json" data-nhimc-menu>[{"id":"main","label":"메뉴","icon":"hospital","href":"#main"}]</script>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.0.0/dist/nhimc-web.js"></script>
 </body></html>
 ```
 
-1. `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
+1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
 2. 메뉴 `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
 3. 인터넷과 외부 `<script src>`를 허용하는 호스트에서만 동작합니다. 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고, 오프라인 `index.html`이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
 4. 이 결과는 Web Runtime 결과이며 오프라인 검증을 거친 `index.html`이 아닙니다. 저작용 원본을 완성 파일로 첨부하지 말고, 사용자가 실제 브라우저에서 열어 확인하도록 안내합니다.

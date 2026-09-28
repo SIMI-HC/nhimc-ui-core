@@ -82,7 +82,7 @@ def _verified_vendor_bytes(root: Path, relative: str, digests: dict[str, str]) -
     return payload
 
 
-def _font_css(root: Path, digests: dict[str, str]) -> str:
+def _font_css(root: Path, digests: dict[str, str], base_url: str | None = None) -> str:
     latin_range = (
         "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, "
         "U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, "
@@ -92,7 +92,9 @@ def _font_css(root: Path, digests: dict[str, str]) -> str:
     for weight in (300, 400, 700):
         for subset in ("latin", "korean"):
             relative = f"vendor/nhimc-design/fonts/noto-sans-kr-{subset}-{weight}.woff2"
-            source = _data_url(_verified_vendor_bytes(root, relative, digests), "font/woff2")
+            payload = _verified_vendor_bytes(root, relative, digests)
+            # Offline artifacts embed the font; the Web Runtime references the same verified file by URL.
+            source = _data_url(payload, "font/woff2") if base_url is None else f"{base_url}/{Path(relative).name}"
             range_rule = f"\n  unicode-range: {latin_range};" if subset == "latin" else ""
             faces.append(
                 "@font-face {\n"
