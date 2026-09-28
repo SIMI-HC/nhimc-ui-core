@@ -1,0 +1,3 @@
+Public example endpoint: https://example.com/nhimc-ui
+Documentation: https://developers.openai.com/plugins/build/plugins
+Version: 1.0.0
