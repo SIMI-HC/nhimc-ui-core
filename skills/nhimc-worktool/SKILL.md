@@ -66,7 +66,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Design Guide와 프롬프트 힌트
 
-- 준비가 끝나면 `guide/nhimc-design-guide.html`을 열어 줍니다(못 열면 다운로드 파일로 전달). 절차는 `bootstrap.md`의 “준비 완료 후: Design Guide 열기”를 따릅니다.
+- 준비가 끝나면 `guide/nhimc-design-guide.html`을 열어 줍니다. 못 열면 `디자인 가이드: <전체 주소 .html까지, 한 줄, 코드 블록 없이>` 형식의 클릭 링크로 전달합니다(주소는 `bootstrap.md` 참고). 절차는 `bootstrap.md`의 “준비 완료 후: Design Guide 열기”를 따릅니다.
 - 요청에 `frame:` / `theme:` / `requirements:` 줄이 있으면 각각 `<html data-frame>` / `<html data-theme-color>` / 화면 요구사항으로 반영합니다. `(미선택 - AI 추천)`이면 업무에 맞춰 고릅니다.
 
 ## 웹에서도 코드 실행이 되면 완성 파일을 첨부

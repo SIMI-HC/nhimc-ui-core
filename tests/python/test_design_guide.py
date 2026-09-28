@@ -108,6 +108,8 @@ class DesignGuideTests(unittest.TestCase):
             )
         bootstrap = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
         self.assertIn("클릭 링크", bootstrap)
+        self.assertIn("디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v{}/guide/nhimc-design-guide.html".format(version), bootstrap)
+        self.assertIn("한 줄", bootstrap)
         self.assertIn(f"@v{version}/guide/nhimc-design-guide.html", bootstrap)
 
     def test_prompt_frame_and_theme_ids_are_supported_by_the_builder(self):
