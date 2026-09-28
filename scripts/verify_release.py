@@ -43,6 +43,13 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
                     "--canonical-parity-only", "--all-frames",
                 ],
             ),
+            (
+                "canonical template parity",
+                [
+                    sys.executable, "scripts/run_browser_tests.py",
+                    "--canonical-template-parity-only",
+                ],
+            ),
         )
         for label, command in canonical_gates:
             if subprocess.run(command, cwd=root, check=False).returncode:

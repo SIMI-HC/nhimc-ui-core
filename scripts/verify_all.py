@@ -28,6 +28,13 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
                     "--canonical-parity-only", "--all-frames",
                 ],
             ),
+            (
+                "canonical template parity",
+                [
+                    sys.executable, "scripts/run_browser_tests.py",
+                    "--canonical-template-parity-only",
+                ],
+            ),
         ]
     results = []
     for label, command in checks:

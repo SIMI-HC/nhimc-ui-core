@@ -19,6 +19,8 @@ if __package__ in {None, ""}:
 
 from scripts.build_single_html import _inventory, _validate_standalone, build_single_html
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
+from scripts.canonical_template_adapter import adapt_canonical_template
+from scripts.canonical_templates import load_template_contracts
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +29,10 @@ BROWSER_PATHS = [
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
 ]
+BROWSER_NAMES = (
+    "google-chrome", "google-chrome-stable", "chromium", "chromium-browser",
+    "microsoft-edge",
+)
 DEFAULT_VIEWPORTS = ((1440, 900), (1024, 768), (390, 844))
 CANONICAL_FRAMES = (
     "left", "left-blank", "top", "top-left", "presentation",
@@ -56,10 +62,29 @@ def local_server(root: Path):
 
 
 def find_browser() -> Path:
+    override = os.environ.get("NHIMC_BROWSER_PATH")
+    if override:
+        candidate = Path(override).expanduser().resolve()
+        if candidate.is_file():
+            return candidate
+        raise RuntimeError(
+            f"NHIMC_BROWSER_PATH is not a browser file: {candidate}; "
+            f"searched candidates: {', '.join(BROWSER_NAMES)}"
+        )
     for path in BROWSER_PATHS:
-        if path.is_file():
-            return path
-    raise FileNotFoundError("Chrome or Edge was not found in a standard location")
+        candidate = path.resolve()
+        if candidate.is_file():
+            return candidate
+    for name in BROWSER_NAMES:
+        if found := shutil.which(name):
+            candidate = Path(found).resolve()
+            if candidate.is_file():
+                return candidate
+    paths = ", ".join(str(path) for path in BROWSER_PATHS)
+    raise RuntimeError(
+        "browser not found; set NHIMC_BROWSER_PATH or install one of "
+        f"{', '.join(BROWSER_NAMES)}; searched candidates: {paths}"
+    )
 
 
 def _run_browser_test(browser: Path, root: Path, width: int, height: int) -> int:
@@ -379,6 +404,71 @@ def run_exact_browser_verification(root: Path, artifact: Path, receipt: Path) ->
         raise ValueError(f"exact browser verification failed{suffix}")
 
 
+def run_template_parity(
+    root: Path = ROOT,
+    viewports: tuple[tuple[int, int], ...] = DEFAULT_VIEWPORTS,
+) -> dict:
+    root = root.resolve()
+    browser = find_browser()
+    contracts = load_template_contracts(root)
+    with tempfile.TemporaryDirectory(prefix="nhimc-template-matrix-") as folder:
+        workspace = Path(folder)
+        artifacts: dict[tuple[str, str], Path] = {}
+        for template_id, contract in contracts.items():
+            bundle = adapt_canonical_template(root, contract)
+            for theme in ("light", "dark"):
+                case = workspace / template_id / theme
+                source = case / "source.html"
+                artifact = case / "index.html"
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text(
+                    '<!doctype html><html lang="ko" data-theme="' + theme + '"><head>'
+                    '<meta charset="utf-8"><title>Template parity</title></head><body>'
+                    '<nhimc-frame data-frame="left" data-template="' + template_id + '" '
+                    'data-project-title="Template parity" data-active-id="screen">'
+                    + bundle.skeleton_html + '</nhimc-frame>'
+                    '<script type="application/json" data-nhimc-menu>'
+                    '[{"id":"screen","label":"화면","icon":"hospital","href":"#screen"}]'
+                    '</script></body></html>',
+                    encoding="utf-8", newline="\n",
+                )
+                build_single_html(root, source, artifact)
+                artifacts[(template_id, theme)] = artifact
+        cells = []
+        for width, height in viewports:
+            for template_id, contract in contracts.items():
+                canonical = root / "vendor/nhimc-design" / contract.asset
+                for theme in ("light", "dark"):
+                    cells.append({
+                        "templateId": template_id,
+                        "theme": theme,
+                        "width": width,
+                        "height": height,
+                        "canonicalUrl": canonical.resolve().as_uri(),
+                        "artifactUrl": artifacts[(template_id, theme)].resolve().as_uri(),
+                        "requiredComponents": list(contract.required_components),
+                    })
+        matrix = workspace / "matrix.json"
+        matrix.write_text(
+            json.dumps({"cells": cells}, ensure_ascii=False, separators=(",", ":")),
+            encoding="utf-8", newline="\n",
+        )
+        completed = subprocess.run(
+            ["node", str(root / "scripts/verify_template_parity.mjs"), str(browser), str(matrix)],
+            cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=max(120, len(cells) * 8), check=False,
+        )
+        try:
+            report = json.loads(completed.stdout.strip().splitlines()[-1])
+        except (IndexError, json.JSONDecodeError) as error:
+            raise RuntimeError(
+                f"canonical Template parity produced no JSON report: {completed.stderr[-2000:]}"
+            ) from error
+        if completed.returncode and report.get("all_passed"):
+            raise RuntimeError(f"canonical Template parity failed: {completed.stderr[-2000:]}")
+        return report
+
+
 def _run_standalone_browser_test(browser: Path, root: Path) -> int:
     with tempfile.TemporaryDirectory(prefix="NHIMC offline ") as folder:
         output = Path(folder) / "download result" / "nhimc-worktool.html"
@@ -412,6 +502,7 @@ def main() -> int:
     parser.add_argument("--receipt", type=Path)
     parser.add_argument("--canonical-parity-only", action="store_true")
     parser.add_argument("--canonical-components-only", action="store_true")
+    parser.add_argument("--canonical-template-parity-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
@@ -419,6 +510,7 @@ def main() -> int:
     modes = sum(bool(item) for item in (
         args.standalone_only, args.standalone_file, args.canonical_parity_only,
         args.canonical_components_only,
+        args.canonical_template_parity_only,
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
@@ -438,6 +530,13 @@ def main() -> int:
         return run_canonical_parity(viewports=viewports)
     if args.canonical_components_only:
         return run_canonical_components(viewports=viewports)
+    if args.canonical_template_parity_only:
+        report = run_template_parity(ROOT, viewports=viewports)
+        print(
+            f"canonical template parity: {len(report['results'])} cells "
+            f"{'PASS' if report['all_passed'] else 'FAIL'}"
+        )
+        return 0 if report["all_passed"] else 1
     return run_browser_tests(viewports=viewports)
 
 
