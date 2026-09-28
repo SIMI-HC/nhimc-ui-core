@@ -57,6 +57,13 @@ class PublicSafetyTests(unittest.TestCase):
                 {item.rule for item in scan_public_tree(root)},
             )
 
+    def test_devtools_loopback_is_allowed_only_in_registered_browser_tooling(self):
+        findings = scan_public_tree(
+            ROOT, include={"scripts/verify_standalone_browser.mjs"}
+        )
+
+        self.assertNotIn("public.private-network", {item.rule for item in findings})
+
     def test_asset_review_has_no_unresolved_blocker(self):
         blockers = unresolved_release_blockers(ROOT / "PUBLIC_ASSET_REVIEW.md")
         self.assertEqual([], blockers)

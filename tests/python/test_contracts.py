@@ -44,6 +44,30 @@ class ContractTests(unittest.TestCase):
 
         self.assertIn("contract.missing-file", {item.rule for item in findings})
 
+    def test_default_artifact_builder_must_exist(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "registry").mkdir()
+            (root / "VERSION").write_text("1.0.0\n", encoding="utf-8")
+            (root / "registry/project.json").write_text(
+                json.dumps(
+                    {
+                        "projectVersion": "1.0.0",
+                        "defaultArtifact": {"builder": "scripts/missing.py"},
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            findings = validate_contracts(
+                root, required_override=["registry/project.json"]
+            )
+
+            self.assertIn(
+                ("contract.missing-file", "scripts/missing.py"),
+                {(item.rule, item.path) for item in findings},
+            )
+
     def test_contract_validator_runs_as_a_script(self):
         result = subprocess.run(
             [sys.executable, "scripts/validate_contracts.py"],

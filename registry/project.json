@@ -3,6 +3,13 @@
   "projectVersion": "1.0.0",
   "defaultFrame": "nhimc-default",
   "defaultTheme": "nhimc-light",
+  "defaultArtifact": {
+    "kind": "single-html",
+    "filename": "index.html",
+    "offline": true,
+    "builder": "scripts/build_single_html.py",
+    "sidecars": []
+  },
   "bootstrapStatuses": [
     "READY",
     "WEB_BOOTSTRAP",

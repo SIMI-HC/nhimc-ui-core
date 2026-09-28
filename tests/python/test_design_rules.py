@@ -196,11 +196,8 @@ class DesignRuleTests(unittest.TestCase):
             example.mkdir(parents=True)
             (example / "index.html").write_text(
                 '<link rel="stylesheet" href="https://fonts.example.org/font.css">'
-                '<style>.local { padding: 1rem; }</style><div style="margin: 0"></div>',
-                encoding="utf-8",
-            )
-            (example / "app.js").write_text(
-                "document.body.style.setProperty('--frame-sidebar', '99rem');",
+                '<style>.local { padding: 1rem; }</style><div style="margin: 0"></div>'
+                "<script>document.body.style.setProperty('--frame-sidebar', '99rem');</script>",
                 encoding="utf-8",
             )
             rules = {item.rule for item in validate_design(root)}
@@ -270,9 +267,10 @@ class DesignRuleTests(unittest.TestCase):
         menus = []
         for name in ("operations", "administration"):
             html_path = ROOT / f"examples/{name}/index.html"
-            js_path = ROOT / f"examples/{name}/app.js"
             html = html_path.read_text(encoding="utf-8")
-            script = js_path.read_text(encoding="utf-8")
+            script = "\n".join(
+                re.findall(r"<script\b[^>]*>(.*?)</script>", html, re.I | re.S)
+            )
             parsed = parse_example(html)
 
             self.assertEqual(1, parsed.tags.count("nhimc-frame"), name)

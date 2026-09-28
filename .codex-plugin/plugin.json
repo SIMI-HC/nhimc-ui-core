@@ -13,7 +13,7 @@
     "developerName": "NHIMC UI Core contributors",
     "category": "Developer Tools",
     "capabilities": ["NHIMC interface implementation", "contract validation"],
-    "defaultPrompt": "Use the NHIMC UI Core contracts to implement this interface.",
+    "defaultPrompt": "Use the NHIMC UI Core contracts to implement this interface as one offline index.html artifact.",
     "brandColor": "#003D94",
     "logo": "./src/assets/branding/nhimc-logo.svg"
   }

@@ -204,6 +204,14 @@ def validate_design(root: Path) -> list[Finding]:
             findings.append(
                 Finding("design.external-asset", relative, "Examples cannot load external runtime assets")
             )
+        if re.search(r"(?i)(?:\.style\.|style\.setProperty|insertRule|adoptedStyleSheets)", text):
+            findings.append(
+                Finding(
+                    "design.example-style-injection",
+                    relative,
+                    "Examples cannot inject local styles",
+                )
+            )
     for path in examples.rglob("*.js") if examples.is_dir() else []:
         text = _without_comments(path.read_text(encoding="utf-8"))
         if re.search(r"(?i)(?:\.style\.|style\.setProperty|insertRule|adoptedStyleSheets|<style\b)", text):

@@ -38,6 +38,21 @@ Open `http://localhost:8765/examples/operations/` or `http://localhost:8765/exam
 
 Review [registered components and their canonical markup](registry/components.json), [layout primitives](src/layouts/primitives.css), and the two complete examples at [examples/operations](examples/operations/) and [examples/administration](examples/administration/). Load `src/themes/nhimc-fonts.css`, `src/themes/nhimc-light.css`, and `src/layouts/application.css` before application content.
 
+## Default AI artifact
+
+Give an agent the repository URL and tell it to read `bootstrap.md`. Generated business screens default to one offline file named `index.html`; separate `app.js`, CSS, font, image, or documentation files are not part of that artifact.
+
+During authoring, keep business behavior in the HTML's `data-nhimc-business` module block. Finalize the file in place:
+
+```powershell
+python scripts/build_single_html.py --input path/to/index.html --output path/to/index.html
+python scripts/run_browser_tests.py --standalone-file path/to/index.html
+```
+
+The builder first validates the Core contracts, then embeds the registered Frame, Theme, Components, Logo, icon sprite, and Noto Sans KR fonts. The result uses inline classic JavaScript and data assets, so it opens directly from an arbitrary `file://` path without a server or internet connection. Agents compose business content; they do not recreate or manually edit the embedded Core.
+
+Run finalization once per authoring source. The builder rejects an already-finalized HTML without changing it; rebuild from the authoring source when business content changes.
+
 ## Themes and integrity
 
 Replace appearance by supplying the registered custom properties from `registry/themes.json`; do not edit or override frame internals. New tokens belong in a versioned theme contract. Files listed in `protectedFiles` are immutable at a given frame version. An intentional change requires a version bump and:

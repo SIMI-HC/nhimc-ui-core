@@ -35,6 +35,7 @@ PRIVATE_KEY = re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY-----")
 LOCAL_NETWORK_ALLOWLIST = {
     "README.md",
     "scripts/run_browser_tests.py",
+    "scripts/verify_standalone_browser.mjs",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
 }
 
