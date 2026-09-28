@@ -64,6 +64,48 @@
     if (/data-template|data-nhimc-template/i.test(html)) fail('Templates are not supported.');
   };
 
+  // Offline copy: the same document the Runtime just built, with the fonts embedded and no <script src>.
+  const buildOfflineHtml = async (finalDoc) => {
+    let html = finalDoc;
+    const urls = [...new Set([...html.matchAll(/url\("(https:[^"]+\.woff2)"\)/g)].map((match) => match[1]))];
+    for (const url of urls) {
+      try {
+        const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
+        let binary = '';
+        for (let index = 0; index < bytes.length; index += 32768) binary += String.fromCharCode(...bytes.subarray(index, index + 32768));
+        html = html.split(url).join('data:font/woff2;base64,' + btoa(binary));
+      } catch (error) { /* keep the URL when the font cannot be fetched */ }
+    }
+    return html;
+  };
+  const installExport = (finalDoc, pageTitle) => {
+    window.nhimcExportHtml = () => buildOfflineHtml(finalDoc);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('data-nhimc-export', '');
+    button.textContent = '오프라인 HTML 저장';
+    button.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:2147483000;padding:8px 12px;border:1px solid var(--color-primary);border-radius:var(--radius-md);background:var(--color-card);color:var(--color-primary);font-family:inherit;font-weight:600;font-size:12px;line-height:1;cursor:pointer;box-shadow:var(--shadow-lg)';
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.textContent = '만드는 중…';
+      try {
+        const html = await buildOfflineHtml(finalDoc);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+        link.download = (pageTitle || 'nhimc').replace(/[^\w가-힣-]+/g, '-') + '.html';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+        button.textContent = '저장했어요';
+      } catch (error) {
+        button.textContent = '저장 실패';
+      }
+      setTimeout(() => { button.disabled = false; button.textContent = '오프라인 HTML 저장'; }, 2500);
+    });
+    // Added after the Frame is in place; it lives outside the Frame regions and is not part of the saved file.
+    window.addEventListener('nhimc:frame-ready', () => document.body.appendChild(button), { once: true });
+  };
   const render = () => {
   const source = document.documentElement;
   const roots = [...document.querySelectorAll('main[data-nhimc-role="content"]')];
@@ -138,6 +180,7 @@
   doc = doc.replace(/<title>[\s\S]*?<\/title>/i, () => '<title>' + esc(title) + '</title>');
   // Swap the page with DOM APIs instead of document.open()/write(): those re-navigate the frame and
   // log "Unsafe attempt to load URL ... 'file:' URLs are treated as unique security origins" on file://.
+  installExport(doc, title);
   const parsed = new DOMParser().parseFromString(doc, 'text/html');
   for (const attribute of [...parsed.documentElement.attributes]) document.documentElement.setAttribute(attribute.name, attribute.value);
   document.head.replaceChildren(...[...parsed.head.childNodes].map((node) => document.importNode(node, true)));
@@ -154,6 +197,7 @@
   };
   const run = () => {
     try { render(); } catch (error) { reveal(); throw error; }
+    window.dispatchEvent(new Event('nhimc:frame-ready'));
     reveal();
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(run, 0), { once: true });

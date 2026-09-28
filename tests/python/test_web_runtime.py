@@ -31,6 +31,7 @@ def _frame_markup(dom: str) -> str:
     body = dom[dom.index("<body") :]
     body = re.sub(r"<script\b.*?</script>", "", body, flags=re.S)
     body = re.sub(r"<svg hidden.*?</svg>", "", body, flags=re.S)
+    body = re.sub(r"<button[^>]*data-nhimc-export.*?</button>", "", body, flags=re.S)
     body = re.sub(r"준비됨 · (?:오프라인 문서|웹 실행)", "STATUS", body)
     return re.sub(r"\s+", " ", body)
 
@@ -102,7 +103,7 @@ class WebRuntimeTests(unittest.TestCase):
     def test_runtime_is_small_and_loads_fonts_by_verified_url(self):
         runtime = (ROOT / "dist/nhimc-web.js").read_text(encoding="utf-8")
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-        self.assertNotIn("data:font/woff2", runtime)
+        self.assertNotRegex(runtime, r"data:font/woff2;base64,[A-Za-z0-9+/]{100}")
         self.assertLess(len(runtime.encode("utf-8")), 1_500_000)
         base = f"https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v{version}/vendor/nhimc-design/fonts"
         self.assertIn(base, runtime)
@@ -127,6 +128,36 @@ class WebRuntimeTests(unittest.TestCase):
                 capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
             )
             report = json.loads(result.stdout.strip().splitlines()[-1])
+            self.assertTrue(report["shell"])
+            self.assertEqual([], report["messages"])
+
+    def test_saved_offline_html_is_self_contained_and_opens_without_network(self):
+        browser = find_browser()
+        runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / "web.html"
+            source.write_text(
+                (ROOT / "tests/fixtures/web/multi-page.html").read_text(encoding="utf-8").replace("../../../dist/nhimc-web.js", runtime),
+                encoding="utf-8",
+            )
+            saved = Path(folder) / "저장본.html"
+            first = subprocess.run(
+                ["node", str(ROOT / "scripts/probe_console.mjs"), str(browser), source.resolve().as_uri(), "--export", str(saved)],
+                capture_output=True, text=True, encoding="utf-8", timeout=180, check=False,
+            )
+            self.assertTrue(json.loads(first.stdout.strip().splitlines()[-1])["shell"])
+            html = saved.read_text(encoding="utf-8")
+            self.assertNotRegex(html, r"<script\b[^>]*\bsrc=")
+            self.assertNotIn("data-nhimc-export", html)
+            self.assertIn('data-nhimc-role="app-shell"', html)
+            self.assertIn('data-screen-panel="orders"', html)
+            if "data:font/woff2" in html:
+                self.assertNotRegex(html, r"https://[^\"')]+\.woff2")
+            second = subprocess.run(
+                ["node", str(ROOT / "scripts/probe_console.mjs"), str(browser), saved.resolve().as_uri(), "--offline"],
+                capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
+            )
+            report = json.loads(second.stdout.strip().splitlines()[-1])
             self.assertTrue(report["shell"])
             self.assertEqual([], report["messages"])
 

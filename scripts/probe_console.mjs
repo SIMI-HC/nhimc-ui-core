@@ -1,5 +1,5 @@
 // Load a page in headless Chrome and report console errors, exceptions and whether the Frame rendered.
-// usage: node scripts/probe_console.mjs <browser> <url> [click-selector]
+// usage: node scripts/probe_console.mjs <browser> <url> [click-selector] [--offline] [--export <file>]
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -7,7 +7,14 @@ import { join } from 'node:path';
 
 import { waitForDevToolsPort } from './devtools_port.mjs';
 
-const [browserPath, url, clickSelector] = process.argv.slice(2);
+import { writeFileSync } from 'node:fs';
+
+const args = process.argv.slice(2);
+const offline = args.includes('--offline');
+const exportIndex = args.indexOf('--export');
+const exportPath = exportIndex >= 0 ? args[exportIndex + 1] : null;
+const positional = args.filter((item, index) => !item.startsWith('--') && !(exportIndex >= 0 && index === exportIndex + 1));
+const [browserPath, url, clickSelector] = positional;
 if (!browserPath || !url) {
   console.error('usage: node probe_console.mjs <browser> <url> [click-selector]');
   process.exit(2);
@@ -15,7 +22,8 @@ if (!browserPath || !url) {
 const profile = mkdtempSync(join(tmpdir(), 'nhimc-console-'));
 const browser = spawn(browserPath, [
   '--headless', '--disable-gpu', '--disable-extensions', '--no-first-run',
-  '--remote-allow-origins=*', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank',
+  '--remote-allow-origins=*', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
+  ...(offline ? ['--host-resolver-rules=MAP * ~NOTFOUND'] : []), 'about:blank',
 ], { stdio: 'ignore' });
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 let socket;
@@ -48,7 +56,7 @@ try {
     if (message.method === 'Log.entryAdded' && ['error', 'warning'].includes(message.params.entry.level)) {
       const entry = message.params.entry;
       // Fonts come from the release tag on the CDN; report their failures separately (a tag may not exist yet).
-      if ((entry.url || '').includes('.woff2')) fontErrors.push(`${entry.text} ${entry.url}`);
+      if ((entry.url || '').includes('.woff2') || /downloaded font|OTS parsing/i.test(entry.text)) fontErrors.push(`${entry.text} ${entry.url || ''}`);
       else messages.push(`${entry.level}: ${entry.text}`);
     }
     if (message.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(message.params.type)) {
@@ -64,6 +72,12 @@ try {
   if (clickSelector) {
     await command('Runtime.evaluate', { expression: `document.querySelector(${JSON.stringify(clickSelector)})?.click()` });
     await delay(1000);
+  }
+  if (exportPath) {
+    const exported = await command('Runtime.evaluate', {
+      expression: 'window.nhimcExportHtml ? window.nhimcExportHtml() : null', awaitPromise: true, returnByValue: true,
+    });
+    if (typeof exported.result.value === 'string') writeFileSync(exportPath, exported.result.value, 'utf8');
   }
   const shell = await command('Runtime.evaluate', {
     expression: 'Boolean(document.querySelector("[data-nhimc-role=app-shell]"))', returnByValue: true,

@@ -25,10 +25,10 @@ class ContractTests(unittest.TestCase):
         self.assertIn(f"@v{version}", readme)
 
     def test_project_and_frame_contracts_are_version_3(self):
-        self.assertEqual("1.0.1", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
+        self.assertEqual("1.1.0", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
         project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
         frames = json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"]
-        self.assertEqual("1.0.1", project["projectVersion"])
+        self.assertEqual("1.1.0", project["projectVersion"])
         self.assertEqual(7, len(frames))
         self.assertTrue(all(frame["version"] == "1.0.0" for frame in frames))
 
