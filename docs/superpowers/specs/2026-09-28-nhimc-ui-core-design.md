@@ -25,8 +25,8 @@ Relevant findings:
 - The canonical icon source is `assets/icons/nhimc-icons.svg`.
 - Existing distribution scripts duplicate the source into platform-specific trees. The new project must instead retain one source and use thin adapters.
 - The source contains internal network configuration and private IP references. None may be copied into the public project.
-- Official logo assets are present, but the source does not contain sufficient public redistribution or CI/BI usage evidence. Public release must remain blocked until this is reviewed.
-- Noto Sans KR is identified as SIL Open Font License material, but the license text must be included explicitly in the new project.
+- Official logo assets are present, and the user confirmed on 2026-09-28 that the logo assets may be included in the public project.
+- Noto Sans KR is approved for public inclusion and identified as SIL Open Font License material; the complete license text must be included explicitly in the new project.
 
 ## 3. Design Principles
 
@@ -137,14 +137,13 @@ Approved runtime assets are referenced through an asset registry containing stab
 
 Logo and favicon files are exact extracted assets, not redrawn approximations. Canonical icons come from the NHIMC SVG sprite, with no runtime third-party icon library.
 
-Before a public GitHub release:
+For a public GitHub release:
 
-- NHIMC logo redistribution and public CI/BI usage must be documented.
-- `PUBLIC_ASSET_REVIEW.md` must contain no unresolved blocking item.
-- The complete Noto Sans KR OFL text and attribution must be included.
+- `PUBLIC_ASSET_REVIEW.md` records the user's 2026-09-28 public-use confirmation for the supplied NHIMC logos and fonts.
+- The complete Noto Sans KR OFL text and attribution are included.
 - Any asset without a documented public license must be removed or replaced through an approved decision.
 
-Local development may retain blocked assets solely for review, clearly marked as not yet approved for public release.
+The confirmed logo and font assets are publishable runtime assets and remain protected by the frame and asset integrity registries.
 
 ## 6. Repository Structure
 
@@ -286,7 +285,7 @@ A public release is permitted only when:
 6. Examples contain only fictional data.
 7. The generated release is reproducible from the single repository source.
 
-Publishing or pushing to GitHub is a separate external action. It requires a selected repository destination and confirmed public-asset clearance; this specification does not authorize publishing by itself.
+Publishing or pushing to GitHub is a separate external action. It requires a selected repository destination; this specification does not authorize publishing by itself.
 
 ## 14. Non-Goals
 
@@ -296,7 +295,7 @@ Publishing or pushing to GitHub is a separate external action. It requires a sel
 - Shipping business routing, application state, or backend integration
 - Creating page templates or a screen generator
 - Claiming official platform installation features that cannot be verified
-- Publishing NHIMC branding before rights are confirmed
+- Replacing or modifying the confirmed NHIMC branding outside a new frame version
 
 ## 15. Acceptance Criteria
 
