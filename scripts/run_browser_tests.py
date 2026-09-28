@@ -1,8 +1,10 @@
 import argparse
 from contextlib import contextmanager
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -12,6 +14,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.build_single_html import _validate_standalone, build_single_html
+from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -83,6 +86,93 @@ def _run_browser_test(browser: Path, root: Path, width: int, height: int) -> int
     if result.stderr:
         print(result.stderr[-2000:])
     return 1
+
+
+def _canonical_payload() -> FramePayload:
+    menu = (
+        MenuItem("clinical-criteria", "진료과 기준", "hospital", "#clinical-criteria"),
+        MenuItem("lab-values", "검사 수치", "flask", "#lab-values"),
+        MenuItem("stopped-medications", "중단 약물", "ban", "#stopped-medications"),
+        MenuItem("notices", "시행·검진 공지", "megaphone", "#notices"),
+    )
+    panels = "".join(
+        f'<section data-screen-panel="{item.id}"{"" if index == 0 else " hidden"}><h1>{item.label}</h1></section>'
+        for index, item in enumerate(menu)
+    )
+    return FramePayload(
+        project_title="프로젝트명",
+        menu=menu,
+        active_id=menu[0].id,
+        content_html=panels,
+    )
+
+
+def _run_canonical_parity(browser: Path, root: Path, width: int, height: int) -> int:
+    with tempfile.TemporaryDirectory(prefix="NHIMC canonical parity ") as folder:
+        test_root = Path(folder)
+        probe = (root / "tests/browser/canonical-parity.js").read_text(encoding="utf-8")
+        source = (root / "vendor/nhimc-design/layouts/left.html").read_text(encoding="utf-8")
+        adapted = render_canonical_frame(root, "left", _canonical_payload())
+        (test_root / "canonical-source.html").write_text(
+            source.replace("</body>", f"<script>{probe}</script></body>", 1), encoding="utf-8"
+        )
+        (test_root / "canonical-adapted.html").write_text(
+            adapted.replace("</body>", f"<script>{probe}</script></body>", 1), encoding="utf-8"
+        )
+
+        def dump(port: int, filename: str, theme: str, adapted_flag: bool) -> tuple[dict | None, subprocess.CompletedProcess]:
+            result = subprocess.run(
+                [
+                    str(browser), "--headless", "--disable-gpu", "--disable-extensions",
+                    "--no-first-run", "--force-prefers-reduced-motion=reduce",
+                    "--virtual-time-budget=3000", f"--window-size={width},{height}",
+                    "--dump-dom",
+                    f"http://127.0.0.1:{port}/{filename}?theme={theme}&adapted={int(adapted_flag)}",
+                ],
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+                timeout=30, check=False,
+            )
+            match = re.search(
+                r'<script id="nhimc-parity-data" type="application/json">(.*?)</script>',
+                result.stdout,
+                re.DOTALL,
+            )
+            return (json.loads(match.group(1)) if match else None, result)
+
+        with local_server(test_root) as port:
+            runs = []
+            for theme in ("light", "dark"):
+                source_data, source_result = dump(port, "canonical-source.html", theme, False)
+                adapted_data, adapted_result = dump(port, "canonical-adapted.html", theme, True)
+                runs.append((theme, source_data, adapted_data, source_result, adapted_result))
+    print(f"canonical parity: {browser.name} {width}x{height}")
+    failures = []
+    for theme, source_data, adapted_data, source_result, adapted_result in runs:
+        if source_data is None or adapted_data is None:
+            failures.append(f"{theme}: snapshot marker missing")
+        elif source_data["snapshot"] != adapted_data["snapshot"]:
+            failures.append(f"{theme}: protected frame snapshot differs")
+        elif not adapted_data["behavior"]:
+            failures.append(f"{theme}: {adapted_data['error']}")
+    if not failures:
+        print("canonical parity: PASS")
+        return 0
+    print("canonical parity: FAIL")
+    for failure in failures:
+        print(f"- {failure}")
+    last = runs[-1]
+    if last[4].stderr:
+        print(last[4].stderr[-2000:])
+    return 1
+
+
+def run_canonical_parity(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> int:
+    browser = find_browser()
+    for width, height in viewports:
+        result = _run_canonical_parity(browser, root, width, height)
+        if result:
+            return result
+    return 0
 
 
 def _run_standalone_artifact(browser: Path, output: Path) -> int:
@@ -159,17 +249,21 @@ def main() -> int:
     parser.add_argument("--height", type=int)
     parser.add_argument("--standalone-only", action="store_true")
     parser.add_argument("--standalone-file", type=Path)
+    parser.add_argument("--canonical-parity-only", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
         parser.error("--width and --height must be supplied together")
-    if args.standalone_only and args.standalone_file:
-        parser.error("--standalone-only and --standalone-file are mutually exclusive")
+    modes = sum(bool(item) for item in (args.standalone_only, args.standalone_file, args.canonical_parity_only))
+    if modes > 1:
+        parser.error("standalone and canonical parity modes are mutually exclusive")
     browser = find_browser()
     if args.standalone_file:
         return _run_standalone_artifact(browser, args.standalone_file)
     if args.standalone_only:
         return _run_standalone_browser_test(browser, ROOT)
     viewports = DEFAULT_VIEWPORTS if args.width is None else ((args.width, args.height),)
+    if args.canonical_parity_only:
+        return run_canonical_parity(viewports=viewports)
     return run_browser_tests(viewports=viewports)
 
 

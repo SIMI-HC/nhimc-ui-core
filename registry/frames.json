@@ -6,55 +6,193 @@
       "id": "nhimc-default",
       "version": "2.0.0",
       "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/left.html",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/left.html",
       "contentSlot": "default",
-      "menuSchema": {"property": "menu", "event": "nhimc:navigate", "maxDepth": 3},
-      "owns": ["header", "branding", "left-navigation", "sidebar-collapse", "mobile-drawer", "statusbar", "content-boundary", "responsive-breakpoints"],
+      "menuSchema": {
+        "property": "menu",
+        "event": "nhimc:navigate",
+        "maxDepth": 3
+      },
+      "owns": [
+        "header",
+        "branding",
+        "left-navigation",
+        "sidebar-collapse",
+        "mobile-drawer",
+        "statusbar",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
       "protectedFiles": [
-        {"path": "src/frame/menu-model.js", "sha256": "eb0cb1d917718f8aa09b5aebd96831f1614244665766ad2220a9963e77f7edd6"},
-        {"path": "src/frame/nhimc-frame.js", "sha256": "61cf3918862ddccdefc4d5180e313f276559437eecd57bd868c5abd4d36aa402"},
-        {"path": "src/frame/nhimc-frame.css", "sha256": "3e33ee30a25778442ca4c7b2e357a01fad1a62e66f63c7de49d6cfe0f79b735d"},
-        {"path": "src/assets/branding/nhimc-logo.svg", "sha256": "a17d4f585fc8935aafd368fd26500cba16392ee8464568bc5a713e72130a180b"},
-        {"path": "src/assets/branding/nhimc-favicon.svg", "sha256": "097491058a0ec9fedc4e170c272c8396e663d78c983c71ed6f86a6bebbabe50e"},
-        {"path": "src/assets/icons/nhimc-icons.svg", "sha256": "06774373c5afb855e624b1a40b3ebdac13e42c2a2f9bbb9adc324b8095703b2c"},
-        {"path": "vendor/nhimc-design/layouts/left.html", "sha256": "9429cb917a2f1f16de0b48f28992496550f989a1eb5b482aeecd9551ec29f483"}
+        {
+          "path": "src/frame/menu-model.js",
+          "sha256": "eb0cb1d917718f8aa09b5aebd96831f1614244665766ad2220a9963e77f7edd6"
+        },
+        {
+          "path": "src/frame/nhimc-frame.js",
+          "sha256": "61cf3918862ddccdefc4d5180e313f276559437eecd57bd868c5abd4d36aa402"
+        },
+        {
+          "path": "src/frame/nhimc-frame.css",
+          "sha256": "3e33ee30a25778442ca4c7b2e357a01fad1a62e66f63c7de49d6cfe0f79b735d"
+        },
+        {
+          "path": "src/assets/branding/nhimc-logo.svg",
+          "sha256": "a17d4f585fc8935aafd368fd26500cba16392ee8464568bc5a713e72130a180b"
+        },
+        {
+          "path": "src/assets/branding/nhimc-favicon.svg",
+          "sha256": "097491058a0ec9fedc4e170c272c8396e663d78c983c71ed6f86a6bebbabe50e"
+        },
+        {
+          "path": "src/assets/icons/nhimc-icons.svg",
+          "sha256": "06774373c5afb855e624b1a40b3ebdac13e42c2a2f9bbb9adc324b8095703b2c"
+        },
+        {
+          "path": "vendor/nhimc-design/layouts/left.html",
+          "sha256": "9429cb917a2f1f16de0b48f28992496550f989a1eb5b482aeecd9551ec29f483"
+        },
+        {
+          "path": "scripts/canonical_frame.py",
+          "sha256": "71c3bae9d69615264c0f5c1d34cad4801ebe254d48c31a8e39278014106461ef"
+        },
+        {
+          "path": "src/generated/frame/frame-runtime.js",
+          "sha256": "b6623ce6bcb7deec6588aa0857c96e9dbea58090f6464691aa2af63311c3df69"
+        }
       ]
     },
     {
-      "id": "nhimc-left-blank", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/left-blank.html", "contentSlot": "default",
-      "owns": ["header", "branding", "left-navigation", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/left-blank.html", "sha256": "63ff0349c3e9173680bcbe6cb40b9296d97d2a630ca7c11bd07e6a97b67f5282"}]
+      "id": "nhimc-left-blank",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/left-blank.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "left-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/left-blank.html",
+          "sha256": "63ff0349c3e9173680bcbe6cb40b9296d97d2a630ca7c11bd07e6a97b67f5282"
+        }
+      ]
     },
     {
-      "id": "nhimc-top", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/top.html", "contentSlot": "default",
-      "owns": ["header", "branding", "top-navigation", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/top.html", "sha256": "aaa6ec2a99cf64a83da231238ff83c90e6fe9bbd1bb9cc42c80b4b5ef113016c"}]
+      "id": "nhimc-top",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/top.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "top-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/top.html",
+          "sha256": "aaa6ec2a99cf64a83da231238ff83c90e6fe9bbd1bb9cc42c80b4b5ef113016c"
+        }
+      ]
     },
     {
-      "id": "nhimc-top-left", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/top-left.html", "contentSlot": "default",
-      "owns": ["header", "branding", "top-navigation", "left-navigation", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/top-left.html", "sha256": "a1ca877e3a8135b579fa2a4e493d8da6a4eeb4fb4d3dfefaa9caa65278dbbfef"}]
+      "id": "nhimc-top-left",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/top-left.html",
+      "contentSlot": "default",
+      "owns": [
+        "header",
+        "branding",
+        "top-navigation",
+        "left-navigation",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/top-left.html",
+          "sha256": "a1ca877e3a8135b579fa2a4e493d8da6a4eeb4fb4d3dfefaa9caa65278dbbfef"
+        }
+      ]
     },
     {
-      "id": "nhimc-presentation", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/presentation.html", "contentSlot": "default",
-      "owns": ["presentation-canvas", "branding", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/presentation.html", "sha256": "86264e6d5e779760906846786d6fad8ce0fffbc46657470e4345b4230995b2cd"}]
+      "id": "nhimc-presentation",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/presentation.html",
+      "contentSlot": "default",
+      "owns": [
+        "presentation-canvas",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/presentation.html",
+          "sha256": "86264e6d5e779760906846786d6fad8ce0fffbc46657470e4345b4230995b2cd"
+        }
+      ]
     },
     {
-      "id": "nhimc-presentation-vertical", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/presentation-vertical.html", "contentSlot": "default",
-      "owns": ["presentation-canvas", "branding", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/presentation-vertical.html", "sha256": "d05c2e543ce25986e72f40256c9ff1f66366015b2f1fd02867eb50b992e1f1d8"}]
+      "id": "nhimc-presentation-vertical",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/presentation-vertical.html",
+      "contentSlot": "default",
+      "owns": [
+        "presentation-canvas",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/presentation-vertical.html",
+          "sha256": "d05c2e543ce25986e72f40256c9ff1f66366015b2f1fd02867eb50b992e1f1d8"
+        }
+      ]
     },
     {
-      "id": "nhimc-blog", "version": "2.0.0", "element": "nhimc-frame",
-      "implementation": "vendor/nhimc-design/layouts/blog.html", "contentSlot": "default",
-      "owns": ["blog-header", "branding", "content-boundary", "responsive-breakpoints"],
-      "protectedFiles": [{"path": "vendor/nhimc-design/layouts/blog.html", "sha256": "abe80cc2a96e92feb3f0a325b183577b5a35c897f8f83d038a267dd11ad59f01"}]
+      "id": "nhimc-blog",
+      "version": "2.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/generated/frame/frame-runtime.js",
+      "adapter": "scripts/canonical_frame.py",
+      "canonicalLayout": "vendor/nhimc-design/layouts/blog.html",
+      "contentSlot": "default",
+      "owns": [
+        "blog-header",
+        "branding",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
+      "protectedFiles": [
+        {
+          "path": "vendor/nhimc-design/layouts/blog.html",
+          "sha256": "abe80cc2a96e92feb3f0a325b183577b5a35c897f8f83d038a267dd11ad59f01"
+        }
+      ]
     }
   ]
 }

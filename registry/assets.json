@@ -72,23 +72,131 @@
       "role": "license",
       "sha256": "74ba2e8a3e010fa81dc24958b23ad2dc885638b0b2da37ae4a2299e76b6b69f7"
     },
-    {"id":"canonical-brandmark-eng-1","path":"vendor/nhimc-design/branding/brandmark-eng-logo-1.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"17fd4f2cb0b6385c18d7cb8970244cded1f08592c95c786662aec0b667a2bb55"},
-    {"id":"canonical-brandmark-eng-2","path":"vendor/nhimc-design/branding/brandmark-eng-logo-2.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"8b7482380104e377e6f9dbdfa1edc5643e3811e10bc5a7ccb2644f6041f03df9"},
-    {"id":"canonical-brandmark-eng-3","path":"vendor/nhimc-design/branding/brandmark-eng-logo-3.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"ca0302d1b58fd27b38160f5afe16f2bc285b616faa3f00d34f48cb646d7e1a20"},
-    {"id":"canonical-brandmark-normal","path":"vendor/nhimc-design/branding/brandmark-normal-logo.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"b5028533554288e90e9e02655e31d58f42e1cbc98d1ca98a1baeb040f67fb991"},
-    {"id":"canonical-brandmark-row","path":"vendor/nhimc-design/branding/brandmark-row-logo.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea"},
-    {"id":"canonical-brandmark-solo-1","path":"vendor/nhimc-design/branding/brandmark-solo-logo-1.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"33a30ee0ec515ce2e3d3d17b560440096b32cb6a2bffd29655543317caf4e982"},
-    {"id":"canonical-brandmark-solo-2","path":"vendor/nhimc-design/branding/brandmark-solo-logo-2.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"78b3805cadd1016fa631ad3b9e82ae1a1cbf9aac9fce1a5325362626fc56ad14"},
-    {"id":"canonical-brandmark-vertical-1","path":"vendor/nhimc-design/branding/brandmark-verti-logo-1.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"99d46b097a323cb6c0bd81a61622c93469c7a65a86eac0ccbc4196faf0f0c691"},
-    {"id":"canonical-brandmark-vertical-2","path":"vendor/nhimc-design/branding/brandmark-verti-logo-2.svg","mediaType":"image/svg+xml","role":"brand-logo","sha256":"3f89ef650a97053d477996f63859d529d6b9439f366ba5ac00cefe2a350f7e25"},
-    {"id":"canonical-icon-sprite","path":"vendor/nhimc-design/icons/nhimc-icons.svg","mediaType":"image/svg+xml","role":"icon-sprite","sha256":"897bc9d319a81bf232924dcdef087511661ca1a369a4981ffe2ab0aa6f73cf10"},
-    {"id":"canonical-font-korean-300","path":"vendor/nhimc-design/fonts/noto-sans-kr-korean-300.woff2","mediaType":"font/woff2","role":"font","sha256":"df0d071a9c147a0b4f77f54e7e64d0d28f68797fb400be5cd8ba8558137a2acf"},
-    {"id":"canonical-font-korean-400","path":"vendor/nhimc-design/fonts/noto-sans-kr-korean-400.woff2","mediaType":"font/woff2","role":"font","sha256":"3aa0d1d63f3b5b2a33053a41a34512eac63abfb1dc2112aeda04733656a1a6d9"},
-    {"id":"canonical-font-korean-700","path":"vendor/nhimc-design/fonts/noto-sans-kr-korean-700.woff2","mediaType":"font/woff2","role":"font","sha256":"dab3d492daa687386292cff1499225db580f931f800ee0d124eb0636378c6020"},
-    {"id":"canonical-font-latin-300","path":"vendor/nhimc-design/fonts/noto-sans-kr-latin-300.woff2","mediaType":"font/woff2","role":"font","sha256":"84ea75b16f7b0ad379cee22451a688b50495ef5d44f109239ef7d6445bb5182d"},
-    {"id":"canonical-font-latin-400","path":"vendor/nhimc-design/fonts/noto-sans-kr-latin-400.woff2","mediaType":"font/woff2","role":"font","sha256":"f5b09bfccde07555802c5c990acb7f0d6bf349362f406ed89769958d3e607b82"},
-    {"id":"canonical-font-latin-700","path":"vendor/nhimc-design/fonts/noto-sans-kr-latin-700.woff2","mediaType":"font/woff2","role":"font","sha256":"452945755d9531ef349b9fe01cb54e77c1f3c933e999f6088d77a44b2456b5a6"},
-    {"id":"canonical-font-styles","path":"vendor/nhimc-design/fonts/fonts.css","mediaType":"text/css","role":"font-styles","sha256":"88af9b035053a9a1d8a1721ea826336ababaa8a48043d7496916244035089dc6"},
-    {"id":"canonical-upstream-manifest","path":"vendor/nhimc-design/upstream.json","mediaType":"application/json","role":"provenance","sha256":"2a71bb6b79c3d7c5bf5a11d163b212dc5a1895d767289c1e09dd3e2f47f18e90"}
+    {
+      "id": "canonical-brandmark-eng-1",
+      "path": "vendor/nhimc-design/branding/brandmark-eng-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "17fd4f2cb0b6385c18d7cb8970244cded1f08592c95c786662aec0b667a2bb55"
+    },
+    {
+      "id": "canonical-brandmark-eng-2",
+      "path": "vendor/nhimc-design/branding/brandmark-eng-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "8b7482380104e377e6f9dbdfa1edc5643e3811e10bc5a7ccb2644f6041f03df9"
+    },
+    {
+      "id": "canonical-brandmark-eng-3",
+      "path": "vendor/nhimc-design/branding/brandmark-eng-logo-3.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "ca0302d1b58fd27b38160f5afe16f2bc285b616faa3f00d34f48cb646d7e1a20"
+    },
+    {
+      "id": "canonical-brandmark-normal",
+      "path": "vendor/nhimc-design/branding/brandmark-normal-logo.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "b5028533554288e90e9e02655e31d58f42e1cbc98d1ca98a1baeb040f67fb991"
+    },
+    {
+      "id": "canonical-brandmark-row",
+      "path": "vendor/nhimc-design/branding/brandmark-row-logo.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea"
+    },
+    {
+      "id": "canonical-brandmark-solo-1",
+      "path": "vendor/nhimc-design/branding/brandmark-solo-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "33a30ee0ec515ce2e3d3d17b560440096b32cb6a2bffd29655543317caf4e982"
+    },
+    {
+      "id": "canonical-brandmark-solo-2",
+      "path": "vendor/nhimc-design/branding/brandmark-solo-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "78b3805cadd1016fa631ad3b9e82ae1a1cbf9aac9fce1a5325362626fc56ad14"
+    },
+    {
+      "id": "canonical-brandmark-vertical-1",
+      "path": "vendor/nhimc-design/branding/brandmark-verti-logo-1.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "99d46b097a323cb6c0bd81a61622c93469c7a65a86eac0ccbc4196faf0f0c691"
+    },
+    {
+      "id": "canonical-brandmark-vertical-2",
+      "path": "vendor/nhimc-design/branding/brandmark-verti-logo-2.svg",
+      "mediaType": "image/svg+xml",
+      "role": "brand-logo",
+      "sha256": "3f89ef650a97053d477996f63859d529d6b9439f366ba5ac00cefe2a350f7e25"
+    },
+    {
+      "id": "canonical-icon-sprite",
+      "path": "vendor/nhimc-design/icons/nhimc-icons.svg",
+      "mediaType": "image/svg+xml",
+      "role": "icon-sprite",
+      "sha256": "897bc9d319a81bf232924dcdef087511661ca1a369a4981ffe2ab0aa6f73cf10"
+    },
+    {
+      "id": "canonical-font-korean-300",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-korean-300.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "df0d071a9c147a0b4f77f54e7e64d0d28f68797fb400be5cd8ba8558137a2acf"
+    },
+    {
+      "id": "canonical-font-korean-400",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-korean-400.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "3aa0d1d63f3b5b2a33053a41a34512eac63abfb1dc2112aeda04733656a1a6d9"
+    },
+    {
+      "id": "canonical-font-korean-700",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-korean-700.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "dab3d492daa687386292cff1499225db580f931f800ee0d124eb0636378c6020"
+    },
+    {
+      "id": "canonical-font-latin-300",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-latin-300.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "84ea75b16f7b0ad379cee22451a688b50495ef5d44f109239ef7d6445bb5182d"
+    },
+    {
+      "id": "canonical-font-latin-400",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-latin-400.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "f5b09bfccde07555802c5c990acb7f0d6bf349362f406ed89769958d3e607b82"
+    },
+    {
+      "id": "canonical-font-latin-700",
+      "path": "vendor/nhimc-design/fonts/noto-sans-kr-latin-700.woff2",
+      "mediaType": "font/woff2",
+      "role": "font",
+      "sha256": "452945755d9531ef349b9fe01cb54e77c1f3c933e999f6088d77a44b2456b5a6"
+    },
+    {
+      "id": "canonical-font-styles",
+      "path": "vendor/nhimc-design/fonts/fonts.css",
+      "mediaType": "text/css",
+      "role": "font-styles",
+      "sha256": "88af9b035053a9a1d8a1721ea826336ababaa8a48043d7496916244035089dc6"
+    },
+    {
+      "id": "canonical-upstream-manifest",
+      "path": "vendor/nhimc-design/upstream.json",
+      "mediaType": "application/json",
+      "role": "provenance",
+      "sha256": "2a71bb6b79c3d7c5bf5a11d163b212dc5a1895d767289c1e09dd3e2f47f18e90"
+    }
   ]
 }

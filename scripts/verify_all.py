@@ -17,6 +17,7 @@ def verify_all(root: Path = ROOT) -> int:
         ("design rules", [sys.executable, "scripts/validate_design.py"]),
         ("public tree", [sys.executable, "scripts/validate_public.py"]),
         ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
+        ("canonical frame parity", [sys.executable, "scripts/run_browser_tests.py", "--canonical-parity-only"]),
         ("browser", [sys.executable, "scripts/run_browser_tests.py"]),
     ]
     results = []
