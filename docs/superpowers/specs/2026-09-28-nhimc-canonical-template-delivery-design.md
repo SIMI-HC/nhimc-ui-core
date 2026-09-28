@@ -1,7 +1,7 @@
 # NHIMC Canonical Template and Download Delivery Design
 
 **Date:** 2026-09-28  
-**Status:** Approved direction, pending written-spec review  
+**Status:** Approved
 **Canonical source:** `C:\Projects\NhimcDesign\.agents\skills\nhimc-worktool`  
 **Pinned source commit:** `08c45402eece8a7c55afc60385e8671c9f13081a`
 
