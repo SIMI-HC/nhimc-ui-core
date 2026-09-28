@@ -10,10 +10,10 @@
   root.style.visibility = 'hidden';
   setTimeout(reveal, 10000);
   // Start the fonts now, in parallel with the rest of the page: same verified files, loaded by URL.
-  for (const file of ['noto-sans-kr-latin-400.woff2', 'noto-sans-kr-korean-400.woff2', 'noto-sans-kr-latin-700.woff2', 'noto-sans-kr-korean-700.woff2']) {
+  for (const [subset, weight] of [['latin', '400'], ['korean', '400'], ['latin', '700'], ['korean', '700']]) {
     const link = document.createElement('link');
     link.rel = 'preload'; link.as = 'font'; link.type = 'font/woff2'; link.crossOrigin = 'anonymous';
-    link.href = D.fontBase + '/' + file;
+    link.href = D.fontBase + '/noto-sans-kr-' + subset + '-' + weight + '.woff2';
     document.head.appendChild(link);
   }
   const fail = (message) => {
