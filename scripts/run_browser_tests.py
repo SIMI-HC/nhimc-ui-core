@@ -53,6 +53,7 @@ def run_browser_tests(root: Path = ROOT, width: int = 390, height: int = 844) ->
                 "--disable-gpu",
                 "--disable-extensions",
                 "--no-first-run",
+                "--force-prefers-reduced-motion=reduce",
                 "--virtual-time-budget=4000",
                 f"--window-size={width},{height}",
                 "--dump-dom",

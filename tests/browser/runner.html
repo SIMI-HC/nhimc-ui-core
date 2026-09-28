@@ -6,9 +6,30 @@
   <meta name="nhimc-test-result" content="RUNNING">
   <title>NHIMC UI Core browser tests</title>
   <link rel="stylesheet" href="../../src/themes/nhimc-light.css">
+  <link rel="stylesheet" href="../../src/components/components.css">
 </head>
 <body>
   <div id="results">RUNNING</div>
+  <section id="component-specimens" aria-label="Component specimens">
+    <button id="disabled-button" class="nhimc-button" type="button" disabled>Unavailable</button>
+    <div class="nhimc-field">
+      <label for="account-name">Account name</label>
+      <input id="account-name" class="nhimc-input" aria-invalid="true" aria-describedby="account-error">
+      <span id="account-error" class="nhimc-field-message" data-error>Enter an account name.</span>
+    </div>
+    <div class="nhimc-tabs" role="tablist" aria-label="Test views">
+      <button id="tab-one" class="nhimc-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-one">One</button>
+      <button id="tab-two" class="nhimc-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-two" tabindex="-1">Two</button>
+    </div>
+    <section id="panel-one" role="tabpanel" aria-labelledby="tab-one">First panel</section>
+    <section id="panel-two" role="tabpanel" aria-labelledby="tab-two" hidden>Second panel</section>
+    <button id="dialog-opener" class="nhimc-button" type="button" data-nhimc-dialog-open="test-dialog">Open details</button>
+    <dialog id="test-dialog" class="nhimc-dialog" aria-labelledby="dialog-title">
+      <header><h2 id="dialog-title">Details</h2></header>
+      <div class="nhimc-dialog-body">Dialog content</div>
+      <footer><button id="dialog-close" class="nhimc-button" type="button" data-nhimc-dialog-close autofocus>Close</button></footer>
+    </dialog>
+  </section>
   <script type="module" src="./runner.js"></script>
 </body>
 </html>

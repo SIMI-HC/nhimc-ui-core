@@ -1,5 +1,24 @@
 {
   "schemaVersion": 1,
   "projectVersion": "1.0.0",
-  "components": []
+  "components": [
+    {"id":"button","selector":".nhimc-button","states":["default","hover","focus","active","disabled","busy"],"accessibility":["native button","visible focus"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:button"},
+    {"id":"input","selector":".nhimc-input","states":["default","focus","disabled","invalid"],"accessibility":["visible label","described error"],"tokens":["--nhimc-color-border-accent"],"implementation":"src/components/components.css","exampleMarker":"component:input"},
+    {"id":"textarea","selector":".nhimc-textarea","states":["default","focus","disabled","invalid"],"accessibility":["visible label","described error"],"tokens":["--nhimc-color-border-accent"],"implementation":"src/components/components.css","exampleMarker":"component:textarea"},
+    {"id":"select","selector":".nhimc-select","states":["default","focus","disabled","invalid"],"accessibility":["visible label","native select"],"tokens":["--nhimc-control-height-md"],"implementation":"src/components/components.css","exampleMarker":"component:select"},
+    {"id":"checkbox","selector":".nhimc-checkbox","states":["unchecked","checked","focus","disabled"],"accessibility":["native checkbox","visible label"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:checkbox"},
+    {"id":"radio","selector":".nhimc-radio","states":["unchecked","checked","focus","disabled"],"accessibility":["native radio","fieldset legend"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:radio"},
+    {"id":"switch","selector":".nhimc-switch","states":["off","on","focus","disabled"],"accessibility":["switch role","aria checked"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:switch"},
+    {"id":"date-input","selector":".nhimc-date-input","states":["default","focus","disabled","invalid"],"accessibility":["native date input","visible label"],"tokens":["--nhimc-control-height-md"],"implementation":"src/components/components.css","exampleMarker":"component:date-input"},
+    {"id":"field","selector":".nhimc-field","states":["default","help","error"],"accessibility":["label association","described error"],"tokens":["--nhimc-color-danger"],"implementation":"src/components/components.css","exampleMarker":"component:field"},
+    {"id":"search","selector":".nhimc-search","states":["empty","populated","busy"],"accessibility":["search role","named input"],"tokens":["--nhimc-space-2"],"implementation":"src/components/components.css","exampleMarker":"component:search"},
+    {"id":"card","selector":".nhimc-card","states":["default","selected"],"accessibility":["semantic heading","logical order"],"tokens":["--nhimc-color-surface"],"implementation":"src/components/components.css","exampleMarker":"component:card"},
+    {"id":"badge","selector":".nhimc-badge","states":["neutral","accent"],"accessibility":["text equivalent"],"tokens":["--nhimc-color-surface-subtle"],"implementation":"src/components/components.css","exampleMarker":"component:badge"},
+    {"id":"status","selector":".nhimc-status","states":["neutral","success","warning","danger"],"accessibility":["status text","not color only"],"tokens":["--nhimc-color-success"],"implementation":"src/components/components.css","exampleMarker":"component:status"},
+    {"id":"table","selector":".nhimc-table","states":["default","selected","empty"],"accessibility":["caption","header scope"],"tokens":["--nhimc-color-border"],"implementation":"src/components/components.css","exampleMarker":"component:table"},
+    {"id":"tabs","selector":".nhimc-tabs","states":["default","selected","focus","disabled"],"accessibility":["tab roles","arrow keys"],"tokens":["--nhimc-color-primary"],"implementation":"src/components/components.css","exampleMarker":"component:tabs"},
+    {"id":"dialog","selector":".nhimc-dialog","states":["closed","open"],"accessibility":["native dialog","focus restoration"],"tokens":["--nhimc-color-overlay"],"implementation":"src/components/components.css","exampleMarker":"component:dialog"},
+    {"id":"pagination","selector":".nhimc-pagination","states":["default","current","disabled"],"accessibility":["navigation label","current page"],"tokens":["--nhimc-control-height-sm"],"implementation":"src/components/components.css","exampleMarker":"component:pagination"},
+    {"id":"icon","selector":".nhimc-icon","states":["decorative","labelled"],"accessibility":["hidden decorative icon","named semantic icon"],"tokens":["--nhimc-color-text"],"implementation":"src/components/components.css","exampleMarker":"component:icon"}
+  ]
 }

@@ -1,4 +1,5 @@
 import tempfile
+import json
 import unittest
 from pathlib import Path
 
@@ -70,6 +71,28 @@ class DesignRuleTests(unittest.TestCase):
             )
 
             self.assertEqual([], validate_design(root))
+
+    def test_component_registry_entries_are_complete_and_implemented(self):
+        registry = json.loads(
+            (ROOT / "registry/components.json").read_text(encoding="utf-8")
+        )["components"]
+        css = (ROOT / "src/components/components.css").read_text(encoding="utf-8")
+        ids = [item["id"] for item in registry]
+
+        self.assertGreaterEqual(len(registry), 18)
+        self.assertEqual(len(ids), len(set(ids)))
+        for item in registry:
+            with self.subTest(component=item["id"]):
+                self.assertTrue(item["selector"].startswith(".nhimc-"))
+                self.assertIsInstance(item["states"], list)
+                self.assertGreater(len(item["states"]), 0)
+                self.assertIsInstance(item["accessibility"], list)
+                self.assertGreater(len(item["accessibility"]), 0)
+                self.assertIsInstance(item["tokens"], list)
+                self.assertGreater(len(item["tokens"]), 0)
+                self.assertEqual("src/components/components.css", item["implementation"])
+                self.assertTrue(item["exampleMarker"].startswith("component:"))
+                self.assertIn(item["selector"], css)
 
 
 if __name__ == "__main__":

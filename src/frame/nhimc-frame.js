@@ -118,7 +118,7 @@ export class NhimcFrame extends HTMLElement {
   #closeDrawer() {
     if (this.#drawer.open) this.#drawer.close();
     this.#mobileButton.setAttribute('aria-expanded', 'false');
-    requestAnimationFrame(() => this.#mobileButton.focus());
+    setTimeout(() => this.#mobileButton.focus(), 0);
   }
 
   #makeMenuItem(item, level) {
