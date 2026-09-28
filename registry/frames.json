@@ -5,7 +5,37 @@
     {
       "id": "nhimc-default",
       "version": "1.0.0",
+      "element": "nhimc-frame",
+      "implementation": "src/frame/nhimc-frame.js",
+      "contentSlot": "default",
+      "menuSchema": {
+        "property": "menu",
+        "event": "nhimc:navigate",
+        "maxDepth": 3
+      },
+      "owns": [
+        "header",
+        "branding",
+        "left-navigation",
+        "sidebar-collapse",
+        "mobile-drawer",
+        "statusbar",
+        "content-boundary",
+        "responsive-breakpoints"
+      ],
       "protectedFiles": [
+        {
+          "path": "src/frame/menu-model.js",
+          "sha256": "eb0cb1d917718f8aa09b5aebd96831f1614244665766ad2220a9963e77f7edd6"
+        },
+        {
+          "path": "src/frame/nhimc-frame.js",
+          "sha256": "2c801619dc6edc16a976db4bf91c0efcb56a8ae52e83a513693a78de758f9470"
+        },
+        {
+          "path": "src/frame/nhimc-frame.css",
+          "sha256": "c9a232e73e0238a7d3964ff9f7723c1f76a3729fed4ba5c55bb32d4c66a3ca5d"
+        },
         {
           "path": "src/assets/branding/nhimc-logo.svg",
           "sha256": "7f4511cbc2bdb05bc9e048030dcea551d0ded31ca38a0cf25bbb52574411e1ea"
