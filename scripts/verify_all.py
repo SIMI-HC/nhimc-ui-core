@@ -44,6 +44,10 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
                 "frame render",
                 [sys.executable, "scripts/run_browser_tests.py", "--frame-render-only"],
             ),
+            (
+                "outside click",
+                [sys.executable, "scripts/run_browser_tests.py", "--outside-click-only"],
+            ),
         ]
     results = []
     for label, command in checks:

@@ -17,8 +17,12 @@ description: NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트의 스
 6. capable local host에서는 다음 명령으로 빌드·브라우저 검증·전달을 한 번에 수행합니다.
 
 ```powershell
-python scripts/build_verified_artifact.py --input path/to/source.html --output path/to/index.html
+python scripts/build_verified_artifact.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html
 ```
+
+   - 저작 원본(`source.html`)은 **사용자 프로젝트 폴더가 아닌 임시 위치**(Claude Code: 세션 scratchpad 또는 OS 임시 폴더)에 저장합니다. `--input`은 임시 경로, `--output`만 사용자 폴더의 `index.html`로 줍니다.
+   - 빌드 후 출력 폴더에 `index.html` 외 파일이 없는지 확인하고, 있으면 삭제하거나 임시 위치로 옮깁니다.
+   - 사용자가 “원본도 보관해줘”라고 **명시한 경우에만** 원본을 출력 폴더에 둡니다.
 
 7. 실제로 전달된 파일이 하나의 `index.html`인지 확인한 뒤에만 “다운로드할 수 있게 만들었다”고 말합니다.
 
@@ -52,9 +56,9 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 
-## 준비 절차 요약 (사본이 남아 있어도 생략 금지)
+## 준비 절차 요약 (사본이 남아 있어도 생략 금지 — 플러그인 설치본도 “사본”)
 
-`bootstrap.md`의 “준비 절차”를 순서대로 따릅니다: ① 원격 `VERSION`과 비교 ② 더 새로우면 저장소 사본 갱신 ③ 스킬·플러그인이 미등록이면 **등록할지 먼저 묻고**, 등록돼 있고 새 버전이 있으면 **업데이트할지 반드시 묻고** 승인 시 함께 업데이트 ④ 처음 준비했거나 버전이 갱신됐으면 Design Guide를 반드시 표출(열거나 클릭 링크) ⑤ 최신 확인 결과·스킬/플러그인 상태·가이드 표출 여부를 보고. 확인하지 못한 것을 했다고 말하지 않습니다.
+`bootstrap.md`의 “준비 절차”를 순서대로 따릅니다. 먼저 `<루트>`를 정합니다: **플러그인이 설치돼 있으면 플러그인 설치 경로**(Claude Code: `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`)이고, 이때 저장소를 작업 폴더에 **클론하지 않습니다**(registry·scripts·guide·SKILL은 설치 경로에서 읽고 결과물만 작업 폴더에 씁니다). 설치돼 있지 **않을 때만** 클론합니다. ① 원격 `VERSION`만 읽어 설치본(또는 클론 사본)과 비교 ② 클론 사본이 필요할 때만(미설치) `git clone`/`git pull` ③ 스킬·플러그인이 미등록이면 **등록할지 먼저 묻고**, 등록돼 있고 새 버전이 있으면 **업데이트할지 반드시 묻고** 승인 시 공식 경로로 갱신(Claude Code: `claude plugin marketplace update` + `claude plugin update`; 클론으로 대신하지 않음) ④ 처음 준비했거나 버전이 갱신됐으면 `<루트>/guide/nhimc-design-guide.html`로 Design Guide를 반드시 표출(열거나 클릭 링크) ⑤ 최신 확인 결과·스킬/플러그인 상태·Design Guide 상태를 보고합니다.
 
 ## BLOG Frame 스크롤 소유자 (`blog`)
 
@@ -79,7 +83,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Web(context-only)에서는 Web Runtime 사용
 
-빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.1/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
+빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.2/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
 
 ## Self-check (완료 전 5개 계약)
 
@@ -92,6 +96,8 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 ## 전달 경계: single HTML
 
 최종 결과는 인터넷과 저장소 없이 `file://`로 열리는 정확히 하나의 `index.html`입니다. `app.js`, CSS, 이미지, Font, manifest, receipt, README 또는 asset 폴더를 함께 전달하면 안 됩니다. **MUST NOT DELIVER** an approximate or handcrafted Frame as a finished NHIMC artifact. 저작용 원본을 완성 파일로 첨부하면 안 됩니다.
+
+**원본 위치:** 저작 원본(`source.html`)은 결과물 옆에 두지 않습니다. 사용자 프로젝트 폴더에는 `index.html` 하나만 남기며, 원본은 임시 위치(Claude Code: 세션 scratchpad 또는 OS 임시 폴더)에서 `--input`으로만 씁니다. 빌드 뒤 출력 폴더에 `index.html` 외 파일이 있으면 삭제하거나 임시 위치로 옮기고(`build_verified_artifact.py`가 남아 있으면 경고합니다), 사용자가 “원본도 보관해줘”라고 명시한 경우에만 원본을 출력 폴더에 둡니다. 결과 보고에는 최종 산출물 경로(`index.html`)만 쓰고 원본 경로는 쓰지 않습니다.
 
 호스트가 canonical builder와 정확한 브라우저 검증기를 실행할 수 없으면 capability를 `context-only`라고 보고합니다. 참고용 구조는 논의할 수 있지만 검증된 HTML을 만들었다고 주장하지 마세요.
 

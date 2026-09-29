@@ -103,6 +103,21 @@
   [help, mobile].filter(Boolean).forEach(dialog => {
     dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
   });
+  // Click outside: the modal <dialog> receives the click of its own backdrop, so a click on the dialog element that
+  // lands outside the visible panel (the help sheet itself, or .mobile-panel inside the full-screen mobile dialog) closes it.
+  [help, mobile].filter(Boolean).forEach(dialog => {
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const panel = dialog.querySelector('.mobile-panel') || dialog;
+      const box = panel.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeDialog(dialog);
+    });
+  });
+  // Frames whose mobile menu is an in-page drawer (TOP, BLOG) close it from their .nav-backdrop.
+  document.querySelector('.nav-backdrop')?.addEventListener('click', () => {
+    shell?.classList.remove('nav-open');
+    mobileOpen?.setAttribute('aria-expanded', 'false');
+  });
   document.addEventListener('click', event => {
     const item = event.target.closest?.('[data-menu-id]');
     if (!item) return;

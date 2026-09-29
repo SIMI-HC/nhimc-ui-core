@@ -21,32 +21,38 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 
 ## 준비 절차 (항상 이 순서로, 사본이 남아 있어도 생략하지 않습니다)
 
-이전 대화나 샌드박스에 저장소 사본·스킬이 남아 있어도 **아래 1~5를 건너뛰지 않습니다.** 사본이 있다는 이유만으로 준비를 생략하지 않습니다.
+이전 대화나 샌드박스에 저장소 사본·스킬·**플러그인 설치본**이 남아 있어도 **아래 1~5를 건너뛰지 않습니다.** 여기서 “사본”은 저장소 클론뿐 아니라 마켓플레이스로 설치한 플러그인 설치본(플러그인 캐시)도 포함합니다. 사본이 있다는 이유만으로 준비를 생략하지 않습니다.
 
-1. **항상 먼저 확인합니다.** 원격 최신 버전 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`을 읽어 로컬 사본(또는 설치된 `nhimc-worktool`)의 `VERSION`과 비교하고, 결과를 `갱신함 / 이미 최신 / 확인 못함` 중 하나로 기억합니다. 원격 버전을 읽을 수 없으면 `확인 못함`이며 최신이라고 말하지 않습니다.
-2. **저장소 사본을 갱신합니다.** 원격이 더 새로우면 `git pull`(또는 다시 클론)하고 `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry를 다시 읽습니다. 같거나 로컬이 더 새로우면 건너뜁니다.
+**`<루트>`(registry·scripts·guide·SKILL을 읽는 위치)를 먼저 정합니다.**
+- `nhimc-worktool` 스킬·플러그인이 **설치돼 있으면** `<루트>`는 **플러그인 설치 경로**입니다. 설치본에 저장소 전체(`registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION`)가 들어 있으므로 **저장소를 작업 폴더에 클론하지 않습니다.** Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인 목록에서 설치 경로를 확인합니다. 작업 폴더에는 만든 결과물(`source.html`, `index.html`)만 둡니다.
+- 설치돼 있지 **않으면** 아래 2단계의 클론 사본이 `<루트>`입니다.
+
+1. **항상 먼저 확인합니다.** 원격 최신 버전 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 설치된 `nhimc-worktool`(또는 클론 사본)의 `VERSION`과 비교하고, 결과를 `갱신함 / 이미 최신 / 확인 못함` 중 하나로 기억합니다. 원격 버전을 읽을 수 없으면 `확인 못함`이며 최신이라고 말하지 않습니다.
+2. **사본을 정합니다 (스킬·플러그인이 설치돼 있지 않을 때만 클론합니다).**
+   - 플러그인이 **설치돼 있으면**: `git clone`·`git pull`을 하지 않습니다. `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry는 `<루트>`(플러그인 설치 경로)에서 읽습니다. 원격이 더 새로우면 3단계에서 갱신 여부를 묻습니다.
+   - 설치돼 있지 **않으면**: 클론 사본이 없을 때 `git clone https://github.com/SIMI-HC/nhimc-ui-core.git`, 있고 원격이 더 새로우면 `git pull`(또는 다시 클론)한 뒤 `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry를 다시 읽습니다. 같거나 로컬이 더 새로우면 건너뜁니다.
 3. **스킬·플러그인을 확인하고 사용자에게 묻습니다.** 이 환경에 `nhimc-worktool` 스킬(또는 플러그인·확장)이 있는지 봅니다.
-   - 등록되어 있지 않고 이 환경이 공식 등록 경로(플러그인, Skill 업로드, 확장)를 지원하면, **등록할지 사용자에게 먼저 묻습니다**. 자동 설치나 지원되지 않는 방법으로의 우회는 하지 않습니다. 승인하면 그 경로로 등록하고, 거절하거나 지원하지 않으면 Web Bootstrap으로 계속합니다.
-   - 이미 등록되어 있고 저장소 `VERSION`이 더 새로우면 “`nhimc-worktool`을 현재 버전에서 새 버전으로 업데이트할까요?”라고 **반드시 묻고**, 승인하면 스킬·플러그인도 같은 버전으로 업데이트합니다(스킬·플러그인도 같은 버전으로 업데이트). 거절하면 이전 버전을 유지한다고 알립니다.
+   - 등록되어 있지 않고 이 환경이 공식 등록 경로(플러그인, Skill 업로드, 확장)를 지원하면, **등록할지 사용자에게 먼저 묻습니다**. 자동 설치나 지원되지 않는 방법으로의 우회는 하지 않습니다. 승인하면 그 경로로 등록하고(Claude Code: `claude plugin marketplace add SIMI-HC/nhimc-ui-core` 다음 `claude plugin install nhimc-worktool@nhimc-worktool-marketplace`), 거절하거나 지원하지 않으면 Web Bootstrap으로 계속합니다.
+   - 이미 등록되어 있고 원격 `VERSION`이 더 새로우면 “`nhimc-worktool`을 현재 버전에서 새 버전으로 업데이트할까요?”라고 **반드시 묻고**, 승인하면 **공식 경로로** 스킬·플러그인도 같은 버전으로 업데이트합니다(스킬·플러그인도 같은 버전으로 업데이트). Claude Code는 `claude plugin marketplace update nhimc-worktool-marketplace` 다음 `claude plugin update nhimc-worktool@nhimc-worktool-marketplace`이며, 저장소를 다시 클론해서 대신하지 않습니다. 업데이트 뒤에는 새 설치 경로(`<버전>` 폴더)를 `<루트>`로 다시 잡습니다. 거절하면 이전 버전을 유지한다고 알립니다.
    - 등록되어 있고 같거나 더 새로우면 그대로 사용합니다.
    - 등록이나 업데이트를 실제로 확인하지 못했으면 됐다고 말하지 않습니다.
-4. **Design Guide를 표출합니다.** 처음 준비했거나 1단계 결과가 `갱신함`이면 **반드시** 아래 “준비 완료 후: Design Guide 열기”대로 사용자에게 열어 줍니다. `이미 최신`이면 다시 열지 않고 가이드 링크만 한 줄로 알려 줍니다.
+4. **Design Guide를 표출합니다.** 처음 준비했거나 1단계 결과가 `갱신함`이면 **반드시** 아래 “준비 완료 후: Design Guide 열기”대로 사용자에게 열어 줍니다. 파일은 클론이 아니라 `<루트>`(플러그인이 설치돼 있으면 설치 경로)의 `guide/nhimc-design-guide.html`을 씁니다. `이미 최신`이면 다시 열지 않고 가이드 링크만 한 줄로 알려 줍니다.
 5. **결과를 보고합니다.** `platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`에 더해 `최신 확인 결과`, `스킬·플러그인`(등록됨 / 업데이트함 / 업데이트 안 함 / 미등록·미지원), `Design Guide`(열었음 / 링크 전달 / 생략: 이미 최신)를 함께 씁니다.
 
 ## 준비 완료 후: Design Guide 열기
 
-준비 절차 4단계에서 `guide/nhimc-design-guide.html`을 사용자에게 엽니다(처음 준비하거나 버전이 갱신됐을 때는 생략하지 않습니다). 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
+준비 절차 4단계에서 `<루트>/guide/nhimc-design-guide.html`을 사용자에게 엽니다(플러그인이 설치돼 있으면 클론하지 않고 그 설치 경로의 파일을 엽니다. 처음 준비하거나 버전이 갱신됐을 때는 생략하지 않습니다). 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
 
-1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" guide\nhimc-design-guide.html`(또는 `open-guide.cmd`), macOS `open guide/nhimc-design-guide.html`, Linux `xdg-open guide/nhimc-design-guide.html`.
+1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" "<루트>\guide\nhimc-design-guide.html"`(또는 `<루트>\open-guide.cmd`), macOS `open "<루트>/guide/nhimc-design-guide.html"`, Linux `xdg-open "<루트>/guide/nhimc-design-guide.html"`.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.3.1/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.3.2/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v1.3.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v1.3.2`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.2/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -102,6 +108,8 @@ Content 작성 규칙(발표용):
 3. 메뉴, Page, 검색조건, Table 열, Card 구성은 업무 요구에 따라 자유롭게 정합니다.
 4. capable host에서는 `scripts/build_verified_artifact.py`로 최종화합니다.
 5. 브라우저 영수증과 정확히 일치하는 오프라인 `index.html` 하나만 다운로드로 전달합니다.
+6. 저작 원본(`source.html`)은 사용자 프로젝트 폴더가 아닌 **임시 위치**(Claude Code: 세션 scratchpad 또는 OS 임시 폴더)에 저장합니다. 빌더 `--input`은 임시 경로, `--output`만 사용자 폴더의 `index.html`입니다. 빌드 뒤 출력 폴더에 `index.html` 외 파일이 없는지 확인하고 있으면 삭제하거나 임시 위치로 옮깁니다. 사용자가 “원본도 보관해줘”라고 명시한 경우에만 원본을 출력 폴더에 둡니다.
+7. 결과 보고에는 최종 산출물 경로(`index.html`)만 쓰고 원본 경로는 쓰지 않습니다.
 
 별도 `app.js`, CSS, 이미지, Font, receipt, README, asset 폴더는 최종 전달물이 아닙니다. 저작용 원본을 완성 파일로 첨부하면 안 됩니다.
 
@@ -110,7 +118,7 @@ Content 작성 규칙(발표용):
 유지보수 진단 시에만 다음 명령을 사용합니다.
 
 ```powershell
-python scripts/build_verified_artifact.py --input path/to/source.html --output path/to/index.html
+python scripts/build_verified_artifact.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html
 ```
 
 ## 메뉴와 Page는 AI가 정합니다
@@ -145,10 +153,10 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 웹 AI라도 **코드 실행(샌드박스)과 GitHub 접근이 되면** 오프라인 빌더로 CSS·스크립트·폰트가 모두 든 단일 `index.html`을 직접 만들어 **다운로드 파일로 첨부**합니다. 이때 AI가 파일 내용을 손으로 써서 붙이지 않고 반드시 빌더를 실행합니다.
 
-1. 저장소를 받습니다: `git clone https://github.com/SIMI-HC/nhimc-ui-core.git` (이미 있으면 위 “항상 먼저 확인”에 따라 갱신).
-2. 저작 원본(Content 조각 또는 `nhimc-frame` 문서)을 `source.html`로 저장합니다. `<script src>`(Web Runtime 줄)는 넣지 않습니다.
-3. Chromium이 있으면 `python scripts/build_verified_artifact.py --input source.html --output index.html`로 브라우저 검증까지 마칩니다. 없으면 `python scripts/build_single_html.py --input source.html --output index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
-4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림).
+1. 빌더 위치 `<루트>`를 정합니다. 스킬·플러그인이 설치돼 있으면 **클론하지 않고** 플러그인 설치 경로의 `scripts/`를 그대로 실행합니다(결과물만 작업 폴더에 씁니다). **설치돼 있지 않을 때만** `git clone https://github.com/SIMI-HC/nhimc-ui-core.git`(이미 있으면 위 “항상 먼저 확인”에 따라 갱신)로 받습니다.
+2. 저작 원본(Content 조각 또는 `nhimc-frame` 문서)을 **임시 위치의 `source.html`로 저장합니다**(사용자 프로젝트 폴더에 두지 않습니다). `<script src>`(Web Runtime 줄)는 넣지 않습니다.
+3. Chromium이 있으면 `python <루트>/scripts/build_verified_artifact.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html`로 브라우저 검증까지 마칩니다. 없으면 `python <루트>/scripts/build_single_html.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
+4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림). 첨부·보고에는 `index.html`만 쓰고 원본은 첨부·언급하지 않습니다.
 
 코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 씁니다. 이 방식은 미리보기일 뿐이며 URL 없는 파일을 자동으로 만들어 주지 않으므로, 완성 파일이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
 
@@ -160,7 +168,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.1/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.3.2/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>

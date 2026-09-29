@@ -59,6 +59,10 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
                 "frame render",
                 [sys.executable, "scripts/run_browser_tests.py", "--frame-render-only"],
             ),
+            (
+                "outside click",
+                [sys.executable, "scripts/run_browser_tests.py", "--outside-click-only"],
+            ),
         )
         for label, command in canonical_gates:
             if subprocess.run(command, cwd=root, check=False).returncode:

@@ -1,5 +1,17 @@
 # 변경 이력
 
+## [1.3.2] - 2026-09-29
+
+- **도움말 패널·모바일 메뉴가 바깥 클릭으로 닫히지 않던 결함 수정** (Frame: left·left-blank·top-left 1.2.0, top 1.3.0, blog 1.4.0). 원인: 실제 빌드에 들어가는 `src/generated/frame/frame-runtime.js`에 바깥 클릭 처리가 없었습니다(정본 Frame 인라인 스크립트에는 있지만 빌드는 그 스크립트를 이 런타임으로 교체합니다). 그래서 X 버튼과 Esc만 닫혔습니다. 이제 도움말·모바일 dialog는 패널 밖(backdrop) 클릭 시 닫히고, TOP·BLOG의 `.nav-backdrop` 클릭은 `nav-open`을 해제하고 메뉴 버튼의 `aria-expanded`를 `false`로 되돌립니다. Web Runtime(`dist/nhimc-web.js`)에도 같이 들어갑니다.
+  - 회귀 테스트: `scripts/outside_click.py`(`run_browser_tests.py --outside-click-only`, `verify_all`, `verify_release`)가 left·left-blank·top·top-left·blog에서 실제 마우스 클릭으로 도움말 열기 → 안쪽 클릭(유지) → 바깥 클릭(닫힘), 390px에서 메뉴 열기 → 바깥/backdrop 클릭 → 닫힘·`aria-expanded` 복귀를 확인합니다. 수정 전 런타임에서는 5개 Frame 모두 실패합니다.
+- **최종 산출물은 `index.html` 하나만 남기기**: 저작 원본(`source.html`)을 사용자 프로젝트 폴더의 결과물 옆에 저장하던 문제. `SKILL.md`(필수 순서 6번, “전달 경계”)와 `bootstrap.md`(“기본 산출물 계약”, “웹에서 URL 없는 완성 HTML”)에 원본은 임시 위치(Claude Code: 세션 scratchpad 또는 OS 임시 폴더)에 두고 `--input`만 임시 경로, `--output`만 사용자 폴더의 `index.html`로 주며, 빌드 뒤 출력 폴더에 다른 파일이 있으면 삭제하거나 임시 위치로 옮기고, 사용자가 “원본도 보관해줘”라고 명시할 때만 원본을 출력 폴더에 두며, 결과 보고에는 `index.html` 경로만 쓴다고 명시했습니다. `build_verified_artifact.py`는 출력 폴더에 `index.html` 외 항목이 있으면 stderr로 경고합니다(자동 삭제 없음).
+- **플러그인을 이미 설치했는데도 AI가 저장소를 작업 폴더에 클론하던 문제 수정** (`bootstrap.md` “준비 절차”, `SKILL.md` “준비 절차 요약”). 플러그인 캐시에 저장소 전체(registry·scripts·guide·SKILL·vendor)가 들어 있어 클론은 불필요하고 작업 폴더만 어지러워졌습니다.
+  - `git clone`/`git pull`은 **스킬·플러그인이 설치돼 있지 않을 때만** 합니다(2단계, “웹에서 URL 없는 완성 HTML” 1단계).
+  - 플러그인이 설치돼 있으면 클론하지 않고 원격 raw `VERSION`만 읽어 비교하며, registry·scripts·guide·SKILL은 플러그인 설치 경로 `<루트>`(Claude Code: `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`)에서 읽습니다. 빌더도 설치 경로의 `scripts/`를 실행하고 결과물만 작업 폴더에 둡니다.
+  - 새 버전이면 업데이트 여부를 먼저 묻고, 승인하면 공식 경로(Claude Code: `claude plugin marketplace update` + `claude plugin update`)로 갱신합니다. 클론으로 대신하지 않습니다.
+  - Design Guide도 클론이 아니라 `<루트>/guide/nhimc-design-guide.html`을 엽니다.
+  - “사본이 남아 있어도 1~5를 생략하지 않는다”는 문구는 유지하되, 사본에 플러그인 설치본(플러그인 캐시)을 포함한다고 명시했습니다.
+
 ## [1.3.1] - 2026-09-29
 
 - **일산병원 로고의 흰색 테두리(타일) 제거** (Frame: left·left-blank·top-left 1.1.0, top 1.2.0, blog 1.3.0). 로고 뒤 흰색 둥근 배경, 안쪽 여백(3px 5px), 그림자, 모서리 반경을 모두 없애 로고 그림 그대로 보입니다. 펼친 가로 로고와 접힌 레일의 단독형 마크 모두 적용됩니다. 벤더 미러는 그대로 두고 `scripts/frame_patches.py`가 오프라인 빌더·Web Runtime·Design Guide에 공통 적용합니다. 로고 크기는 타일 안쪽 여백만큼(높이 36px 안에서 30px → 36px) 커집니다.

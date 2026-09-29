@@ -128,7 +128,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.3.0", "nhimc-top": "1.2.0", "nhimc-default": "1.1.0", "nhimc-left-blank": "1.1.0", "nhimc-top-left": "1.1.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.4.0", "nhimc-top": "1.3.0", "nhimc-default": "1.2.0", "nhimc-left-blank": "1.2.0", "nhimc-top-left": "1.2.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):
