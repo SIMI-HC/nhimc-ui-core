@@ -1,6 +1,6 @@
 # 변경 이력
 
-## [Unreleased]
+## [1.2.1] - 2026-09-29
 
 - Web Runtime: “오프라인 HTML 저장” 버튼을 없애고, Frame이 갖춰지면 오프라인 HTML을 자동으로 저장합니다. `window.nhimcExportHtml()`은 그대로 남아 있습니다.
 
