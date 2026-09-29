@@ -6,9 +6,9 @@ frameVersion always means the same Frame.
 
 1.0.0  the Ilsan Hospital logo tile (white border) uses an 8px radius instead of 10px/9px.
 1.4.0  the white logo tile is removed altogether (no padding, white background, shadow or radius around the logo).
-       The sidebar logo sits on a translucent --color-sidebar-brand-18 panel (like the active menu row) so its navy block
-       stays visible (3px padding, 3px radius).
-       LEFT BLANK keeps its canonical collapsed rail: the toggle only, no logo mark.
+       LEFT and LEFT BLANK: the sidebar/shell colour fades from lighter (top) to darker (bottom) so the logo's blue block
+       stays visible; no panel or border around the logo. LEFT BLANK keeps its canonical collapsed rail (toggle only).
+       DEFAULT: the header divider gets 10px on each side (it sat 2px from the project name).
 1.0.1  PRESENTATION frames (presentation, presentation-vertical) own a Content Safe Area. Their Header
        (utility buttons) and Controller (slide dots and arrows) float above a full-bleed content slot, so AI
        Content ran under them.
@@ -155,20 +155,33 @@ def _patch_nav_icons(layout: str) -> str:
     return layout[:end] + f"\n/* {NAV_ICON_MARKER} */\n" + rules + layout[end:]
 
 
-SIDEBAR_LOGO_MARKER = "nhimc-sidebar-logo"
-# Without the white tile the logo's own navy block melts into the navy sidebar. It sits on a translucent panel of the
-# sidebar's own token instead (the same soft surface as the active menu row), not on a white one.
-_SIDEBAR_LOGO_RULES = """.brand .brand-row,.brand-logo .brand-row{padding:3px;border-radius:3px;background:var(--color-sidebar-brand-18)}
-.brand .brand-mark,.brand-logo .brand-mark{padding:3px;border-radius:3px;background:var(--color-sidebar-brand-18)}
+SIDEBAR_GRADIENT_MARKER = "nhimc-sidebar-gradient"
+# Without the white tile the logo's own navy block melted into the flat navy sidebar. The sidebar/shell colour now fades
+# from lighter (top, where the logo is) to darker (bottom) so the logo's blue stays visible. Translucent overlays on the
+# sidebar token, so every colour theme keeps working. Desktop / tablet only: the mobile shell keeps its canvas.
+_SIDEBAR_GRADIENT_RULES = """:root{--sidebar-gradient-top:rgba(255,255,255,.32);--sidebar-gradient-bottom:rgba(0,0,0,.22)}
+[data-theme="dark"]{--sidebar-gradient-top:rgba(255,255,255,.12);--sidebar-gradient-bottom:rgba(0,0,0,.30)}
+@media (min-width:768px){.app-shell{background-image:linear-gradient(180deg,var(--sidebar-gradient-top),var(--sidebar-gradient-bottom))}}
 """
+DEFAULT_HEADER_MARKER = "nhimc-default-header-spacing"
+# DEFAULT Frame: the divider between the logo and the project name sat 2px from each side; give it breathing room.
+_DEFAULT_HEADER_RULES = ".header-divider{margin:0 10px}\n"
 
 
-def _patch_sidebar_logo(layout: str) -> str:
-    if "sidebar-decor" not in layout or ".brand-asset" not in layout or SIDEBAR_LOGO_MARKER in layout:
+def _patch_sidebar_gradient(layout: str) -> str:
+    if "sidebar-decor" not in layout or ".brand-asset" not in layout or SIDEBAR_GRADIENT_MARKER in layout:
         return layout
     end = layout.rindex("</style>")
-    return layout[:end] + f"\n/* {SIDEBAR_LOGO_MARKER} */\n" + _SIDEBAR_LOGO_RULES + layout[end:]
+    return layout[:end] + f"\n/* {SIDEBAR_GRADIENT_MARKER} */\n" + _SIDEBAR_GRADIENT_RULES + layout[end:]
+
+
+def _patch_default_header_spacing(layout: str) -> str:
+    if ".header-divider{" not in layout or DEFAULT_HEADER_MARKER in layout:
+        return layout
+    end = layout.rindex("</style>")
+    return layout[:end] + f"\n/* {DEFAULT_HEADER_MARKER} */\n" + _DEFAULT_HEADER_RULES + layout[end:]
 
 
 def apply_frame_patches(layout: str) -> str:
-    return _patch_sidebar_logo(_patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_tile(layout)))))
+    patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_tile(layout))))
+    return _patch_default_header_spacing(_patch_sidebar_gradient(patched))

@@ -7,7 +7,7 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
 | 프로젝트(NHIMC UI Core) | `2.0.0` | `VERSION`, `registry/project.json` |
-| Frame | `1.2.2` (left), `1.2.0` (left-blank, top-left), `1.1.0` (presentation, presentation-vertical), `1.3.0` (top), `1.4.0` (blog) | `registry/frames.json` |
+| Frame | `1.3.0` (left, left-blank, top, top-left), `1.1.0` (presentation, presentation-vertical), `1.4.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
 | Web Runtime | `@v2.0.0` | `dist/nhimc-web.js` |

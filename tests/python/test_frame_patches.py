@@ -47,19 +47,31 @@ class FramePatchTests(unittest.TestCase):
         for before, _ in changed:
             self.assertTrue(any(logo in before.rsplit("{", 1)[0] for logo in LOGO_SELECTORS), before[-80:])
 
-    def test_sidebar_logo_sits_on_a_translucent_panel_and_left_blank_keeps_its_canonical_collapsed_rail(self):
+    def test_left_frames_fade_the_shell_from_light_top_to_dark_bottom_without_a_logo_panel(self):
         for name in ("left.html", "left-blank.html"):
             patched = apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8"))
-            added = patched.split(frame_patches.SIDEBAR_LOGO_MARKER)[1].split("</style>")[0]
-            self.assertIn("background:var(--color-sidebar-brand-18)", added, name)
-            self.assertNotIn("#fff", added, name)
-            self.assertIn("padding:3px;border-radius:3px;background:var(--color-sidebar-brand-18)", added, name)
-            self.assertNotIn("padding:3px 5px", added, name)
+            added = patched.split(frame_patches.SIDEBAR_GRADIENT_MARKER)[1].split("</style>")[0]
+            self.assertIn("linear-gradient(180deg,var(--sidebar-gradient-top),var(--sidebar-gradient-bottom))", added, name)
+            self.assertIn("--sidebar-gradient-top:rgba(255,255,255,.32)", added, name)
+            self.assertIn("--sidebar-gradient-bottom:rgba(0,0,0,.22)", added, name)
+            self.assertIn("@media (min-width:768px){.app-shell{background-image", added, "the mobile shell keeps its canvas")
+            self.assertNotIn(".brand-row", added, "no panel or border around the logo")
+            self.assertNotIn(".brand-mark", added, name)
         for name in ("top.html", "top-left.html", "blog.html", "presentation.html"):
             patched = apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8"))
-            self.assertNotIn(frame_patches.SIDEBAR_LOGO_MARKER, patched, name)
+            self.assertNotIn(frame_patches.SIDEBAR_GRADIENT_MARKER, patched, name)
         blank = apply_frame_patches((LAYOUTS / "left-blank.html").read_text(encoding="utf-8"))
         self.assertIn(".is-collapsed .brand-logo{display:none}", blank, "LEFT BLANK keeps its canonical collapsed rail")
+
+    def test_default_frame_gives_the_header_divider_room(self):
+        patched = apply_frame_patches((LAYOUTS / "top-left.html").read_text(encoding="utf-8"))
+        added = patched.split(frame_patches.DEFAULT_HEADER_MARKER)[1].split("</style>")[0]
+        self.assertIn(".header-divider{margin:0 10px}", added)
+        for name in ("left.html", "top.html", "blog.html"):
+            self.assertNotIn(
+                frame_patches.DEFAULT_HEADER_MARKER,
+                apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8")), name,
+            )
 
     def test_rendered_frame_and_web_runtime_use_the_patched_layout(self):
         payload = FramePayload(

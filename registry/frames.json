@@ -4,7 +4,7 @@
   "frames": [
     {
       "id": "nhimc-default",
-      "version": "1.2.2",
+      "version": "1.3.0",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -40,13 +40,13 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         }
       ]
     },
     {
       "id": "nhimc-left-blank",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -66,7 +66,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         }
       ]
     },
@@ -92,13 +92,13 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         }
       ]
     },
     {
       "id": "nhimc-top-left",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -119,7 +119,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         }
       ]
     },
@@ -151,7 +151,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -188,7 +188,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -220,7 +220,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "fb1cc9a25d38214a1afc8f3781a6e421b76a5dc2ed7a8988d68290b7f29c7e6e"
+          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
         }
       ],
       "scrollOwners": {
