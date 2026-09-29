@@ -114,4 +114,4 @@ def append_symbol(
     if findings:
         raise ValueError(f"new icon violates the style contract: {'; '.join(findings)}")
     overlay_path.parent.mkdir(parents=True, exist_ok=True)
-    overlay_path.write_text(overlay_text.replace("</svg>", symbol + "</svg>", 1), encoding="utf-8")
+    overlay_path.write_text(overlay_text.replace("</svg>", symbol + "</svg>", 1), encoding="utf-8", newline="\n")

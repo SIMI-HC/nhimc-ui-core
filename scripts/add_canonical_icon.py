@@ -39,7 +39,7 @@ def _append_gallery_entry(root: Path, *, icon_id: str, label: str, category: str
     data["icons"].append(
         {"id": icon_id, "label": label, "category": category, "svg": inner_svg, "updatedAt": updated_at, "tone": tone}
     )
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def add_canonical_icon(

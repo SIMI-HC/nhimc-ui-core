@@ -152,7 +152,7 @@ class OverlayIntegrationTests(unittest.TestCase):
             self.assertIn('id="test-overlay-icon"', html)
             self.assertIn('href="#test-overlay-icon"', html)
         finally:
-            overlay_path.write_text(original, encoding="utf-8")
+            overlay_path.write_text(original, encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":
