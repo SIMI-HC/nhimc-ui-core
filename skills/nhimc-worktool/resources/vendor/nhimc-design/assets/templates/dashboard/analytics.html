@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>dashboard/analytics Golden Template</title>
+<style>
+:root{color-scheme:light;--color-primary:#003d94;--color-primary-foreground:#fff;--color-background:#fff;--color-foreground:#14253a;--color-canvas:#f4f7fa;--color-card:#fff;--color-secondary:#edf5fb;--color-muted-foreground:#64748b;--color-border:#cfdfed;--color-chip-sky:#c7e1f5;--color-chip-purple:#dee2f2;--color-chip-pink:#f9d2dc;--color-chip-pear:#d7e7a4;--color-chip-apricot:#fcc8ac;--color-chip-foreground:#14253a;--color-category-sky:#c7e1f5;--color-category-pear:#d7e7a4;--color-category-apricot:#fcc8ac;--color-category-foreground:#14253a;--color-chart-1:#c7e1f5;--color-chart-2:#dee2f2;--color-chart-3:#f9d2dc;--color-chart-4:#d7e7a4;--color-chart-5:#fcc8ac}
+[data-theme="dark"]{color-scheme:dark;--color-primary:#6ba6e4;--color-primary-foreground:#08182b;--color-background:#0a0a0a;--color-foreground:#fafafa;--color-canvas:#0a0a0a;--color-card:#171717;--color-secondary:#1d2b3a;--color-muted-foreground:#a3a3a3;--color-border:#334155;--color-chip-sky:#c7e1f5;--color-chip-purple:#dee2f2;--color-chip-pink:#f9d2dc;--color-chip-pear:#d7e7a4;--color-chip-apricot:#fcc8ac;--color-chip-foreground:#14253a;--color-category-sky:#16304d;--color-category-pear:#1e3524;--color-category-apricot:#3d2a1e;--color-category-foreground:#e6edf5;--color-chart-1:#c7e1f5;--color-chart-2:#dee2f2;--color-chart-3:#f9d2dc;--color-chart-4:#d7e7a4;--color-chart-5:#fcc8ac}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{font:14px "Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;background:var(--color-canvas);color:var(--color-foreground)}
+main[data-nhimc-role="content"]{min-height:100%;display:grid;align-content:start;gap:16px;padding:24px}
+h1{font-size:24px;margin:0}
+.desc{margin:-10px 0 0;color:var(--color-muted-foreground)}
+.tabs{display:flex;gap:6px;padding:4px;background:var(--color-secondary);border-radius:10px;width:fit-content}
+.tab{border:0;background:transparent;color:var(--color-foreground);padding:9px 16px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--color-card);color:var(--color-primary);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.card{background:var(--color-card);border:1px solid var(--color-border);border-radius:14px;overflow:hidden}
+.card .head{padding:16px 18px;background:var(--color-secondary);border-bottom:1px solid var(--color-border);font-weight:700}
+.card .body{padding:18px}
+.chart-bar{width:100%;max-width:100%;height:auto;display:block}
+.chart-bar .chart-grid line,.chart-line .chart-grid line{stroke:var(--color-border);stroke-width:1}
+.chart-bar .chart-axis-label text,.chart-line .chart-axis-label text{font-size:9px;fill:var(--color-muted-foreground)}
+.chart-line{width:100%;max-width:100%;height:auto;display:block}
+.chart-line .chart-line-path{fill:none;stroke:var(--color-primary);stroke-width:2}
+.chart-line .chart-line-dot{fill:var(--color-primary)}
+.insight{list-style:none;margin:0;padding:6px 18px 18px;display:grid;gap:12px}
+.insight li{display:flex;align-items:flex-start;gap:10px}
+.badge{flex:none;display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;margin-top:1px}
+.badge.sky{background:var(--color-category-sky);color:var(--color-category-foreground)}
+.badge.pear{background:var(--color-category-pear);color:var(--color-category-foreground)}
+.badge.apricot{background:var(--color-category-apricot);color:var(--color-category-foreground)}
+.insight small{display:block;color:var(--color-muted-foreground);margin-top:2px}
+@media(max-width:950px){.grid{grid-template-columns:1fr}}
+@media(max-width:767px){main[data-nhimc-role="content"]{padding:16px}}
+</style>
+</head>
+<body data-nhimc-template-scope="content-only">
+<main data-nhimc-role="content">
+  <h1 data-nhimc-role="page-header" data-nhimc-component="PageHeader">환자경험 데이터허브</h1>
+  <p class="desc">부서·병동별 지표를 탭으로 전환하며 비교합니다.</p>
+  <div class="tabs" data-nhimc-role="tab-nav" data-nhimc-component="Tabs" role="tablist" aria-label="분석 영역">
+    <button type="button" class="tab" data-nhimc-component="Tabs" role="tab" aria-selected="true">종합현황</button>
+    <button type="button" class="tab" data-nhimc-component="Tabs" role="tab" aria-selected="false">부서분석</button>
+    <button type="button" class="tab" data-nhimc-component="Tabs" role="tab" aria-selected="false">VOC 분석</button>
+  </div>
+  <section class="grid" data-nhimc-role="chart-grid">
+    <div class="card" data-nhimc-role="chart-panel" data-nhimc-component="Card BarChart">
+      <div class="head">부서별 민원 건수</div>
+      <div class="body">
+        <svg class="chart-bar" viewBox="0 0 260 140" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="부서별 민원 건수: 간호부 42건, 원무과 28건, 진단검사의학과 19건, 영상의학과 15건, 약제부 9건">
+          <g class="chart-grid"><line x1="0" y1="10" x2="260" y2="10"/><line x1="0" y1="45" x2="260" y2="45"/><line x1="0" y1="80" x2="260" y2="80"/><line x1="0" y1="115" x2="260" y2="115"/></g>
+          <g class="chart-bars">
+            <rect x="10" y="35" width="32" height="80" rx="2" fill="var(--color-chart-1)"/>
+            <rect x="60" y="57" width="32" height="58" rx="2" fill="var(--color-chart-2)"/>
+            <rect x="110" y="76" width="32" height="39" rx="2" fill="var(--color-chart-3)"/>
+            <rect x="160" y="84" width="32" height="31" rx="2" fill="var(--color-chart-4)"/>
+            <rect x="210" y="99" width="32" height="16" rx="2" fill="var(--color-chart-5)"/>
+          </g>
+          <g class="chart-axis-label">
+            <text x="26" y="130" text-anchor="middle">간호부</text><text x="76" y="130" text-anchor="middle">원무과</text><text x="126" y="130" text-anchor="middle">진단검사</text><text x="176" y="130" text-anchor="middle">영상의학</text><text x="226" y="130" text-anchor="middle">약제부</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="card" data-nhimc-role="trend-panel" data-nhimc-component="Card LineChart">
+      <div class="head">월별 환자 만족도 추이</div>
+      <div class="body">
+        <svg class="chart-line" viewBox="0 0 260 140" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="월별 환자 만족도: 1월 82점, 2월 85점, 3월 84점, 4월 88점, 5월 91점">
+          <g class="chart-grid"><line x1="0" y1="15" x2="260" y2="15"/><line x1="0" y1="50" x2="260" y2="50"/><line x1="0" y1="85" x2="260" y2="85"/><line x1="0" y1="115" x2="260" y2="115"/></g>
+          <path class="chart-line-path" d="M15,90 L70,78 L125,82 L180,58 L235,38"/>
+          <g class="chart-line-dot"><circle cx="15" cy="90" r="3"/><circle cx="70" cy="78" r="3"/><circle cx="125" cy="82" r="3"/><circle cx="180" cy="58" r="3"/><circle cx="235" cy="38" r="3"/></g>
+          <g class="chart-axis-label">
+            <text x="15" y="130" text-anchor="middle">1월</text><text x="70" y="130" text-anchor="middle">2월</text><text x="125" y="130" text-anchor="middle">3월</text><text x="180" y="130" text-anchor="middle">4월</text><text x="235" y="130" text-anchor="middle">5월</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+  <section class="card" data-nhimc-role="insight-panel" data-nhimc-component="Card Badge">
+    <div class="head">주요 인사이트</div>
+    <ul class="insight">
+      <li><span class="badge sky">증가</span><div><strong>간호부 민원이 전월 대비 12% 늘었습니다.</strong><small>야간 대기시간 관련 의견이 가장 많습니다.</small></div></li>
+      <li><span class="badge pear">개선</span><div><strong>환자 만족도가 5개월 연속 상승했습니다.</strong><small>영상의학과 예약 대기 개선이 주요 요인입니다.</small></div></li>
+      <li><span class="badge apricot">주의</span><div><strong>원무과 응대 관련 VOC가 반복 접수되고 있습니다.</strong><small>창구 안내 문구 개선이 필요합니다.</small></div></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

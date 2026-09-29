@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>업무 절차 대시보드 Template · NHIMC</title>
+<style>
+:root{color-scheme:light;--color-primary:#003d94;--color-primary-foreground:#fff;--color-background:#fff;--color-foreground:#14253a;--color-canvas:#f4f7fa;--color-card:#fff;--color-muted-foreground:#64748b;--color-secondary:#edf5fb;--color-border-accent:#cfdfed;--color-ring:#6b9ddd;--color-success:#1a6639;--color-warning:#8a5200;--color-success-surface:#e9f7ef;--color-warning-surface:#fff6df;--radius-md:8px;--radius-xl:14px}
+[data-theme="dark"]{color-scheme:dark;--color-primary:#6ba6e4;--color-primary-foreground:#07182c;--color-background:#0a0a0a;--color-foreground:#fafafa;--color-canvas:#0a0a0a;--color-card:#171717;--color-muted-foreground:#a3a3a3;--color-secondary:#1d2b3a;--color-border-accent:#334155;--color-ring:#8eb8ea;--color-success:#72c993;--color-warning:#f2bd62;--color-success-surface:#122d20;--color-warning-surface:#332711}
+*{box-sizing:border-box}body{margin:0;background:var(--color-canvas);color:var(--color-foreground);font:14px "Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}button{font:inherit}main{width:min(100%,1400px);margin:auto;padding:24px;display:grid;gap:16px}.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.page-header h1{margin:0;font-size:27px;line-height:1.25}.page-header p{margin:6px 0 0;color:var(--color-muted-foreground)}.status-badge,.shift{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-weight:700}.status-badge{padding:6px 10px;background:var(--color-secondary);color:var(--color-primary);font-size:12px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{min-width:0;border:1px solid var(--color-border-accent);border-radius:var(--radius-xl);background:var(--color-card);overflow:hidden}.metric{padding:16px;display:grid;gap:6px}.metric span,.metric small{color:var(--color-muted-foreground)}.metric strong{font-size:23px}.two-column{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:16px}.card-head{min-height:50px;padding:0 16px;border-bottom:1px solid var(--color-border-accent);display:flex;align-items:center;justify-content:space-between;gap:12px}.card-head h2{margin:0;font-size:16px}.card-head small{color:var(--color-muted-foreground)}.card-body{padding:16px}.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.step{min-height:112px;padding:13px;border:1px solid var(--color-border-accent);border-radius:10px;background:var(--color-background);display:grid;align-content:start;gap:7px}.step b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--color-secondary);color:var(--color-primary)}.step span{color:var(--color-muted-foreground);font-size:12px;line-height:1.5}.step.done{border-color:var(--color-success);background:var(--color-success-surface)}.step.current{border:2px solid var(--color-primary);box-shadow:0 0 0 2px var(--color-secondary)}.checks{display:grid}.check-row{min-height:46px;border-bottom:1px solid var(--color-border-accent);display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:9px}.check-row:last-child{border-bottom:0}.check-row svg{width:18px;height:18px;color:var(--color-success)}.check-row.warning svg,.check-row.warning span{color:var(--color-warning)}.check-row span{color:var(--color-muted-foreground);font-size:12px}.primary{width:100%;height:38px;margin-top:14px;border:1px solid var(--color-primary);border-radius:var(--radius-md);background:var(--color-primary);color:var(--color-primary-foreground);font-weight:700;cursor:pointer}.primary:focus-visible{outline:2px solid var(--color-ring);outline-offset:2px}.preview-grid{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(0,1.28fr);gap:16px}.table-wrap{max-width:100%;overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}th,td{padding:10px 12px;border-bottom:1px solid var(--color-border-accent);text-align:left}th{background:var(--color-secondary);font-size:12px}tbody tr:last-child td{border-bottom:0}.person{display:flex;align-items:center;gap:9px}.avatar{flex:0 0 auto;width:32px;height:32px;border:1px solid var(--color-border-accent);border-radius:50%;display:grid;place-items:center;background:var(--color-secondary);color:var(--color-primary);font-size:12px;font-weight:700}.person span{display:grid}.person small{color:var(--color-muted-foreground)}.shift{min-width:28px;padding:4px 7px;background:var(--color-secondary);color:var(--color-primary);font-size:12px}.shift.off{color:var(--color-muted-foreground)}
+@media(max-width:1023px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.two-column,.preview-grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){main{padding:20px 16px}.page-header{display:grid}.metrics,.steps{grid-template-columns:1fr}.metric{grid-template-columns:1fr auto}.metric strong{grid-row:1/3;grid-column:2;align-self:center}.two-column,.preview-grid{grid-template-columns:minmax(0,1fr)}.card-head{align-items:flex-start;padding-block:13px}.check-row{grid-template-columns:24px minmax(0,1fr)}.check-row span{grid-column:2}}
+</style>
+</head>
+<body data-nhimc-template-scope="content-only">
+<main data-nhimc-role="content">
+  <section class="page-header" data-nhimc-role="page-header" data-nhimc-component="PageHeader StatusDisplay Badge">
+    <div><h1>자동 처리 준비 현황</h1><p>순차 업무의 진행 단계와 실행 전 필수 조건, 대표 결과를 함께 확인합니다.</p></div>
+    <span class="status-badge">입력 점검 필요</span>
+  </section>
+  <section class="metrics" data-nhimc-role="metric-overview" data-nhimc-component="MetricOverview Card StatusDisplay">
+    <article class="card metric"><span>대상 인원</span><strong>42명</strong><small>등록 기준</small></article>
+    <article class="card metric"><span>설정 완료</span><strong>38명</strong><small>90% 완료</small></article>
+    <article class="card metric"><span>확인 필요</span><strong>4건</strong><small>실행 전 해결</small></article>
+    <article class="card metric"><span>예상 처리</span><strong>3분</strong><small>최근 실행 기준</small></article>
+  </section>
+  <div class="two-column" data-nhimc-role="workflow-grid">
+    <section class="card" data-nhimc-role="workflow-steps" data-nhimc-component="WorkflowSteps Card StatusDisplay">
+      <header class="card-head"><h2>업무 처리 절차</h2><small>4단계 중 2단계</small></header>
+      <div class="card-body steps">
+        <div class="step done"><b>1</b><strong>자료 등록</strong><span>기본 자료 확인 완료</span></div>
+        <div class="step current"><b>2</b><strong>조건 설정</strong><span>필수 조건을 확인합니다.</span></div>
+        <div class="step"><b>3</b><strong>입력 점검</strong><span>누락과 충돌을 검토합니다.</span></div>
+        <div class="step"><b>4</b><strong>결과 생성</strong><span>결과를 생성하고 확정합니다.</span></div>
+      </div>
+    </section>
+    <section class="card" data-nhimc-role="readiness-checklist" data-nhimc-component="ReadinessChecklist Card StatusDisplay Button Alert">
+      <header class="card-head"><h2>실행 준비 상태</h2><small>2건 확인 필요</small></header>
+      <div class="card-body"><div class="checks">
+        <div class="check-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><strong>기본 자료</strong><span>확인 완료</span></div>
+        <div class="check-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><strong>대상자 설정</strong><span>42명 등록</span></div>
+        <div class="check-row warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5M12 17.3h.01"/></svg><strong>필수 조건 누락</strong><span>2건</span></div>
+      </div><button class="primary" type="button" data-nhimc-component="Button">입력 점검하기</button></div>
+    </section>
+  </div>
+  <div class="preview-grid" data-nhimc-role="preview-grid">
+    <section class="card" data-nhimc-role="staff-summary" data-nhimc-component="DataTable Table Avatar Badge StatusDisplay Card">
+      <header class="card-head"><h2>대상자 현황</h2><small>대표 3명</small></header>
+      <div class="table-wrap"><table data-nhimc-component="Table"><caption>대상자별 역할과 준비 상태</caption><thead><tr><th scope="col">대상자</th><th scope="col">구분</th><th scope="col">상태</th></tr></thead><tbody>
+        <tr><td><div class="person"><span class="avatar" role="img" aria-label="김지연">김</span><span><strong>김지연</strong><small>선임 담당자</small></span></div></td><td>리더</td><td><span class="status-badge">완료</span></td></tr>
+        <tr><td><div class="person"><span class="avatar" role="img" aria-label="이민호">이</span><span><strong>이민호</strong><small>일반 담당자</small></span></div></td><td>일반</td><td><span class="status-badge">완료</span></td></tr>
+        <tr><td><div class="person"><span class="avatar" role="img" aria-label="박서윤">박</span><span><strong>박서윤</strong><small>신규 담당자</small></span></div></td><td>신규</td><td><span class="status-badge">확인</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="card" data-nhimc-role="result-preview" data-nhimc-component="DataTable Table Badge StatusDisplay Card">
+      <header class="card-head"><h2>결과 미리보기</h2><small>최근 7일</small></header>
+      <div class="table-wrap"><table data-nhimc-component="Table"><caption>대상자별 7일 결과 미리보기</caption><thead><tr><th scope="col">대상자</th><th scope="col">1일</th><th scope="col">2일</th><th scope="col">3일</th><th scope="col">4일</th><th scope="col">5일</th><th scope="col">6일</th><th scope="col">7일</th></tr></thead><tbody>
+        <tr><td>김지연</td><td><span class="shift">D</span></td><td><span class="shift">D</span></td><td><span class="shift off">O</span></td><td><span class="shift">E</span></td><td><span class="shift">E</span></td><td><span class="shift">N</span></td><td><span class="shift off">O</span></td></tr>
+        <tr><td>이민호</td><td><span class="shift">E</span></td><td><span class="shift">N</span></td><td><span class="shift off">O</span></td><td><span class="shift">D</span></td><td><span class="shift">D</span></td><td><span class="shift">E</span></td><td><span class="shift off">O</span></td></tr>
+      </tbody></table></div>
+    </section>
+  </div>
+</main>
+</body>
+</html>
