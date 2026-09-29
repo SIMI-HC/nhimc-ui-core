@@ -123,6 +123,9 @@
   let kind = ((frameNode && frameNode.dataset.frame) || source.getAttribute('data-frame') || 'left').toLowerCase();
   kind = kind === 'nhimc-default' ? 'left' : kind.replace(/^nhimc-/, '');
   if (!D.layouts[kind]) fail('unknown frame: ' + kind + '. Use one of ' + Object.keys(D.layouts).join(', '));
+  const scrollOwner = ((frameNode && frameNode.dataset.scrollOwner) || source.getAttribute('data-scroll-owner') || 'main').toLowerCase();
+  if (!['main', 'document'].includes(scrollOwner)) fail('unknown scroll owner: ' + scrollOwner + '. Use main or document.');
+  if (scrollOwner !== 'main' && kind !== 'blog') fail('data-scroll-owner="' + scrollOwner + '" is supported by the blog frame only.');
   const themeColor = (source.getAttribute('data-theme-color') || 'nhimc-default').toLowerCase();
   if (!D.themeColors.includes(themeColor)) fail('unknown theme color: ' + themeColor + '. Use one of ' + D.themeColors.join(', '));
   const mode = kind.startsWith('presentation') ? 'dots' : ['left', 'left-blank', 'top-left'].includes(kind) ? 'side' : 'top';
@@ -137,6 +140,7 @@
     }
   }
   let doc = D.layouts[kind].replace(/(<html\b[^>]*\bdata-theme=")[^"]+("[^>]*>)/i, '$1' + theme + '$2');
+  if (scrollOwner !== 'main') doc = doc.replace('data-scroll-owner="main"', 'data-scroll-owner="' + scrollOwner + '"');
   doc = replaceRoleContents(doc, 'content-slot', content);
   const titlePatterns = [/(<strong\s+class="site-title">)[\s\S]*?(<\/strong>)/, /(<button\s+class="brand-group"[^>]*>[\s\S]*?<span>)[\s\S]*?(<\/span>)/];
   for (const pattern of titlePatterns) {

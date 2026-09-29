@@ -5,7 +5,7 @@ from html import escape
 from pathlib import Path
 import re
 
-from scripts.frame_patches import apply_frame_patches
+from scripts.frame_patches import SCROLL_OWNERS, apply_frame_patches
 
 
 FRAME_RUNTIME = "src/generated/frame/frame-runtime.js"
@@ -50,6 +50,7 @@ class FramePayload:
     status_state: str = "ready"
     theme: str = "light"
     business_script: str = ""
+    scroll_owner: str = "main"
 
 
 def _replace_role_contents(document: str, role: str, contents: str) -> str:
@@ -71,6 +72,8 @@ def _icon_ids(sprite: str) -> set[str]:
 def _validate_payload(payload: FramePayload, icon_ids: set[str]) -> None:
     if payload.theme not in {"light", "dark"}:
         raise ValueError("theme must be light or dark")
+    if payload.scroll_owner not in SCROLL_OWNERS:
+        raise ValueError("scroll_owner must be main or document")
     if payload.status_state not in {"ready", "warning", "error", "processing"}:
         raise ValueError("invalid status state")
     if not ID.fullmatch(payload.active_id):
@@ -195,6 +198,10 @@ def render_layout(
         layout,
         count=1,
     )
+    if payload.scroll_owner != "main":
+        if frame_kind != "blog":
+            raise ValueError("scroll_owner other than main is supported by the blog frame only")
+        rendered = rendered.replace('data-scroll-owner="main"', f'data-scroll-owner="{payload.scroll_owner}"', 1)
     content_html = presentation_slides(payload.content_html, payload) if frame_kind.startswith("presentation") else payload.content_html
     rendered = _replace_role_contents(rendered, "content-slot", content_html)
     rendered = _replace_project_title(rendered, payload.project_title)

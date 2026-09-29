@@ -530,6 +530,7 @@ def main() -> int:
     parser.add_argument("--canonical-components-only", action="store_true")
     parser.add_argument("--content-layout-only", action="store_true")
     parser.add_argument("--presentation-safe-area-only", action="store_true")
+    parser.add_argument("--blog-scroll-owner-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
@@ -539,6 +540,7 @@ def main() -> int:
         args.canonical_components_only,
         args.content_layout_only,
         args.presentation_safe_area_only,
+        args.blog_scroll_owner_only,
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
@@ -565,6 +567,14 @@ def main() -> int:
         for item in report["problems"]:
             print(f"  {item}")
         print(f"presentation safe area: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
+        return 0 if report["all_passed"] else 1
+    if args.blog_scroll_owner_only:
+        from scripts.blog_scroll_owner import run_blog_scroll_owner
+
+        report = run_blog_scroll_owner(ROOT)
+        for item in report["problems"]:
+            print(f"  {item}")
+        print(f"blog scroll owner: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
         return 0 if report["all_passed"] else 1
     if args.content_layout_only:
         report = run_content_layout(ROOT, viewports=viewports)

@@ -1,5 +1,15 @@
 # 변경 이력
 
+## [Unreleased]
+
+- **BLOG Frame 스크롤 소유자** (`blog`, Frame 1.1.0). 원인: BLOG 헤더의 투명은 테마 블록의 `background-color: transparent !important`로만 유지되어, 문서 스크롤 화면에서 헤더를 sticky로 바꾸면 투명한 채 콘텐츠와 겹쳤습니다. `scripts/frame_patches.py` 1.2.0이 스크롤 소유자를 BLOG Frame 안의 상태(`<html data-scroll-owner="main|document">`)로 추가했습니다. 새 Layout variant는 만들지 않았습니다.
+  - `main`(기본): app-shell `100svh`, SiteHeader `flex:none`, Main(`.content`)만 스크롤하고 헤더는 투명을 유지합니다.
+  - `document`: 문서가 스크롤하고 SiteHeader는 sticky + 불투명(`--color-background`) + `--color-border-accent` 하단 경계 + 정본 `--shadow-lg`입니다. 앵커는 `scroll-margin-top`으로 헤더를 피합니다. 모바일 Drawer(z-index 10)는 헤더(8) 위에 그대로 열립니다.
+  - `!important` 투명 강제 규칙(`.site-header`, `.statusbar`)을 제거하고 헤더 배경은 토큰 `--site-header-surface`로 제어합니다. `<header>`에 카드 surface를 강제하던 규칙은 `header:not(.site-header)`로 한정해 도움말 Dialog 헤더는 그대로입니다.
+  - 선택은 `<html data-scroll-owner>` 또는 `<nhimc-frame data-scroll-owner>`이며 BLOG 외 Frame은 `document`를 거부합니다. `:has()`를 쓰지 않아 구형 Edge에서도 동작합니다.
+  - 검증: `scripts/blog_scroll_owner.py`가 main/document × light/dark × 375/768/1440px × 오프라인/Web Runtime 24칸에서 긴 콘텐츠를 실제로 스크롤해 헤더 고정·불투명·겹침·앵커·모바일 메뉴·도움말·가로 스크롤을 측정합니다. `verify_all`, `verify_release`에 게이트를 추가했고 회귀 테스트는 `tests/python/test_blog_scroll_owner.py`입니다.
+  - vendor(`vendor/nhimc-design`)는 바이트 동일 미러라 고치지 않았습니다. 상위 catalog·layout 규칙 문서에는 이 상태가 없으므로 NhimcDesign 정본에 반영될 때까지 Core 문서(`bootstrap.md`, `SKILL.md`, Design Guide)가 기준입니다.
+
 ## [1.2.2] - 2026-09-29
 
 - Web Runtime: 1.2.1에서 넣은 "Frame이 갖춰지면 오프라인 HTML을 자동 저장" 동작을 되돌렸습니다. 페이지를 열거나 새로고침할 때마다 파일이 반복해서 다운로드되는 문제가 있었습니다. 이제 Web Runtime은 순수 미리보기이며 아무 것도 자동으로 저장하지 않습니다. `window.nhimcExportHtml()`은 도구용으로 남아 있습니다. 외부 링크 없는 진짜 오프라인 파일은 로컬 환경(Claude Code · Codex · Gemini CLI)에서 `build_verified_artifact.py` / `build_single_html.py`로 만듭니다.

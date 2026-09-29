@@ -67,11 +67,22 @@ Content 작성 규칙(발표용):
 
 생성 순서: ① Frame 확인 ② Presentation Runtime 확인 ③ Layout Registry(`registry/layouts.json`) 확인 ④ Presentation Primitive 사용 ⑤ Content만 작성 ⑥ Safe Area 중앙 정렬 확인 ⑦ animation·navigation 보존 확인 ⑧ overflow 검사.
 
+## BLOG Frame 스크롤 소유자 (`blog`, Frame 1.1.0)
+
+스크롤 소유자는 새 Layout이 아니라 **BLOG Frame 안의 상태**입니다. `<html data-scroll-owner="main|document">`(웹 실행은 `<nhimc-frame data-scroll-owner>`도 가능)로 고르고, 없으면 `main`입니다.
+
+- `main`(기본): app-shell은 `100svh`, SiteHeader는 `flex:none`(sticky 아님, 투명 유지), **Main(`.content`)만 스크롤**합니다.
+- `document`: 문서 전체가 스크롤합니다. SiteHeader는 sticky로 바뀌고 **반드시 불투명**(`background: var(--color-background)`, `border-bottom: 1px solid var(--color-border-accent)`, 정본 `--shadow-lg`)입니다. sticky + 투명 조합은 만들지 않습니다.
+- 앵커(`#id`)는 sticky 헤더 높이를 반영한 `scroll-margin-top`으로 이동합니다. 페이지에서 따로 보정하지 않습니다.
+- 헤더 색은 `!important`가 아니라 토큰(`--site-header-surface`)으로 제어합니다. 로고·내비게이션·도움말·모바일 메뉴·Footer는 두 상태에서 같습니다.
+- 소유자 전환은 `document.documentElement.dataset.scrollOwner`만 바꾸면 됩니다.
+
 ## 프롬프트 힌트 해석
 
 사용자 요청에 다음 줄이 있으면(Design Guide의 “프롬프트 만들기” 결과) 그대로 따릅니다. 값 뒤의 ` — 이름`은 설명이므로 무시하고 첫 토큰만 id로 씁니다.
 
 - `frame: <id>` → 저작 원본 `<html data-frame="<id>">` (`left`, `left-blank`, `top`, `top-left`, `presentation`, `presentation-vertical`, `blog`). 없으면 `left`(`nhimc-default`).
+- `scroll-owner: <main|document>` → BLOG 전용. `<html data-scroll-owner="document">`. 없으면 `main`. 아래 “BLOG Frame 스크롤 소유자” 참고.
 - `theme: <id>` → `<html data-theme-color="<id>">` (`nhimc-default`, `mint`, `pear`, `apricot`, `neutral`, `color-mix`). 라이트/다크는 `data-theme="light|dark"`.
 - `requirements: …` → 화면 요구사항. 메뉴와 Page 구성은 이 내용에서 AI가 판단합니다.
 - 값이 `(미선택 - AI 추천)`이면 업무에 맞춰 AI가 고릅니다.

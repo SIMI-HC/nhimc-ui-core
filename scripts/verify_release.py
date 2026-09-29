@@ -51,6 +51,10 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
                 "presentation safe area",
                 [sys.executable, "scripts/run_browser_tests.py", "--presentation-safe-area-only"],
             ),
+            (
+                "blog scroll owner",
+                [sys.executable, "scripts/run_browser_tests.py", "--blog-scroll-owner-only"],
+            ),
         )
         for label, command in canonical_gates:
             if subprocess.run(command, cwd=root, check=False).returncode:

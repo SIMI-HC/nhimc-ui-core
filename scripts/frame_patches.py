@@ -16,6 +16,14 @@ frameVersion always means the same Frame.
        - the Frame names its direction (data-presentation-direction) and the flow direction variable
          (--presentation-flow-direction) used by the Presentation primitives.
        Slide lifecycle, transitions and navigation live in src/presentation/presentation-runtime.js.
+1.2.0  BLOG scroll owner. The scroll owner is a state of the one BLOG Frame (html[data-scroll-owner]), not a new
+       layout variant:
+       - "main" (default): app-shell is 100svh, the transparent SiteHeader is flex:none and Main scrolls.
+       - "document": the page scrolls; the SiteHeader becomes sticky on an opaque --color-background surface with a
+         --color-border-accent bottom border and the canonical --shadow-lg. Sticky + transparent is never produced.
+         Anchors get a scroll-margin that clears the sticky header.
+       The forced `background:transparent!important` theme rules on .site-header / .statusbar are removed; the header
+       surface is now the semantic token --site-header-surface.
 """
 from __future__ import annotations
 
@@ -77,5 +85,40 @@ def _patch_presentation_safe_area(layout: str) -> str:
     return layout.replace('class="app-shell"', f'class="app-shell" data-presentation-direction="{direction}"', 1)
 
 
+SCROLL_OWNERS = ("main", "document")
+BLOG_SCROLL_MARKER = "nhimc-blog-scroll-owner"
+_BLOG_HEADER = re.compile(r"\.site-header\{flex:0 0 auto;height:64px;background:transparent")
+_FORCED_TRANSPARENT = re.compile(r'\[data-theme="(?:light|dark)"\] \.(?:site-header|statusbar)\{background(?:-color)?:transparent!important\}\n?')
+_DOCUMENT = 'html[data-scroll-owner="document"]'
+
+# ponytail: the state lives on <html> so the root scroller can be freed without :has() (the offline target Edge is 92).
+_BLOG_SCROLL_OWNER_RULES = f"""
+/* {BLOG_SCROLL_MARKER}: main (default) keeps the app-shell at 100svh and Main scrolls; document lets the page scroll. */
+.app-shell{{--site-header-height:64px;--site-header-surface:transparent}}
+.site-header{{flex:none;height:var(--site-header-height);background:var(--site-header-surface)}}
+{_DOCUMENT},{_DOCUMENT} body{{height:auto;overflow:visible}}
+{_DOCUMENT}{{scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar-thumb) var(--color-scrollbar-track)}}
+{_DOCUMENT} .app-shell{{--site-header-surface:var(--color-background);height:auto;min-height:100vh;min-height:100svh}}
+{_DOCUMENT} .site-header{{position:sticky;top:0;z-index:8;border-bottom:1px solid var(--color-border-accent);box-shadow:var(--shadow-lg)}}
+{_DOCUMENT} .content{{flex:1 0 auto;overflow:visible}}
+{_DOCUMENT} [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
+"""
+
+
+def is_blog_layout(layout: str) -> bool:
+    return 'class="topnav"' in layout and bool(_BLOG_HEADER.search(layout))
+
+
+def _patch_blog_scroll_owner(layout: str) -> str:
+    if not is_blog_layout(layout) or BLOG_SCROLL_MARKER in layout:
+        return layout
+    layout = _FORCED_TRANSPARENT.sub("", layout)
+    # the theme block paints every <header> with the card surface; the SiteHeader is styled by its own token instead
+    layout = re.sub(r'(\[data-theme="(?:light|dark)"\] )header,', r"\g<1>header:not(.site-header),", layout)
+    end = layout.rindex("</style>")
+    layout = layout[:end] + _BLOG_SCROLL_OWNER_RULES + layout[end:]
+    return layout.replace("<html ", '<html data-scroll-owner="main" ', 1)
+
+
 def apply_frame_patches(layout: str) -> str:
-    return _patch_presentation_safe_area(_patch_logo_radius(layout))
+    return _patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_radius(layout)))

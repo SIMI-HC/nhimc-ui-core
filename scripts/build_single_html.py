@@ -383,6 +383,7 @@ def _parse_authoring(
         status_text="준비됨 · 오프라인 문서",
         theme=theme_match.group(1).lower() if theme_match else "light",
         business_script=business_script,
+        scroll_owner=_attribute(attrs, "data-scroll-owner") or "main",
     )
 
 
@@ -495,10 +496,12 @@ def normalize_authoring(source_html: str) -> str:
     theme = "dark" if (_attribute(html_attrs, "data-theme") or "").lower() == "dark" else "light"
     color = re.sub(r"[^a-z0-9-]", "", (_attribute(html_attrs, "data-theme-color") or "").lower())
     color_attr = f' data-theme-color="{color}"' if color else ""
+    owner = re.sub(r"[^a-z]", "", (_attribute(html_attrs, "data-scroll-owner") or "").lower())
+    owner_attr = f' data-scroll-owner="{owner}"' if owner else ""
     return (
         f'<!doctype html><html lang="ko" data-theme="{theme}"{color_attr}><head><meta charset="utf-8">'
         f"<title>{title}</title></head><body>"
-        f'<nhimc-frame id="app-frame" data-frame="{frame}" data-project-title="{title}" data-active-id="{menu_ids[0]}">'
+        f'<nhimc-frame id="app-frame" data-frame="{frame}" data-project-title="{title}" data-active-id="{menu_ids[0]}"{owner_attr}>'
         f"{roots[0]}</nhimc-frame>{menu}{''.join(scripts)}</body></html>"
     )
 

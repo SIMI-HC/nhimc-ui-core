@@ -56,6 +56,10 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 `bootstrap.md`의 “준비 절차”를 순서대로 따릅니다: ① 원격 `VERSION`과 비교 ② 더 새로우면 저장소 사본 갱신 ③ 스킬·플러그인이 미등록이면 **등록할지 먼저 묻고**, 등록돼 있고 새 버전이 있으면 **업데이트할지 반드시 묻고** 승인 시 함께 업데이트 ④ 처음 준비했거나 버전이 갱신됐으면 Design Guide를 반드시 표출(열거나 클릭 링크) ⑤ 최신 확인 결과·스킬/플러그인 상태·가이드 표출 여부를 보고. 확인하지 못한 것을 했다고 말하지 않습니다.
 
+## BLOG Frame 스크롤 소유자 (`blog`)
+
+`<html data-scroll-owner="main|document">`(기본 `main`)는 새 Layout이 아니라 BLOG Frame 안의 상태입니다. `main`은 app-shell `100svh` + 투명 SiteHeader `flex:none` + Main(`.content`) 스크롤, `document`는 문서 스크롤 + sticky SiteHeader를 불투명 `--color-background` surface, `--color-border-accent` 하단 경계, 정본 `--shadow-lg`로 씁니다. sticky + 투명 조합과 `!important` 투명 강제는 쓰지 않으며, 앵커는 Frame이 `scroll-margin-top`으로 헤더를 피해 이동시킵니다.
+
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
 
 두 Frame은 방향(슬라이드 이동·방향키·Flow)만 다르고 같은 Presentation Base Contract를 따릅니다. Frame이 Header·Controller·Branding·Theme·Font·Icon·Safe Area·슬라이드 요소·animation·transition·navigation·Runtime을 소유하고, AI는 `main[data-nhimc-role="content"]`만 작성합니다. Content는 Frame이 Safe Area의 시각적 중앙에 놓으므로 위치 보정용 margin/padding/position/translate/`100vh`/높이 숫자를 쓰지 않고, 사용자에게 헤더·컨트롤러를 피하라는 별도 프롬프트를 요구하지도 않습니다. animation·active 상태·navigation을 Content에서 다시 만들지 않습니다.

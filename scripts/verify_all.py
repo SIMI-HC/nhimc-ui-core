@@ -36,6 +36,10 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
                 "presentation safe area",
                 [sys.executable, "scripts/run_browser_tests.py", "--presentation-safe-area-only"],
             ),
+            (
+                "blog scroll owner",
+                [sys.executable, "scripts/run_browser_tests.py", "--blog-scroll-owner-only"],
+            ),
         ]
     results = []
     for label, command in checks:

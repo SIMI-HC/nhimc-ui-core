@@ -44,6 +44,7 @@ LOCAL_NETWORK_ALLOWLIST = {
     "scripts/verify_content_layout.mjs",
     "scripts/probe_console.mjs",
     "scripts/verify_presentation_safe_area.mjs",
+    "scripts/verify_blog_scroll_owner.mjs",
     "docs/superpowers/plans/2026-09-28-nhimc-ui-core-implementation.md",
     "docs/superpowers/plans/2026-09-28-nhimc-web-builder-bridge.md",
 }
