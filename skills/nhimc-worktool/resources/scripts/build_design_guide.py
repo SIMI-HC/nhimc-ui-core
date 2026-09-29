@@ -26,7 +26,7 @@ from scripts.frame_patches import apply_frame_patches
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM_DIR = Path("src/guide/upstream")
 OUTPUT = Path("guide/nhimc-design-guide.html")
-REPO_URL = "https://github.com/SIMI-HC/nhimc-ui-core.git"
+REPO_URL = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md"
 IMPORTED = ("design-guide.html", "design-guide.css", "design-tokens.css", "design-guide.js")
 
 
@@ -91,7 +91,7 @@ BUILDER_PROMPT_JS = """  function updateBuilderPrompt(){
     const theme=builderState.theme?themeById.get(builderState.theme):null;
     const skipInstall=document.getElementById("builderSkipInstall").checked;
     const lines=[];
-    if(!skipInstall){lines.push("__REPO__","bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.","준비가 끝나면 아래 조건으로 화면을 만들어줘.")}
+    if(!skipInstall){lines.push("__REPO__","이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)","준비가 끝나면 아래 조건으로 화면을 만들어줘.")}
     else{lines.push("NHIMC UI Core로 화면을 만들어줘.")}
     lines.push(`frame: ${builderState.frame||"(미선택 - AI 추천)"}${frame?` — ${frame.name}`:""}`);
     lines.push(`theme: ${builderState.theme||"(미선택 - AI 추천)"}${theme?` — ${theme.label}`:""}`);

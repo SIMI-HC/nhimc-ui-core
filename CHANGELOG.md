@@ -1,5 +1,13 @@
 # 변경 이력
 
+## [1.4.1] - 2026-09-29
+
+- **최초 진입 프롬프트가 `.git` 주소를 쓰던 문제 수정.** 사용자가 처음 붙여넣는 문장에 `https://github.com/SIMI-HC/nhimc-ui-core.git`이 들어 있으면 AI가 `bootstrap.md`를 읽기도 전에 clone부터 하는 경우가 있었고("클론하지 않습니다"라는 문서 안 지침은 이미 늦게 읽힘), 로컬 사본을 읽고도 "raw로 읽었다"고 착각하는 경우도 있었습니다.
+  - `bootstrap.md`, `README.md`, Design Guide의 설치 프롬프트(`src/guide/sections.html`, `scripts/build_design_guide.py`의 "프롬프트 만들기")가 이제 `.git` 주소 대신 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`와 "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)"를 씁니다.
+  - `bootstrap.md` 제목 바로 아래에 5줄 이내 "먼저 지킬 규칙" 블록을 추가했습니다(clone/pull 금지, 작업 폴더 클론 금지, 공식 등록 경로만 사용, 원격 `VERSION`은 raw로 확인). 기존 첫 문단에 있던 같은 내용은 이 블록으로 옮기고 중복을 지웠습니다.
+  - 클론이 허용되는 유일한 예외(공식 등록 불가·거절 + 로컬 셸에서 실제 검증된 산출물 필요 시, 임시/scratch 경로 한정)는 "웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기" 절 한 곳에만 두었고, 준비 절차 5단계 본문에서는 그 절을 가리키는 한 줄만 남겼습니다(9단계 구조 자체는 그대로).
+  - `tests/python/test_design_guide.py`, `tests/python/test_bootstrap_contract.py`의 관련 문구 검사를 새 프롬프트·규칙 블록에 맞춰 갱신했습니다.
+
 ## [1.4.0] - 2026-09-29
 
 - **메뉴 id가 아이콘 이름과 같으면 아이콘이 안 보이던 결함 수정** (Frame: left 1.2.2). 원인: 여러 Page가 있는 화면에서 빌더가 각 Page를 감싸는 `<section>`에 메뉴 `id`를 그대로 HTML `id` 속성으로 썼는데(`scripts/build_single_html.py`), 아이콘 스프라이트에도 같은 이름의 `<symbol id="...">`가 있어 문서에 같은 `id`가 두 번 생겼습니다. 메뉴 아이콘의 `<use href="#id">`는 브라우저 규칙상 문서 순서상 먼저 나오는 요소(스프라이트보다 앞서 삽입되는 `<section>`)로 해석되어, `<symbol>`이 아니라 화면 Page 컨테이너를 가리키며 아이콘이 렌더되지 않았습니다. 빌더와 기존 브라우저 검증은 이 충돌을 확인하지 않아 PASS로 통과했습니다.

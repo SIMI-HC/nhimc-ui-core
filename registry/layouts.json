@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "1.4.0",
+  "projectVersion": "1.4.1",
   "implementation": "src/layouts/primitives.css",
   "primitives": [
     {

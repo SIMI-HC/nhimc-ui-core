@@ -18,14 +18,14 @@ class PluginInstallDoesNotCloneTests(unittest.TestCase):
         for line in lines:
             self.assertRegex(
                 line,
-                r"임시|scratch|않(?:으면|을 때만)|하지 않(?:습니다|고)",
+                r"임시|scratch|않(?:으면|을 때만)|하지 않(?:습니다|고)|금지",
                 line[:120],
             )
 
     def test_first_step_reads_bootstrap_via_raw_url_not_clone(self):
         self.assertIn("raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md", BOOTSTRAP)
         intro = BOOTSTRAP.split("## 준비 절차", 1)[0]
-        self.assertIn("`git clone`을 하지 않습니다", intro)
+        self.assertIn("`git clone`/`git pull`을 하지 않습니다", intro)
 
     def test_required_resources_are_listed(self):
         for text in (BOOTSTRAP, SKILL):

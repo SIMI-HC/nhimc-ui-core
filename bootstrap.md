@@ -1,14 +1,20 @@
 # NHIMC UI Core 시작
 
-이 파일은 모든 AI 환경의 단일 진입점입니다. 이 문서를 읽는 것 자체는 **항상 raw 파일 읽기**(`https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`)로 합니다. `bootstrap.md`를 읽기 위한 목적만으로 `git clone`을 하지 않습니다. 이후 절차는 아래 "준비 절차"를 그대로 따릅니다.
+**먼저 지킬 규칙**
+- 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
+- 작업 폴더에 저장소를 클론하지 않습니다(유일한 예외는 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 절 참고).
+- 설치·등록은 공식 플러그인 경로만 쓰고, 등록 전에 사용자에게 먼저 묻습니다.
+- 원격 `VERSION`은 raw로 확인합니다.
+
+이 파일은 모든 AI 환경의 단일 진입점입니다. 이후 절차는 아래 "준비 절차"를 그대로 따릅니다.
 
 이 저장소는 NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트입니다. 플러그인·스킬 이름은 기존과 같은 `nhimc-worktool`이므로 이미 설치된 스킬이 있으면 이 저장소 버전으로 갱신하고, 없으면 새로 준비합니다.
 
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-https://github.com/SIMI-HC/nhimc-ui-core.git
-bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
+이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 
 그다음에는 자연어 요구만 받습니다.
@@ -46,12 +52,12 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.4.0/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.4.1/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v1.4.0`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.4.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v1.4.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.4.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -176,7 +182,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.4.0/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.4.1/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>
