@@ -78,14 +78,14 @@ class DesignGuideTests(unittest.TestCase):
         self.assertNotIn("#previewSource{display:none}", html)
         self.assertNotIn("이미 준비돼 있으면 원격 VERSION과 비교해", html)
         bootstrap = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
-        for phrase in ("항상 먼저 확인", "raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION", "등록할지 사용자에게 먼저 묻습니다", "스킬·플러그인도 같은 버전으로 업데이트", "Content Safe Area"):
+        for phrase in ("raw `VERSION` 확인", "raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION", "사용자에게 먼저 묻습니다", "공식 경로로 설치·업데이트합니다", "Content Safe Area"):
             self.assertIn(phrase, bootstrap)
         self.assertIn("별도 프롬프트를 요구하지 않습니다", bootstrap)
         self.assertIn("## 준비 절차 (항상 이 순서로", bootstrap)
-        for phrase in ("업데이트할까요?", "반드시 묻고", "1단계 결과가 `갱신함`이면 **반드시**", "Design Guide`(열었음 / 링크 전달 / 생략: 이미 최신)"):
+        for phrase in ("업데이트할지", "갱신함", "Design Guide를 표출합니다", "Design Guide`(열었음/링크 전달/생략: 이미 최신)"):
             self.assertIn(phrase, bootstrap)
         skill = (ROOT / "skills/nhimc-worktool/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("업데이트할지 반드시 묻고", skill)
+        self.assertIn("사용자에게 등록 여부를 묻기", skill)
         self.assertIn("Design Guide를 반드시 표출", skill)
 
     def test_guide_explains_the_two_presentation_frames_as_one_contract(self):
