@@ -56,9 +56,11 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 
-## 준비 절차 요약 (사본이 남아 있어도 생략 금지 — 플러그인 설치본도 “사본”)
+## 준비 절차 요약 (사본이 남아 있어도 생략 금지 — 플러그인 설치본·스킬 업로드본도 “사본”)
 
-`bootstrap.md`의 “준비 절차”를 순서대로 따릅니다. 먼저 `<루트>`를 정합니다: **플러그인이 설치돼 있으면 플러그인 설치 경로**(Claude Code: `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`)이고, 이때 저장소를 작업 폴더에 **클론하지 않습니다**(registry·scripts·guide·SKILL은 설치 경로에서 읽고 결과물만 작업 폴더에 씁니다). 설치돼 있지 **않을 때만** 클론합니다. ① 원격 `VERSION`만 읽어 설치본(또는 클론 사본)과 비교 ② 클론 사본이 필요할 때만(미설치) `git clone`/`git pull` ③ 스킬·플러그인이 미등록이면 **등록할지 먼저 묻고**, 등록돼 있고 새 버전이 있으면 **업데이트할지 반드시 묻고** 승인 시 공식 경로로 갱신(Claude Code: `claude plugin marketplace update` + `claude plugin update`; 클론으로 대신하지 않음) ④ 처음 준비했거나 버전이 갱신됐으면 `<루트>/guide/nhimc-design-guide.html`로 Design Guide를 반드시 표출(열거나 클릭 링크) ⑤ 최신 확인 결과·스킬/플러그인 상태·Design Guide 상태를 보고합니다.
+`bootstrap.md`의 “준비 절차”(9단계)를 순서대로 따릅니다: ① raw `bootstrap.md` 읽기 ② raw `VERSION` 확인(클론 아님) ③ 설치된 `nhimc-worktool` 검색 ④ 설치본이 있으면 버전과 필수 리소스(`registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION`) 검증 — 리소스가 빠지면 클론으로 대체하지 않고 그 설치본을 후보에서 제외 ⑤ 미등록이거나 불완전하면 공식 등록 가능 여부를 확인하고 **클론을 고려하기 전에 먼저** 사용자에게 등록 여부를 묻기 ⑥ 승인 시 공식 경로로 설치·업데이트(Claude Code: `claude plugin marketplace add/update` + `claude plugin install/update`; 클론으로 대신하지 않음) ⑦ 새 설치 경로를 `<루트>`로 재확정하고 리소스 재검증 — 여전히 불완전하면 “설치 패키지가 불완전하다”고 보고하고 `WEB_BOOTSTRAP`으로 폴백(작업 폴더 클론 없음) ⑧ 처음 준비했거나 버전이 갱신됐으면 `<루트>/guide/nhimc-design-guide.html`(스킬 전용 설치는 `<루트>/resources/guide/`)로 Design Guide를 반드시 표출 ⑨ 최신 확인 결과·스킬/플러그인 상태·Design Guide 상태를 보고합니다.
+
+**정상 절차에서는 `git clone`/`git pull`을 실행하지 않습니다.** 유일한 예외는 공식 등록이 불가능하거나 거절됐고 로컬 셸에서 실제 검증된 `index.html`이 필요한 경우이며, 이때도 사용자 작업 폴더가 아니라 `source.html`과 같은 **임시/scratch 경로**에만 clone합니다(`bootstrap.md`의 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 참고).
 
 ## BLOG Frame 스크롤 소유자 (`blog`)
 
