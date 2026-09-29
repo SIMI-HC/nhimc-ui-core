@@ -200,7 +200,9 @@ try {
 } finally {
   try {
     if (socket?.readyState === WebSocket.OPEN) {
-      await command('Browser.close');
+      // Chromium (root/--no-sandbox especially) often tears down the socket before acking
+      // Browser.close, so this never settles on its own; race it instead of awaiting forever.
+      await Promise.race([command('Browser.close'), delay(2000)]);
       socket.close();
     }
   } catch {

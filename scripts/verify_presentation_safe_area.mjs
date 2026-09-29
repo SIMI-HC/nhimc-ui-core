@@ -256,7 +256,7 @@ try {
   console.error(error instanceof Error ? error.stack : String(error));
   process.exitCode = 1;
 } finally {
-  try { if (socket?.readyState === WebSocket.OPEN) await command('Browser.close'); } catch { browser.kill(); }
+  try { if (socket?.readyState === WebSocket.OPEN) await Promise.race([command('Browser.close'), delay(2000)]); } catch { browser.kill(); }
   await Promise.race([new Promise((resolve) => browser.once('exit', resolve)), delay(2000).then(() => browser.kill())]);
   try { rmSync(profile, { recursive: true, force: true }); } catch {}
 }

@@ -84,7 +84,9 @@ try {
   });
   console.log(JSON.stringify({ shell: shell.result.value, messages, fontErrors }));
 } finally {
-  try { await command('Browser.close'); } catch { browser.kill(); }
+  // Chromium (root/--no-sandbox especially) often tears down the socket before acking
+  // Browser.close, so this never settles on its own; race it instead of awaiting forever.
+  try { await Promise.race([command('Browser.close'), delay(2000)]); } catch { browser.kill(); }
   await delay(500);
   try { rmSync(profile, { recursive: true, force: true }); } catch {}
 }

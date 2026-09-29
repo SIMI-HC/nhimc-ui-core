@@ -172,7 +172,7 @@ try {
 } finally {
   try {
     if (socket?.readyState === WebSocket.OPEN) {
-      await command('Browser.close');
+      await Promise.race([command('Browser.close'), delay(2000)]);
       socket.close();
     }
   } catch {
