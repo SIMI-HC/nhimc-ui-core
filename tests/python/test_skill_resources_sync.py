@@ -97,5 +97,46 @@ class CompareTests(unittest.TestCase):
         self.assertEqual(compare(root), [])
 
 
+from scripts.sync_skill_resources import sync_resources
+from scripts.verify_skill_resources_sync import verify_sync
+
+
+class SyncResourcesTests(unittest.TestCase):
+    def setUp(self):
+        self._temporaries: list[tempfile.TemporaryDirectory] = []
+
+    def tearDown(self):
+        for temporary in self._temporaries:
+            temporary.cleanup()
+
+    def _root(self) -> Path:
+        temporary = tempfile.TemporaryDirectory()
+        self._temporaries.append(temporary)
+        return Path(temporary.name)
+
+    def _write(self, root: Path, relative: str, data: bytes = b"x") -> None:
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+
+    def test_sync_then_verify_reports_nothing(self):
+        root = self._root()
+        self._write(root, "registry/frames.json", b"{}")
+        self._write(root, "scripts/build_release.py", b"# script")
+        self._write(root, "guide/nhimc-design-guide.html", b"<html></html>")
+        self._write(root, "vendor/nhimc-design/upstream.json", b"{}")
+        self._write(root, "VERSION", b"1.3.2\n")
+        sync_resources(root)
+        self.assertEqual(verify_sync(root), [])
+
+    def test_sync_removes_stale_mirror_files(self):
+        root = self._root()
+        self._write(root, "VERSION", b"1.3.2\n")
+        sync_resources(root)
+        self._write(root, (Path("skills/nhimc-worktool/resources/registry/deleted.json")).as_posix(), b"{}")
+        sync_resources(root)
+        self.assertEqual(verify_sync(root), [])
+
+
 if __name__ == "__main__":
     unittest.main()
