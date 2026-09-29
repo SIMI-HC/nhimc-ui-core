@@ -78,19 +78,10 @@
     }
     return html;
   };
-  const installExport = (finalDoc, pageTitle) => {
+  // Preview only: nothing is saved automatically. window.nhimcExportHtml() stays available
+  // for tooling (browser devtools, the verified-artifact builder) that wants the offline copy on demand.
+  const installExport = (finalDoc) => {
     window.nhimcExportHtml = () => buildOfflineHtml(finalDoc);
-    // Save the offline copy automatically once the Frame is in place; no button, no click needed.
-    window.addEventListener('nhimc:frame-ready', async () => {
-      const html = await buildOfflineHtml(finalDoc);
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-      link.download = (pageTitle || 'nhimc').replace(/[^\w가-힣-]+/g, '-') + '.html';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(link.href), 4000);
-    }, { once: true });
   };
   const render = () => {
   const source = document.documentElement;
@@ -174,7 +165,7 @@
   doc = doc.replace(/<title>[\s\S]*?<\/title>/i, () => '<title>' + esc(title) + '</title>');
   // Swap the page with DOM APIs instead of document.open()/write(): those re-navigate the frame and
   // log "Unsafe attempt to load URL ... 'file:' URLs are treated as unique security origins" on file://.
-  installExport(doc, title);
+  installExport(doc);
   const parsed = new DOMParser().parseFromString(doc, 'text/html');
   for (const attribute of [...parsed.documentElement.attributes]) document.documentElement.setAttribute(attribute.name, attribute.value);
   document.head.replaceChildren(...[...parsed.head.childNodes].map((node) => document.importNode(node, true)));

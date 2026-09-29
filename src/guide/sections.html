@@ -29,7 +29,7 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.</pre><button class="copy-b
       <li>
         <h3>3. 결과 받기</h3>
         <p><strong>로컬 호스트</strong>(Claude Code · Codex · Gemini CLI)에서는 AI가 Content만 조합한 저작 원본을 만든 뒤 브라우저 검증과 다운로드 전달까지 수행합니다. 정상 결과는 정확히 하나의 <code>index.html</code>이며 더블클릭하면 열리고 인터넷, 서버, 저장소, <code>app.js</code>, CSS, 이미지, 폰트 폴더가 필요하지 않습니다.</p>
-        <p><strong>웹 AI</strong>(ChatGPT Web · Claude Web · Gemini Web)는 빌더를 실행할 수 없으므로 Content와 <code>&lt;script src&gt;</code> 한 줄로 프롬프트 안에서 끝냅니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하며, Frame이 갖춰지면 CSS·스크립트·폰트가 모두 들어간 오프라인 HTML 파일이 자동으로 저장됩니다(인터넷 없이 열림). 브라우저 검증까지 거친 파일은 Claude Code · Codex · Gemini CLI에서 요청하세요.</p>
+        <p><strong>웹 AI</strong>(ChatGPT Web · Claude Web · Gemini Web)는 빌더를 실행할 수 없으므로 Content와 <code>&lt;script src&gt;</code> 한 줄로 프롬프트 안에서 끝냅니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하는 미리보기이며, 아무 파일도 자동으로 저장되지 않습니다. 외부 링크 없이 CSS·스크립트·폰트가 모두 들어간 오프라인 파일은 Claude Code · Codex · Gemini CLI에서 요청하세요.</p>
         <div class="copy-block"><pre id="usageFollowup">메뉴에 '재고 현황'과 '발주 관리'를 추가하고, 각 Page는 검색조건과 표, 페이지네이션으로 구성해줘.</pre><button class="copy-button" type="button" data-copy-target="usageFollowup">복사</button></div>
         <p class="guide-note">위는 이어서 요청하는 예시입니다. 메뉴를 바꿔도 Frame 소스는 수정되지 않습니다.</p>
       </li>

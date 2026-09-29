@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [1.2.2] - 2026-09-29
+
+- Web Runtime: 1.2.1에서 넣은 "Frame이 갖춰지면 오프라인 HTML을 자동 저장" 동작을 되돌렸습니다. 페이지를 열거나 새로고침할 때마다 파일이 반복해서 다운로드되는 문제가 있었습니다. 이제 Web Runtime은 순수 미리보기이며 아무 것도 자동으로 저장하지 않습니다. `window.nhimcExportHtml()`은 도구용으로 남아 있습니다. 외부 링크 없는 진짜 오프라인 파일은 로컬 환경(Claude Code · Codex · Gemini CLI)에서 `build_verified_artifact.py` / `build_single_html.py`로 만듭니다.
+
 ## [1.2.1] - 2026-09-29
 
 - Web Runtime: “오프라인 HTML 저장” 버튼을 없애고, Frame이 갖춰지면 오프라인 HTML을 자동으로 저장합니다. `window.nhimcExportHtml()`은 그대로 남아 있습니다.

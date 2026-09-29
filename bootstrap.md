@@ -41,12 +41,12 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.2.1/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v1.2.2/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v1.2.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v1.2.2`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.2/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -139,7 +139,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 3. Chromium이 있으면 `python scripts/build_verified_artifact.py --input source.html --output index.html`로 브라우저 검증까지 마칩니다. 없으면 `python scripts/build_single_html.py --input source.html --output index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
 4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림).
 
-코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 쓰고, Frame이 갖춰지면 자동으로 저장되는 URL 없는 파일을 받게 안내합니다.
+코드 실행이나 GitHub 접근이 안 되면 아래 Web Runtime 방식을 씁니다. 이 방식은 미리보기일 뿐이며 URL 없는 파일을 자동으로 만들어 주지 않으므로, 완성 파일이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
 
 ## Web(빌더를 실행할 수 없는 환경): 프롬프트 안에서 끝내기
 
@@ -149,7 +149,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.1/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v1.2.2/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>
@@ -160,4 +160,4 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
 2. 메뉴 `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
 3. 인터넷과 외부 `<script src>`를 허용하는 호스트에서만 동작합니다. 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고, 오프라인 `index.html`이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
-4. Frame이 갖춰지면 Web Runtime이 CSS·스크립트·폰트가 모두 들어간 오프라인 HTML을 자동으로 내려받습니다(버튼 없음, 직접 파일을 만들어 붙여 넣지 않습니다). 이 결과는 Web Runtime 결과이며 브라우저 검증을 거친 `index.html`이 아닙니다. 저작용 원본을 완성 파일로 첨부하지 말고, 사용자가 실제 브라우저에서 열어 확인하도록 안내합니다.
+4. Web Runtime은 미리보기만 합니다(인터넷 필요, 아무 파일도 자동으로 저장하지 않습니다). 브라우저 검증을 거친 오프라인 `index.html`이 필요하면 저작용 원본을 그대로 전달하지 말고 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 위 “코드 실행이 되는 경우” 절차로 다시 만들도록 안내합니다.
