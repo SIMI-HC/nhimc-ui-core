@@ -32,7 +32,7 @@ Frame, Theme, Logo, Navigation, Sidebar, 상태 표시줄, Component CSS, Icon s
 
 Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 영역만 채웁니다.
 
-1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등).
+1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등). 메뉴 `id`는 될 수 있으면 아이콘 이름과 겹치지 않게 짓습니다(빌더가 둘을 다른 네임스페이스로 렌더링해 겹쳐도 깨지지는 않지만 명확성을 위해 피합니다). 맞는 아이콘이 없으면 임의 대체하지 말고 사용자에게 알린 뒤, 승인받으면 아래 “Core 아이콘 추가 절차”로 추가합니다.
 2. 메뉴 항목마다 Page 하나를 같은 순서로 만듭니다. `id`와 `href="#id"`가 일치해야 합니다.
 3. Page가 하나면 `<main data-nhimc-role="content">…</main>` 하나만 둡니다. 둘 이상이면 각각 `<section data-screen-panel="메뉴id"><main data-nhimc-role="content">…</main></section>`로 감쌉니다. 메뉴 클릭 시 화면 전환과 현재 메뉴 표시는 Frame이 처리하므로 직접 만들지 않습니다.
 4. 각 Page는 등록 Component와 Layout Primitive(`nhimc-page-header`, `nhimc-toolbar`, `nhimc-grid`, `nhimc-form-grid`, `nhimc-card`, …)만으로 채웁니다. Page마다 구성(검색·표·카드·폼·차트·탭)은 자유입니다.
@@ -55,6 +55,10 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
+
+## Core 아이콘 추가 절차
+
+`vendor/nhimc-design/icons/nhimc-icons.svg`는 바이트 동일 미러라 직접 고치지 않습니다. 필요한 아이콘이 없으면 사용자에게 먼저 알리고 승인받은 뒤 `python scripts/add_canonical_icon.py --id <새-id> --label "<라벨>" --category <카테고리> --svg '<내부 SVG>'`로 `src/generated/icons/core-icons.svg`(Core 오버레이)에 추가합니다. 스타일 규격(`viewBox="0 0 24 24"`, `currentColor` 상속을 위한 `fill`/`stroke` 미지정)을 어기면 스크립트가 FAIL합니다. 이어서 `python scripts/update_integrity.py --frame nhimc-default --frame-version <다음 버전>`으로 해시를 갱신합니다. `bootstrap.md`의 “Core 아이콘 추가 절차”를 따릅니다.
 
 ## 준비 절차 요약 (사본이 남아 있어도 생략 금지 — 플러그인 설치본·스킬 업로드본도 “사본”)
 

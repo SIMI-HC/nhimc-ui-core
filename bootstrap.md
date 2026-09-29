@@ -124,7 +124,7 @@ python scripts/build_verified_artifact.py --input <임시 경로>/source.html --
 
 Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 영역만 채웁니다.
 
-1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등).
+1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등). 메뉴 `id`는 될 수 있으면 아이콘 이름과 겹치지 않게 짓습니다(빌더가 이 둘을 서로 다른 네임스페이스로 렌더링하므로 겹쳐도 깨지지는 않지만, 겹치지 않는 편이 더 명확합니다). 업무에 맞는 아이콘이 등록 목록에 없으면 비슷한 다른 아이콘으로 임의 대체하지 말고 사용자에게 알린 뒤, 승인받으면 `scripts/add_canonical_icon.py`(Core 아이콘 추가 절차, 아래 참고)로 새 아이콘을 등록하고 씁니다.
 2. 메뉴 항목마다 Page 하나를 같은 순서로 만듭니다. `id`와 `href="#id"`가 일치해야 합니다.
 3. Page가 하나면 `<main data-nhimc-role="content">…</main>` 하나만 둡니다. 둘 이상이면 각각 `<section data-screen-panel="메뉴id"><main data-nhimc-role="content">…</main></section>`로 감쌉니다. 메뉴 클릭 시 화면 전환과 현재 메뉴 표시는 Frame이 처리하므로 직접 만들지 않습니다.
 4. 각 Page는 등록 Component와 Layout Primitive(`nhimc-page-header`, `nhimc-toolbar`, `nhimc-grid`, `nhimc-form-grid`, `nhimc-card`, …)만으로 채웁니다. Page마다 구성(검색·표·카드·폼·차트·탭)은 자유입니다.
@@ -147,6 +147,15 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
+
+## Core 아이콘 추가 절차
+
+`vendor/nhimc-design/icons/nhimc-icons.svg`는 상위 저장소의 고정 commit과 바이트 동일한 미러라 직접 고치지 않습니다. 업무에 맞는 아이콘이 등록 목록에 없으면:
+
+1. 비슷한 다른 아이콘으로 임의 대체하지 말고, 어떤 아이콘이 필요한지 사용자에게 알리고 승인을 받습니다.
+2. 승인되면 `python scripts/add_canonical_icon.py --id <새-id> --label "<한글 라벨>" --category <카테고리> --svg '<내부 SVG 마크업>'`로 `src/generated/icons/core-icons.svg`(Core 소유 오버레이)에 추가합니다. `viewBox="0 0 24 24"`, `stroke-width=2`, round cap/join, `currentColor`(내부 요소에 `fill`/`stroke`를 직접 넣지 않음) 규격은 스크립트가 검증하며, 어기면 그 자리에서 FAIL합니다. 이 오버레이는 정본 스프라이트와 빌드 시점에 합쳐지므로 벤더 파일은 그대로입니다.
+3. `python scripts/update_integrity.py --frame nhimc-default --frame-version <다음 버전>`으로 오버레이 파일의 등록 해시를 갱신합니다.
+4. 새 아이콘은 `src/guide/upstream/gallery-data.json`(Design Guide 아이콘 미리보기)에도 자동으로 함께 등록됩니다.
 
 ## 웹에서 “URL 없는 완성 HTML”을 다운로드 파일로 주기 (코드 실행이 되는 경우)
 
