@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 
 from scripts.frame_patches import SCROLL_OWNERS, apply_frame_patches
+from scripts.icon_overlay import merged_sprite
 
 
 FRAME_RUNTIME = "src/generated/frame/frame-runtime.js"
@@ -244,7 +245,7 @@ def render_canonical_frame(root: Path, frame_id: str, payload: FramePayload) -> 
     except KeyError as error:
         raise ValueError(f"unknown canonical frame: {frame_id}") from error
     layout = apply_frame_patches((root / "vendor/nhimc-design/layouts" / filename).read_text(encoding="utf-8"))
-    sprite = (root / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8")
+    sprite = merged_sprite(root, (root / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8"))
     frame_kind = Path(filename).stem
     runtime_file = PRESENTATION_RUNTIME if frame_kind.startswith("presentation") else FRAME_RUNTIME
     runtime = (root / runtime_file).read_text(encoding="utf-8")

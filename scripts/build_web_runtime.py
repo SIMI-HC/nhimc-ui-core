@@ -18,6 +18,7 @@ if __package__ in {None, ""}:
 from scripts.build_single_html import _font_css, _upstream, _verified_vendor_bytes
 from scripts.canonical_frame import FRAME_FILES
 from scripts.frame_patches import apply_frame_patches
+from scripts.icon_overlay import merged_sprite
 from scripts.theme_colors import theme_color_css, theme_color_ids
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,7 +34,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
         Path(name).stem: apply_frame_patches(_verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{name}", digests).decode("utf-8"))
         for name in sorted(set(FRAME_FILES.values()))
     }
-    sprite = _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests).decode("utf-8")
+    sprite = merged_sprite(root, _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests).decode("utf-8"))
     runtime = (root / "src/generated/frame/frame-runtime.js").read_text(encoding="utf-8")
     presentation_runtime = (root / "src/presentation/presentation-runtime.js").read_text(encoding="utf-8")
     version = (root / "VERSION").read_text(encoding="utf-8").strip()

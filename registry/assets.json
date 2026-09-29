@@ -176,6 +176,13 @@
       "mediaType": "application/json",
       "role": "provenance",
       "sha256": "0c379879398dc4fc2de5b66db353f4af93f9c74ea1d77f988c27253c457ecf80"
+    },
+    {
+      "id": "core-icon-overlay",
+      "path": "src/generated/icons/core-icons.svg",
+      "mediaType": "image/svg+xml",
+      "role": "icon-overlay",
+      "sha256": "b2d6a62741fec5588d4aa0cd5c4dc00bd751a6cf8df2a11299dcef914be95819"
     }
   ]
 }
