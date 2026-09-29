@@ -143,6 +143,8 @@ def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list
             found.append(f"{label}: menu icon spills outside its button")
         if not icon["named"]:
             found.append(f"{label}: icon-only menu button has no accessible name")
+        if not icon["resolvesToSymbol"]:
+            found.append(f"{label}: menu icon <use> does not resolve to an icon <symbol> (id collision or unknown icon)")
     return found
 
 

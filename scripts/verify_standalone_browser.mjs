@@ -136,7 +136,29 @@ async function main() {
     const menuIcons = [...document.querySelectorAll('.topnav svg, .nav-drawer nav svg, .nav-link svg')]
       .filter(icon => icon.getClientRects().length > 0)
       .map(icon => { const box = icon.getBoundingClientRect(); return Math.max(box.width, box.height); });
+    // Every id in the document must be unique: a duplicate silently breaks id-based lookups such as
+    // <use href="#id">, which resolves to whichever element with that id comes first in document order.
+    const idCounts = new Map();
+    document.querySelectorAll('[id]').forEach(node => idCounts.set(node.id, (idCounts.get(node.id) || 0) + 1));
+    const duplicateIds = [...idCounts].filter(([, count]) => count > 1).map(([id]) => id);
+    // Every menu icon's <use href="#..."> must resolve to an actual <symbol> (not some other element that
+    // happens to share its id) and be visibly rendered at a non-zero size (left, top and top-left menus).
+    const badIconRefs = [...document.querySelectorAll('.topnav svg use, .nav-drawer nav svg use, .nav-link svg use')]
+      .filter(use => {
+        const href = use.getAttribute('href') || use.getAttribute('xlink:href') || '';
+        const target = href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
+        if (!target || target.tagName.toLowerCase() !== 'symbol') return true;
+        const svg = use.closest('svg');
+        // Off-screen menu copies (e.g. the mobile drawer clone on a desktop viewport) legitimately have a
+        // zero-size box; only a visible icon is required to actually render at a non-zero size.
+        if (!svg || svg.getClientRects().length === 0) return false;
+        const box = svg.getBoundingClientRect();
+        return box.width === 0 && box.height === 0;
+      })
+      .map(use => use.getAttribute('href'));
     return {
+      duplicateIds,
+      badIconRefs,
       primaryRgb,
       maxMenuIcon: menuIcons.length ? Math.max(...menuIcons) : 0,
       presentationOverflow,
@@ -173,6 +195,8 @@ async function main() {
     state.fontFaceCount === 6,
     state.fontCount === 6,
     state.svgControls === true,
+    (state.duplicateIds ?? []).length === 0,
+    (state.badIconRefs ?? []).length === 0,
     (state.presentationOverflow ?? []).length === 0,
     !expected.primaryRgb || JSON.stringify(state.primaryRgb) === JSON.stringify(expected.primaryRgb),
     (state.maxMenuIcon ?? 0) <= 24,
