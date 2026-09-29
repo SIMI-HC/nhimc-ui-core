@@ -63,11 +63,15 @@ export const measureExpression = `(() => {
     const box = rect(svg);
     const label = owner.querySelector('.label, .nav-label');
     const labelShown = label && shown(label) && getComputedStyle(label).display !== 'none';
+    const use = svg.querySelector('use');
+    const href = use ? (use.getAttribute('href') || use.getAttribute('xlink:href') || '') : '';
+    const target = href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
     result.icons.push({
       width: box.width, height: box.height,
       overlapsLabel: Boolean(labelShown) && intersects(box, rect(label)),
       insideOwner: box.left >= rect(owner).left - 1 && box.right <= rect(owner).right + 1,
       named: !owner.closest('.topnav, .nav-drawer') || Boolean((owner.getAttribute('aria-label') || '').trim() || (labelShown && (label.textContent || '').trim())),
+      resolvesToSymbol: Boolean(target) && target.tagName.toLowerCase() === 'symbol',
     });
   }
   return result;

@@ -7,6 +7,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.common import Finding, load_json
+from scripts.icon_overlay import validate_overlay
 
 
 COMMENT = re.compile(r"/\*.*?\*/", re.DOTALL)
@@ -261,6 +262,8 @@ def validate_design(root: Path) -> list[Finding]:
                             f"Source references an unregistered {kind} asset",
                         )
                     )
+    for message in validate_overlay(root):
+        findings.append(Finding("design.icon-overlay-style", "src/generated/icons/core-icons.svg", message))
     return sorted(findings)
 
 

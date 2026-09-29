@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "1.3.2",
+  "projectVersion": "1.4.0",
   "frames": [
     {
       "id": "nhimc-default",
-      "version": "1.2.0",
+      "version": "1.2.2",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -32,7 +32,7 @@
         },
         {
           "path": "scripts/canonical_frame.py",
-          "sha256": "2923a6ab6a5af0989d83c1a2cae8f96bba1f6abc501e2c174567390fd2e110b7"
+          "sha256": "1811baaa649caab2f8aee9c970e0122cda754c134d14e3d791d929dbb36156f0"
         },
         {
           "path": "src/generated/frame/frame-runtime.js",

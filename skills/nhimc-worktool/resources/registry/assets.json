@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "1.3.2",
+  "projectVersion": "1.4.0",
   "assets": [
     {
       "id": "noto-sans-kr-ofl",
@@ -176,6 +176,13 @@
       "mediaType": "application/json",
       "role": "provenance",
       "sha256": "0c379879398dc4fc2de5b66db353f4af93f9c74ea1d77f988c27253c457ecf80"
+    },
+    {
+      "id": "core-icon-overlay",
+      "path": "src/generated/icons/core-icons.svg",
+      "mediaType": "image/svg+xml",
+      "role": "icon-overlay",
+      "sha256": "7b3bba3ed45b3afc89d0fd38e5076b1158d7747369a8517ed2b561eb4c19b077"
     }
   ]
 }
