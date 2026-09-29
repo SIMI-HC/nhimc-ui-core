@@ -17,6 +17,7 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
         ("design rules", [sys.executable, "scripts/validate_design.py"]),
         ("public tree", [sys.executable, "scripts/validate_public.py"]),
         ("browser", [sys.executable, "scripts/run_browser_tests.py"]),
+        ("skill resources sync", [sys.executable, "scripts/verify_skill_resources_sync.py"]),
     ]
     if include_canonical:
         checks[5:5] = [

@@ -6,6 +6,7 @@ import sys
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.skill_resources import compare as compare_skill_resources
 from scripts.validate_contracts import validate_contracts
 from scripts.validate_design import validate_design
 from scripts.validate_public import scan_public_tree
@@ -74,6 +75,8 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
         categories.append("design validation")
     if any(item.blocking for item in scan_public_tree(root)):
         categories.append("public safety")
+    if compare_skill_resources(root):
+        categories.append("skill resources sync")
 
     if unresolved_release_blockers(root / "PUBLIC_ASSET_REVIEW.md"):
         categories.append("public asset review")
