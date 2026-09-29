@@ -47,18 +47,19 @@ class FramePatchTests(unittest.TestCase):
         for before, _ in changed:
             self.assertTrue(any(logo in before.rsplit("{", 1)[0] for logo in LOGO_SELECTORS), before[-80:])
 
-    def test_sidebar_logo_sits_on_a_translucent_panel_and_left_blank_keeps_its_mark_when_collapsed(self):
+    def test_sidebar_logo_sits_on_a_translucent_panel_and_left_blank_keeps_its_canonical_collapsed_rail(self):
         for name in ("left.html", "left-blank.html"):
             patched = apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8"))
             added = patched.split(frame_patches.SIDEBAR_LOGO_MARKER)[1].split("</style>")[0]
             self.assertIn("background:var(--color-sidebar-brand-18)", added, name)
             self.assertNotIn("#fff", added, name)
+            self.assertIn("padding:3px;border-radius:3px;background:var(--color-sidebar-brand-18)", added, name)
+            self.assertNotIn("padding:3px 5px", added, name)
         for name in ("top.html", "top-left.html", "blog.html", "presentation.html"):
             patched = apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8"))
             self.assertNotIn(frame_patches.SIDEBAR_LOGO_MARKER, patched, name)
         blank = apply_frame_patches((LAYOUTS / "left-blank.html").read_text(encoding="utf-8"))
-        self.assertNotIn(".is-collapsed .brand-logo{display:none}", blank)
-        self.assertIn(".is-collapsed .brand-logo .brand-mark{opacity:1;visibility:visible}", blank)
+        self.assertIn(".is-collapsed .brand-logo{display:none}", blank, "LEFT BLANK keeps its canonical collapsed rail")
 
     def test_rendered_frame_and_web_runtime_use_the_patched_layout(self):
         payload = FramePayload(
