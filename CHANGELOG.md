@@ -1,5 +1,15 @@
 # 변경 이력
 
+## [1.4.0] - 2026-09-29
+
+- **메뉴 id가 아이콘 이름과 같으면 아이콘이 안 보이던 결함 수정** (Frame: left 1.2.2). 원인: 여러 Page가 있는 화면에서 빌더가 각 Page를 감싸는 `<section>`에 메뉴 `id`를 그대로 HTML `id` 속성으로 썼는데(`scripts/build_single_html.py`), 아이콘 스프라이트에도 같은 이름의 `<symbol id="...">`가 있어 문서에 같은 `id`가 두 번 생겼습니다. 메뉴 아이콘의 `<use href="#id">`는 브라우저 규칙상 문서 순서상 먼저 나오는 요소(스프라이트보다 앞서 삽입되는 `<section>`)로 해석되어, `<symbol>`이 아니라 화면 Page 컨테이너를 가리키며 아이콘이 렌더되지 않았습니다. 빌더와 기존 브라우저 검증은 이 충돌을 확인하지 않아 PASS로 통과했습니다.
+  - `scripts/build_single_html.py`, `scripts/canonical_frame.py`(Page 컨테이너 id, PRESENTATION 단일 슬라이드 id), `src/web/nhimc-web.template.js`(Web Runtime의 동일 로직)가 이제 실제 HTML `id`에 `screen-<메뉴id>` 네임스페이스를 씁니다. 메뉴 `href="#id"` 저작 규약과 런타임의 `[data-screen-panel]`/`[data-menu-id]` 기반 화면 전환은 그대로입니다(런타임은 `id`나 `href`로 화면을 찾지 않고 항상 이 속성들로 찾습니다).
+  - `canonical_frame.render_layout()`과 Web Runtime 둘 다 최종 문서에 중복 `id`가 남아 있으면 어떤 경우든 명확한 오류로 빌드를 막습니다(이 종류의 결함 전체에 대한 이중 안전장치).
+  - 회귀 테스트: `tests/python/test_single_html.py`가 기존 `tests/fixtures/authoring/multi-page/index.html`(메뉴 id·아이콘이 모두 "dashboard")로 실제 재현 조건을 검증하고, 실제 Chrome으로도 확인했습니다.
+- **브라우저 검증 강화**: `scripts/verify_standalone_browser.mjs`(최종 산출물 검증)가 문서 전체의 중복 `id`와, 메뉴 아이콘의 `<use href="#...">`가 실제 `<symbol>`로 해석되고 화면에 보이는 아이콘이 0 크기가 아닌지 확인합니다(숨겨진 모바일 메뉴 사본처럼 원래 화면에 없는 아이콘은 크기 검사에서 제외). `scripts/verify_frame_render.mjs`/`scripts/frame_render.py`(left·top·top-left·blog × 테마 × 뷰포트 504칸 행렬)도 각 메뉴 아이콘이 `<symbol>`로 해석되는지 함께 측정·게이트합니다.
+- **Core 아이콘 추가 절차 신설**: `vendor/nhimc-design/icons/nhimc-icons.svg`는 상위 저장소 고정 commit과 바이트 동일한 미러라 직접 편집할 수 없어, 등록되지 않은 아이콘이 필요할 때 정식 경로가 없었습니다. `scripts/icon_overlay.py`가 Core 소유 오버레이(`src/generated/icons/core-icons.svg`, 기본은 비어 있음)를 빌드 시점에 정본 스프라이트와 합칩니다(`scripts/frame_patches.py`가 Frame 동작 괴리를 다루는 것과 같은 패턴). 모든 symbol은 스타일 규격(`viewBox="0 0 24 24"`, 내부 요소에 `fill`/`stroke`를 직접 넣지 않아 공용 아이콘 래퍼의 `currentColor`를 그대로 상속, `data-label`·`data-category`·`data-updated-at` 필수)을 추가 시점과 `validate_design.py` 실행 시점 모두에서 검증하며, 벤더 아이콘과 겹치는 id는 거부합니다. `scripts/add_canonical_icon.py`가 정식 추가 절차이며, symbol 추가와 함께 `src/guide/upstream/gallery-data.json`(Design Guide 아이콘 미리보기)에도 같은 항목을 추가합니다. `registry/assets.json`에 오버레이 파일의 protected 항목을 등록했습니다.
+- `bootstrap.md`·`SKILL.md`: 메뉴 id를 아이콘 이름과 겹치지 않게 짓도록 안내하고(구조적으로는 이제 겹쳐도 깨지지 않지만 명확성을 위해 권장), 맞는 아이콘이 없으면 임의로 비슷한 아이콘을 쓰지 말고 사용자에게 알린 뒤 승인받아 Core 아이콘 추가 절차로 추가하도록 명시했습니다.
+
 ## [1.3.2] - 2026-09-29
 
 - **도움말 패널·모바일 메뉴가 바깥 클릭으로 닫히지 않던 결함 수정** (Frame: left·left-blank·top-left 1.2.0, top 1.3.0, blog 1.4.0). 원인: 실제 빌드에 들어가는 `src/generated/frame/frame-runtime.js`에 바깥 클릭 처리가 없었습니다(정본 Frame 인라인 스크립트에는 있지만 빌드는 그 스크립트를 이 런타임으로 교체합니다). 그래서 X 버튼과 Esc만 닫혔습니다. 이제 도움말·모바일 dialog는 패널 밖(backdrop) 클릭 시 닫히고, TOP·BLOG의 `.nav-backdrop` 클릭은 `nav-open`을 해제하고 메뉴 버튼의 `aria-expanded`를 `false`로 되돌립니다. Web Runtime(`dist/nhimc-web.js`)에도 같이 들어갑니다.
