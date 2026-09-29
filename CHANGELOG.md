@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Marketplace 등록 파일 추가: `.claude-plugin/marketplace.json`(Claude Code)과 `.agents/plugins/marketplace.json`(Codex). 저장소에 마켓플레이스 파일이 없어 `marketplace add`가 404 / "Marketplace file not found"로 실패하던 문제입니다.
+
 - **BLOG Frame 스크롤 소유자** (`blog`, Frame 1.1.0). 원인: BLOG 헤더의 투명은 테마 블록의 `background-color: transparent !important`로만 유지되어, 문서 스크롤 화면에서 헤더를 sticky로 바꾸면 투명한 채 콘텐츠와 겹쳤습니다. `scripts/frame_patches.py` 1.2.0이 스크롤 소유자를 BLOG Frame 안의 상태(`<html data-scroll-owner="main|document">`)로 추가했습니다. 새 Layout variant는 만들지 않았습니다.
   - `main`(기본): app-shell `100svh`, SiteHeader `flex:none`, Main(`.content`)만 스크롤하고 헤더는 투명을 유지합니다.
   - `document`: 문서가 스크롤하고 SiteHeader는 sticky + 불투명(`--color-background`) + `--color-border-accent` 하단 경계 + 정본 `--shadow-lg`입니다. 앵커는 `scroll-margin-top`으로 헤더를 피합니다. 모바일 Drawer(z-index 10)는 헤더(8) 위에 그대로 열립니다.

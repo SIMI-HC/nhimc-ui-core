@@ -85,6 +85,20 @@ ChatGPT Web은 저장소 URL을 읽었다는 이유만으로 `READY`가 아닙�
 | Gemini Web | 현재 영구 실행 로더 없음 | 저장소 컨텍스트만 있으면 `WEB_BOOTSTRAP` |
 | Gemini CLI | 확장 기능·빌더·브라우저 검증 가능 | 읽기 전용 체크아웃이면 `WEB_BOOTSTRAP` |
 
+## 플러그인으로 설치 (Marketplace)
+
+저장소 루트가 Claude Code·Codex 마켓플레이스이자 플러그인입니다(`.claude-plugin/marketplace.json`, `.agents/plugins/marketplace.json`). GitHub에 push된 상태에서 등록합니다.
+
+```
+claude plugin marketplace add SIMI-HC/nhimc-ui-core
+claude plugin install nhimc-worktool@nhimc-worktool-marketplace
+
+codex plugin marketplace add SIMI-HC/nhimc-ui-core
+codex plugin add nhimc-worktool@nhimc-worktool-marketplace
+```
+
+Claude Code 대화창에서는 `/plugin marketplace add SIMI-HC/nhimc-ui-core`도 같습니다. 릴리스마다 `VERSION`, 두 `plugin.json`, `.claude-plugin/marketplace.json`의 버전을 함께 올립니다(테스트가 검사합니다).
+
 ## 유지보수와 문제 해결
 
 아래 명령은 일반 사용자가 실행하는 설치 과정이 아니라 Core 유지보수 및 장애 진단용입니다.

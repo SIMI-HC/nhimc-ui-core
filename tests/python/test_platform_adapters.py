@@ -56,6 +56,19 @@ class PlatformAdapterTests(unittest.TestCase):
         self.assertTrue(skill.startswith("---\nname: nhimc-worktool\n"))
         self.assertFalse((ROOT / "skills/nhimc-ui").exists())
 
+    def test_marketplaces_expose_the_root_plugin_at_the_current_version(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        claude = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+        codex = json.loads((ROOT / ".agents/plugins/marketplace.json").read_text(encoding="utf-8"))
+        self.assertEqual(claude["name"], codex["name"])
+        entry = claude["plugins"][0]
+        self.assertEqual(("nhimc-worktool", "./", version), (entry["name"], entry["source"], version))
+        self.assertEqual(version, entry["version"])
+        self.assertEqual("nhimc-worktool", codex["plugins"][0]["name"])
+        self.assertEqual("./", codex["plugins"][0]["source"]["path"])
+        self.assertTrue((ROOT / ".claude-plugin/plugin.json").is_file())
+        self.assertTrue((ROOT / ".codex-plugin/plugin.json").is_file())
+
     def test_chatgpt_web_ready_requires_callable_verified_bridge(self):
         project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
         chatgpt = next(

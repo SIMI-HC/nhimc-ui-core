@@ -160,7 +160,7 @@ def build_guide(root: Path) -> Path:
     footer = re.search(r'<footer class="builder-footer">', html)
     if not footer:
         raise ValueError("design guide patch did not apply: builder-footer")
-    toggle = '<label class="builder-option-toggle"><input type="checkbox" id="builderSkipInstall"> 이미 준비된 대화입니다 (설치 문구 생략)</label>'
+    toggle = '<label class="builder-option-toggle"><input type="checkbox" id="builderSkipInstall"> 이 대화에 이미 설치했어요 · 설치 안내 빼기</label><p class="builder-copy-hint">아래 프롬프트를 <strong>프롬프트 복사</strong>로 복사해 AI 대화창에 그대로 붙여넣으세요. 새 대화라면 체크하지 마세요. 설치·준비 문구가 함께 들어갑니다.</p>'
     html = html[: footer.end()] + toggle + html[footer.end() :]
     hero_button = re.search(r'<button class="builder-open" id="builderOpen".*?</button>', html, re.S)
     if not hero_button:
