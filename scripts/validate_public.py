@@ -11,6 +11,21 @@ if __package__ in {None, ""}:
 from scripts.common import Finding
 from scripts.common import load_json
 from scripts.public_inventory import KNOWN_BINARY_SUFFIXES, iter_publishable_files
+from scripts.skill_resources import MIRROR_ROOT
+
+
+MIRROR_PREFIX = MIRROR_ROOT.as_posix() + "/"
+
+
+def _canonical_relative(relative: str) -> str:
+    """The skill resource mirror is a byte-identical copy of an already-cleared root file.
+
+    Scanning it under its own path would re-flag content (devtools loopback strings, registered
+    fonts) that was already reviewed and allowlisted at its source path.
+    """
+    if relative.startswith(MIRROR_PREFIX):
+        return relative[len(MIRROR_PREFIX):]
+    return relative
 
 
 IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])")
@@ -52,8 +67,9 @@ LOCAL_NETWORK_ALLOWLIST = {
 }
 
 
-def _line_findings(relative: str, number: int, line: str) -> list[Finding]:
+def _line_findings(relative: str, number: int, line: str, *, canonical: str | None = None) -> list[Finding]:
     location = f"{relative}:{number}"
+    allowlist_key = canonical if canonical is not None else relative
     findings: list[Finding] = []
 
     for match in IPV4.finditer(line):
@@ -63,7 +79,7 @@ def _line_findings(relative: str, number: int, line: str) -> list[Finding]:
             continue
         if (
             address.is_private or address.is_loopback or address.is_link_local
-        ) and relative not in LOCAL_NETWORK_ALLOWLIST:
+        ) and allowlist_key not in LOCAL_NETWORK_ALLOWLIST:
             findings.append(
                 Finding("public.private-network", location, "Private or local network address detected")
             )
@@ -73,11 +89,11 @@ def _line_findings(relative: str, number: int, line: str) -> list[Finding]:
         findings.append(
             Finding("public.url-credentials", location, "URL contains embedded credentials")
         )
-    if INTERNAL_HOST.search(line) and relative not in LOCAL_NETWORK_ALLOWLIST:
+    if INTERNAL_HOST.search(line) and allowlist_key not in LOCAL_NETWORK_ALLOWLIST:
         findings.append(
             Finding("public.internal-url", location, "Internal host marker detected")
         )
-    if BARE_INTERNAL_HOST.search(line) and relative not in LOCAL_NETWORK_ALLOWLIST:
+    if BARE_INTERNAL_HOST.search(line) and allowlist_key not in LOCAL_NETWORK_ALLOWLIST:
         findings.append(
             Finding("public.internal-host", location, "Internal host marker detected")
         )
@@ -120,13 +136,14 @@ def scan_public_tree(root: Path, include: set[str] | None = None) -> list[Findin
         relative = relative_path.as_posix()
         if include is not None and path.name not in include and relative not in include:
             continue
+        canonical = _canonical_relative(relative)
         if path.is_symlink():
             findings.append(
                 Finding("public.symlink", relative, "Symbolic links are not publishable")
             )
             continue
         if path.suffix.lower() in KNOWN_BINARY_SUFFIXES:
-            if relative in registered_binary_assets:
+            if relative in registered_binary_assets or canonical in registered_binary_assets:
                 continue
             findings.append(
                 Finding("public.unknown-binary", relative, "Unregistered binary asset detected")
@@ -149,7 +166,7 @@ def scan_public_tree(root: Path, include: set[str] | None = None) -> list[Findin
             )
             continue
         for number, line in enumerate(text.splitlines(), start=1):
-            findings.extend(_line_findings(relative, number, line))
+            findings.extend(_line_findings(relative, number, line, canonical=canonical))
     return sorted(set(findings))
 
 

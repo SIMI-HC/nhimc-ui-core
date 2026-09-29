@@ -88,6 +88,11 @@ class PublicSafetyTests(unittest.TestCase):
                 "public.private-network", {item.rule for item in findings}, relative
             )
 
+    def test_skill_resource_mirror_inherits_its_source_paths_clearance(self):
+        findings = scan_public_tree(ROOT)
+        mirror_findings = [item for item in findings if item.path.startswith("skills/nhimc-worktool/resources/")]
+        self.assertEqual([], mirror_findings)
+
     def test_asset_review_has_no_unresolved_blocker(self):
         blockers = unresolved_release_blockers(ROOT / "PUBLIC_ASSET_REVIEW.md")
         self.assertEqual([], blockers)
