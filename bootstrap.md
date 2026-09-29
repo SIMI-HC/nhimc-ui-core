@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-이 파일은 모든 AI 환경의 단일 진입점입니다. 저장소 루트의 `VERSION`, `registry/project.json`, `skills/nhimc-worktool/SKILL.md`를 읽고 그 계약을 따르세요.
+이 파일은 모든 AI 환경의 단일 진입점입니다. 이 문서를 읽는 것 자체는 **항상 raw 파일 읽기**(`https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`)로 합니다. `bootstrap.md`를 읽기 위한 목적만으로 `git clone`을 하지 않습니다. 이후 절차는 아래 "준비 절차"를 그대로 따릅니다.
 
 이 저장소는 NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트입니다. 플러그인·스킬 이름은 기존과 같은 `nhimc-worktool`이므로 이미 설치된 스킬이 있으면 이 저장소 버전으로 갱신하고, 없으면 새로 준비합니다.
 
@@ -21,27 +21,26 @@ bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.
 
 ## 준비 절차 (항상 이 순서로, 사본이 남아 있어도 생략하지 않습니다)
 
-이전 대화나 샌드박스에 저장소 사본·스킬·**플러그인 설치본**이 남아 있어도 **아래 1~5를 건너뛰지 않습니다.** 여기서 “사본”은 저장소 클론뿐 아니라 마켓플레이스로 설치한 플러그인 설치본(플러그인 캐시)도 포함합니다. 사본이 있다는 이유만으로 준비를 생략하지 않습니다.
+이전 대화나 샌드박스에 저장소 사본·스킬·**플러그인 설치본**이 남아 있어도 **아래 1~9를 건너뛰지 않습니다.** 여기서 “사본”은 저장소 클론뿐 아니라 마켓플레이스로 설치한 플러그인 설치본, 스킬 업로드본도 포함합니다. 사본이 있다는 이유만으로 준비를 생략하지 않습니다.
 
-**`<루트>`(registry·scripts·guide·SKILL을 읽는 위치)를 먼저 정합니다.**
-- `nhimc-worktool` 스킬·플러그인이 **설치돼 있으면** `<루트>`는 **플러그인 설치 경로**입니다. 설치본에 저장소 전체(`registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION`)가 들어 있으므로 **저장소를 작업 폴더에 클론하지 않습니다.** Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인 목록에서 설치 경로를 확인합니다. 작업 폴더에는 만든 결과물(`source.html`, `index.html`)만 둡니다.
-- 설치돼 있지 **않으면** 아래 2단계의 클론 사본이 `<루트>`입니다.
+**필수 리소스**: 어떤 설치 경로든 `<루트>`로 쓰려면 `registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION` 6가지가 모두 있어야 합니다. 전체 저장소를 설치하는 플러그인 경로는 이 6가지가 저장소 루트에 그대로 있습니다. Codex의 “스킬만 업로드” 같은 경량 경로는 `skills/nhimc-worktool/`만 설치될 수 있으므로, 그 경우 나머지 5가지는 `skills/nhimc-worktool/resources/`(레포에 미리 미러링되어 있음) 아래에서 찾습니다.
 
-1. **항상 먼저 확인합니다.** 원격 최신 버전 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 설치된 `nhimc-worktool`(또는 클론 사본)의 `VERSION`과 비교하고, 결과를 `갱신함 / 이미 최신 / 확인 못함` 중 하나로 기억합니다. 원격 버전을 읽을 수 없으면 `확인 못함`이며 최신이라고 말하지 않습니다.
-2. **사본을 정합니다 (스킬·플러그인이 설치돼 있지 않을 때만 클론합니다).**
-   - 플러그인이 **설치돼 있으면**: `git clone`·`git pull`을 하지 않습니다. `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry는 `<루트>`(플러그인 설치 경로)에서 읽습니다. 원격이 더 새로우면 3단계에서 갱신 여부를 묻습니다.
-   - 설치돼 있지 **않으면**: 클론 사본이 없을 때 `git clone https://github.com/SIMI-HC/nhimc-ui-core.git`, 있고 원격이 더 새로우면 `git pull`(또는 다시 클론)한 뒤 `bootstrap.md`, `skills/nhimc-worktool/SKILL.md`, registry를 다시 읽습니다. 같거나 로컬이 더 새로우면 건너뜁니다.
-3. **스킬·플러그인을 확인하고 사용자에게 묻습니다.** 이 환경에 `nhimc-worktool` 스킬(또는 플러그인·확장)이 있는지 봅니다.
-   - 등록되어 있지 않고 이 환경이 공식 등록 경로(플러그인, Skill 업로드, 확장)를 지원하면, **등록할지 사용자에게 먼저 묻습니다**. 자동 설치나 지원되지 않는 방법으로의 우회는 하지 않습니다. 승인하면 그 경로로 등록하고(Claude Code: `claude plugin marketplace add SIMI-HC/nhimc-ui-core` 다음 `claude plugin install nhimc-worktool@nhimc-worktool-marketplace`), 거절하거나 지원하지 않으면 Web Bootstrap으로 계속합니다.
-   - 이미 등록되어 있고 원격 `VERSION`이 더 새로우면 “`nhimc-worktool`을 현재 버전에서 새 버전으로 업데이트할까요?”라고 **반드시 묻고**, 승인하면 **공식 경로로** 스킬·플러그인도 같은 버전으로 업데이트합니다(스킬·플러그인도 같은 버전으로 업데이트). Claude Code는 `claude plugin marketplace update nhimc-worktool-marketplace` 다음 `claude plugin update nhimc-worktool@nhimc-worktool-marketplace`이며, 저장소를 다시 클론해서 대신하지 않습니다. 업데이트 뒤에는 새 설치 경로(`<버전>` 폴더)를 `<루트>`로 다시 잡습니다. 거절하면 이전 버전을 유지한다고 알립니다.
-   - 등록되어 있고 같거나 더 새로우면 그대로 사용합니다.
-   - 등록이나 업데이트를 실제로 확인하지 못했으면 됐다고 말하지 않습니다.
-4. **Design Guide를 표출합니다.** 처음 준비했거나 1단계 결과가 `갱신함`이면 **반드시** 아래 “준비 완료 후: Design Guide 열기”대로 사용자에게 열어 줍니다. 파일은 클론이 아니라 `<루트>`(플러그인이 설치돼 있으면 설치 경로)의 `guide/nhimc-design-guide.html`을 씁니다. `이미 최신`이면 다시 열지 않고 가이드 링크만 한 줄로 알려 줍니다.
-5. **결과를 보고합니다.** `platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`에 더해 `최신 확인 결과`, `스킬·플러그인`(등록됨 / 업데이트함 / 업데이트 안 함 / 미등록·미지원), `Design Guide`(열었음 / 링크 전달 / 생략: 이미 최신)를 함께 씁니다.
+1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
+2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
+3. **설치된 `nhimc-worktool` 검색.** 이 환경의 플러그인 목록·스킬 목록·확장 목록에서 `nhimc-worktool`을 찾습니다. Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인/스킬 목록에서 설치 경로를 확인합니다.
+4. **설치본이 있으면 버전과 필수 리소스를 검증.** 찾은 설치 경로를 `<루트>` 후보로 놓고 위 “필수 리소스” 6가지가 모두 있는지 확인합니다(직접 있거나, `skills/nhimc-worktool/resources/` 아래에 미러로 있으면 됨).
+   - 모두 있고 로컬 버전이 2단계의 원격과 같거나 더 새로우면: 이 설치본을 `<루트>`로 확정하고 8단계로 갑니다.
+   - 모두 있고 원격이 더 새로우면: 5단계로 가되 “업데이트할지” 질문합니다.
+   - **하나라도 빠지면**: 이 설치본은 `<루트>` 후보에서 제외합니다. **클론으로 대체하지 않습니다.** 이 환경에 다른 등록 경로(예: 스킬 업로드 말고 정식 플러그인)가 더 있으면 3단계로 돌아가 확인하고, 없으면 5단계에서 “완전한 경로로 다시 등록할지”를 묻습니다.
+5. **미등록이거나 불완전하면 공식 등록 가능 여부를 확인하고 사용자에게 묻습니다.** 이 환경이 지원하는 공식 등록 경로(플러그인 마켓플레이스를 우선하고, 그다음 스킬 업로드, 확장 순)가 있으면 **등록(또는 완전한 경로로 재등록)할지 사용자에게 먼저 묻습니다.** 자동 설치나 비공식 우회(클론 포함)를 하지 않습니다. 등록 경로가 없거나 사용자가 거절하면 `WEB_BOOTSTRAP`으로 확정하고 8단계로 건너뜁니다(이 경우도 작업 폴더에 클론하지 않습니다. 로컬 셸이 있고 사용자가 실제 검증된 산출물을 원하면 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기”의 임시 경로 clone 예외를 씁니다).
+6. **승인 시 공식 경로로 설치·업데이트합니다.** Claude Code는 `claude plugin marketplace add SIMI-HC/nhimc-ui-core` 다음 `claude plugin install nhimc-worktool@nhimc-worktool-marketplace`(업데이트는 `claude plugin marketplace update nhimc-worktool-marketplace` 다음 `claude plugin update nhimc-worktool@nhimc-worktool-marketplace`)입니다. 다른 환경은 그 환경의 공식 명령을 씁니다. 어떤 경우에도 `git clone`/`git pull`로 대신하지 않습니다.
+7. **새 설치 경로를 `<루트>`로 설정하고 필수 리소스를 재검증합니다.** 6단계에서 설치·업데이트된 경로에 6가지 리소스가 모두 있는지 다시 확인합니다. 빠졌으면 “설치 패키지가 불완전하다”고 정확히 보고하고 `WEB_BOOTSTRAP`으로 폴백합니다(작업 폴더에 클론하지 않습니다).
+8. **Design Guide를 표출합니다.** 처음 준비했거나 2단계에서 “원격이 더 새로움”으로 판정했을 때만 아래 “준비 완료 후: Design Guide 열기”대로 엽니다. 파일은 `<루트>/guide/nhimc-design-guide.html`(또는 스킬 전용 설치는 `<루트>/resources/guide/nhimc-design-guide.html`)입니다. 이미 최신이면 다시 열지 않고 링크만 한 줄로 알려 줍니다.
+9. **결과를 보고합니다.** `platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`에 더해 `최신 확인 결과`(갱신함/이미 최신/확인 못함), `스킬·플러그인 상태`(등록됨/업데이트함/업데이트 안 함/미등록·미지원/불완전), `Design Guide`(열었음/링크 전달/생략: 이미 최신)를 함께 씁니다.
 
 ## 준비 완료 후: Design Guide 열기
 
-준비 절차 4단계에서 `<루트>/guide/nhimc-design-guide.html`을 사용자에게 엽니다(플러그인이 설치돼 있으면 클론하지 않고 그 설치 경로의 파일을 엽니다. 처음 준비하거나 버전이 갱신됐을 때는 생략하지 않습니다). 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
+준비 절차 8단계에서 `<루트>/guide/nhimc-design-guide.html`을 사용자에게 엽니다(설치본이 있으면 클론하지 않고 그 설치 경로 — 필요하면 `resources/guide/` 아래 — 의 파일을 엽니다. 처음 준비하거나 버전이 갱신됐을 때는 생략하지 않습니다). 설치 가이드, 사용법, 프롬프트 만들기, Frame·Component·Icon 미리보기가 들어 있는 단일 오프라인 HTML입니다.
 
 1. 로컬 셸이 있으면 기본 브라우저로 엽니다: Windows `start "" "<루트>\guide\nhimc-design-guide.html"`(또는 `<루트>\open-guide.cmd`), macOS `open "<루트>/guide/nhimc-design-guide.html"`, Linux `xdg-open "<루트>/guide/nhimc-design-guide.html"`.
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
@@ -153,7 +152,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 웹 AI라도 **코드 실행(샌드박스)과 GitHub 접근이 되면** 오프라인 빌더로 CSS·스크립트·폰트가 모두 든 단일 `index.html`을 직접 만들어 **다운로드 파일로 첨부**합니다. 이때 AI가 파일 내용을 손으로 써서 붙이지 않고 반드시 빌더를 실행합니다.
 
-1. 빌더 위치 `<루트>`를 정합니다. 스킬·플러그인이 설치돼 있으면 **클론하지 않고** 플러그인 설치 경로의 `scripts/`를 그대로 실행합니다(결과물만 작업 폴더에 씁니다). **설치돼 있지 않을 때만** `git clone https://github.com/SIMI-HC/nhimc-ui-core.git`(이미 있으면 위 “항상 먼저 확인”에 따라 갱신)로 받습니다.
+1. 빌더 위치 `<루트>`를 정합니다. 설치본이 있고 필수 리소스가 모두 있으면 **클론하지 않고** 그 설치 경로의 `scripts/`(또는 `resources/scripts/`)를 그대로 실행합니다(결과물만 작업 폴더에 씁니다). 설치본이 없거나 불완전하고, 공식 등록도 불가능하거나 사용자가 거절했는데 로컬 셸에서 실제 검증된 산출물이 필요할 때만 **임시/scratch 경로에** `git clone https://github.com/SIMI-HC/nhimc-ui-core.git`로 받습니다. `source.html`과 같은 임시 위치(세션 scratchpad 또는 OS 임시 폴더)를 쓰고, **사용자 작업 폴더에는 절대 clone하지 않습니다.**
 2. 저작 원본(Content 조각 또는 `nhimc-frame` 문서)을 **임시 위치의 `source.html`로 저장합니다**(사용자 프로젝트 폴더에 두지 않습니다). `<script src>`(Web Runtime 줄)는 넣지 않습니다.
 3. Chromium이 있으면 `python <루트>/scripts/build_verified_artifact.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html`로 브라우저 검증까지 마칩니다. 없으면 `python <루트>/scripts/build_single_html.py --input <임시 경로>/source.html --output <사용자 폴더>/index.html`로 만들고 “브라우저 검증은 하지 못했다”고 알립니다.
 4. 만들어진 `index.html`을 다운로드 파일로 첨부합니다(외부 URL 없음, 인터넷 없이 열림). 첨부·보고에는 `index.html`만 쓰고 원본은 첨부·언급하지 않습니다.
