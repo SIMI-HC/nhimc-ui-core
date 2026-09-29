@@ -1,6 +1,6 @@
 # 변경 이력
 
-## [Unreleased]
+## [1.3.0] - 2026-09-29
 
 - **로컬 빌더·Web Runtime Frame 렌더링 결함 수정** (Frame: blog 1.2.0, top 1.1.0).
   - 테마 색이 적용되지 않던 문제: `[data-theme-color="pear"]` 등 Theme 덮어쓰기 CSS가 `<head>` 맨 앞에 들어가 Frame 자체의 `[data-theme="light"]{--color-primary:#003d94…}`(같은 우선순위, 나중 것이 이김)에 덮였습니다. 라이트 모드에서 mint·pear·apricot·neutral이 모두 남색으로 나왔고 **로컬 빌더와 Web Runtime 두 경로 모두, 모든 Frame**에서 같았습니다(다크는 선택자가 더 구체적이라 정상). Theme 덮어쓰기를 `</head>` 직전의 별도 `<style data-nhimc-theme-color-bundle>`로 옮겼습니다(`build_single_html.py`, `build_web_runtime.py`, `nhimc-web.template.js`).
