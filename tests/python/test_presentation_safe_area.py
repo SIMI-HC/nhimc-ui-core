@@ -42,7 +42,7 @@ class PresentationBaseContractTests(unittest.TestCase):
         self.assertEqual(48, report["cells"])
 
     def test_the_checks_catch_the_original_overlap_when_the_safe_area_patch_is_missing(self):
-        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_radius):
+        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_tile):
             with tempfile.TemporaryDirectory() as folder:
                 cells = psa.build_cells(ROOT, Path(folder), viewports=((1440, 900), (390, 844)), frames=("presentation",), themes=("light",))
                 cells = [cell for cell in cells if cell["mode"] == "offline"]
@@ -68,11 +68,12 @@ class PresentationBaseContractTests(unittest.TestCase):
                 self.assertIn(f'data-presentation-direction="{direction}"', patched, name)
             else:
                 # left, left-blank, top and top-left get exactly the logo radius patch and nothing else; top and blog add only their nav icon sizes, blog its scroll owner
-                expected = frame_patches._patch_logo_radius(raw)
+                expected = frame_patches._patch_logo_tile(raw)
                 if name == "blog.html":
                     expected = frame_patches._patch_blog_scroll_owner(expected)
                 if name in {"blog.html", "top.html"}:
                     expected = frame_patches._patch_nav_icons(expected)
+                expected = frame_patches._patch_sidebar_logo(expected)
                 self.assertEqual(expected, patched, name)
                 self.assertNotIn(frame_patches.SAFE_AREA_MARKER, patched, name)
                 self.assertNotIn("presentation-direction", patched, name)
@@ -127,7 +128,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.2.0", "nhimc-top": "1.1.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.3.0", "nhimc-top": "1.2.0", "nhimc-default": "1.1.0", "nhimc-left-blank": "1.1.0", "nhimc-top-left": "1.1.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

@@ -89,7 +89,7 @@ class BlogScrollOwnerRenderTests(unittest.TestCase):
 
     def test_registry_records_the_new_frame_version_and_state(self):
         frame = next(item for item in json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"] if item["id"] == "nhimc-blog")
-        self.assertEqual("1.2.0", frame["version"])
+        self.assertEqual("1.3.0", frame["version"])
         self.assertEqual(["main", "document"], frame["scrollOwners"]["states"])
         self.assertEqual("main", frame["scrollOwners"]["default"])
 
@@ -101,7 +101,7 @@ class BlogScrollOwnerBrowserTests(unittest.TestCase):
         self.assertEqual(24, report["cells"])
 
     def test_document_regression_fails_without_the_patch_so_the_gate_is_real(self):
-        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_radius):
+        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_tile):
             with tempfile.TemporaryDirectory() as folder:
                 cells = gate.build_cells(ROOT, Path(folder), viewports=((1440, 900),), themes=("light",), modes=("offline",))
                 found = gate.problems(cells, gate.measure(ROOT, cells))

@@ -30,7 +30,7 @@ class ContractTests(unittest.TestCase):
         frames = json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"]
         self.assertEqual("1.3.0", project["projectVersion"])
         self.assertEqual(7, len(frames))
-        self.assertEqual({"1.0.0", "1.1.0", "1.2.0"}, {frame["version"] for frame in frames})
+        self.assertEqual({"1.1.0", "1.2.0", "1.3.0"}, {frame["version"] for frame in frames})
 
     def test_repository_contract_is_consistent(self):
         self.assertEqual([], validate_contracts(ROOT))

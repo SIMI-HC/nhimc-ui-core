@@ -64,7 +64,7 @@ class FrameRenderBrowserTests(unittest.TestCase):
         self.assertEqual(3 * 3 * 2 * 3 * 2, report["cells"])
 
     def test_the_gate_catches_unsized_blog_icons_and_a_lost_theme_colour(self):
-        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_radius):
+        with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_tile):
             with tempfile.TemporaryDirectory() as folder:
                 cells = gate.build_cells(ROOT, Path(folder), frames=("blog",), themes=("pear",), modes=("light",), viewports=((1440, 900),), paths=("offline",))
                 found = gate.problems(ROOT, cells, gate.measure(ROOT, cells))

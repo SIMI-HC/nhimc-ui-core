@@ -5,6 +5,10 @@ Web Runtime, Design Guide previews, parity tests) applies the same patches throu
 frameVersion always means the same Frame.
 
 1.0.0  the Ilsan Hospital logo tile (white border) uses an 8px radius instead of 10px/9px.
+1.4.0  the white logo tile is removed altogether (no padding, white background, shadow or radius around the logo).
+       The sidebar logo sits on a translucent --color-sidebar-brand-18 panel (like the active menu row) so its navy block
+       stays visible, and LEFT BLANK
+       keeps the solo logo mark when collapsed (toggle right below it) like every other Frame.
 1.0.1  PRESENTATION frames (presentation, presentation-vertical) own a Content Safe Area. Their Header
        (utility buttons) and Controller (slide dots and arrows) float above a full-bleed content slot, so AI
        Content ran under them.
@@ -34,8 +38,14 @@ from __future__ import annotations
 import re
 
 LOGO_SELECTORS = ("brand-asset", "hospital-brand-logo", "brand-mark")
-LOGO_RADIUS = "8px"
-_OLD_RADIUS = re.compile(r"border-radius:(?:9|10)px")
+# The canonical logo sits on a white rounded tile (padding, #fff, radius, shadow). The tile is removed: the logo is drawn
+# as is, without a white border around it.
+_LOGO_TILE = (
+    (re.compile(r"padding:3px(?: 5px)?(?=[;}]|$)"), "padding:0"),
+    (re.compile(r"background:#fff(?=[;}]|$)"), "background:transparent"),
+    (re.compile(r"box-shadow:0 1px 4px rgba\(0,0,0,\.16\)"), "box-shadow:none"),
+    (re.compile(r"border-radius:(?:8|9|10)px"), "border-radius:0"),
+)
 _SLIDE_DOTS_COLUMN = re.compile(r"\.slide-dots\s*\{[^}]*flex-direction:\s*column")
 
 SAFE_AREA_MARKER = "nhimc-presentation-safe-area"
@@ -61,14 +71,15 @@ _SAFE_AREA_RULES = """.slide{padding:var(--presentation-safe-top) var(--presenta
 """
 
 
-def _patch_logo_radius(layout: str) -> str:
+def _patch_logo_tile(layout: str) -> str:
     parts = layout.split("}")
     patched: list[str] = []
     for part in parts:
         if "{" in part:
             selector, body = part.rsplit("{", 1)
             if any(name in selector for name in LOGO_SELECTORS):
-                body = _OLD_RADIUS.sub(f"border-radius:{LOGO_RADIUS}", body)
+                for pattern, replacement in _LOGO_TILE:
+                    body = pattern.sub(replacement, body)
                 part = selector + "{" + body
         patched.append(part)
     return "}".join(patched)
@@ -144,5 +155,33 @@ def _patch_nav_icons(layout: str) -> str:
     return layout[:end] + f"\n/* {NAV_ICON_MARKER} */\n" + rules + layout[end:]
 
 
+SIDEBAR_LOGO_MARKER = "nhimc-sidebar-logo"
+_COLLAPSED_LOGO_HIDDEN = ".is-collapsed .brand-logo{display:none}\n"
+# Without the white tile the logo's own navy block melts into the navy sidebar. It sits on a translucent panel of the
+# sidebar's own token instead (the same soft surface as the active menu row), not on a white one.
+_SIDEBAR_LOGO_RULES = """.brand .brand-row,.brand-logo .brand-row{padding:3px 5px;border-radius:8px;background:var(--color-sidebar-brand-18)}
+.brand .brand-mark,.brand-logo .brand-mark{padding:3px;border-radius:9px;background:var(--color-sidebar-brand-18)}
+"""
+# LEFT BLANK shows its collapse toggle instead of the logo when collapsed; every other Frame shows the solo mark. The
+# mark now stays and the toggle sits right below it (the rail has to keep a way to expand).
+_LEFT_BLANK_COLLAPSED_RULES = """.is-collapsed .brand{flex-direction:column;justify-content:flex-start;height:auto;gap:0}
+.is-collapsed .brand-logo{display:block;flex:none;width:100%;height:var(--header-height)}
+.is-collapsed .brand-logo .brand-row{opacity:0;visibility:hidden}
+.is-collapsed .brand-logo .brand-mark{opacity:1;visibility:visible}
+.is-collapsed .brand .collapse-button{margin-bottom:6px}
+"""
+
+
+def _patch_sidebar_logo(layout: str) -> str:
+    if "sidebar-decor" not in layout or ".brand-asset" not in layout or SIDEBAR_LOGO_MARKER in layout:
+        return layout
+    rules = _SIDEBAR_LOGO_RULES
+    if _COLLAPSED_LOGO_HIDDEN in layout:
+        layout = layout.replace(_COLLAPSED_LOGO_HIDDEN, "", 1)
+        rules += _LEFT_BLANK_COLLAPSED_RULES
+    end = layout.rindex("</style>")
+    return layout[:end] + f"\n/* {SIDEBAR_LOGO_MARKER} */\n" + rules + layout[end:]
+
+
 def apply_frame_patches(layout: str) -> str:
-    return _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_radius(layout))))
+    return _patch_sidebar_logo(_patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_tile(layout)))))
