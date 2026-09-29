@@ -67,10 +67,12 @@ class PresentationBaseContractTests(unittest.TestCase):
                 direction = "vertical" if name == "presentation-vertical.html" else "horizontal"
                 self.assertIn(f'data-presentation-direction="{direction}"', patched, name)
             else:
-                # left, left-blank, top and top-left get exactly the logo radius patch and nothing else; blog adds only its scroll owner
+                # left, left-blank, top and top-left get exactly the logo radius patch and nothing else; top and blog add only their nav icon sizes, blog its scroll owner
                 expected = frame_patches._patch_logo_radius(raw)
                 if name == "blog.html":
                     expected = frame_patches._patch_blog_scroll_owner(expected)
+                if name in {"blog.html", "top.html"}:
+                    expected = frame_patches._patch_nav_icons(expected)
                 self.assertEqual(expected, patched, name)
                 self.assertNotIn(frame_patches.SAFE_AREA_MARKER, patched, name)
                 self.assertNotIn("presentation-direction", patched, name)
@@ -125,7 +127,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual("1.1.0" if frame_id == "nhimc-blog" else "1.0.0", frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.2.0", "nhimc-top": "1.1.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

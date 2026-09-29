@@ -43,7 +43,6 @@ def build_web_runtime(root: Path = ROOT) -> Path:
             (root / "src/generated/components/components.css").read_text(encoding="utf-8"),
             _font_css(root, digests, font_base),
             (root / "src/layouts/primitives.css").read_text(encoding="utf-8"),
-            theme_color_css(root),
         )
     )
     data = {
@@ -55,6 +54,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
         "runtime": runtime,
         "presentationRuntime": presentation_runtime,
         "css": css,
+        "themeCss": theme_color_css(root),
         "icons": sorted(set(re.findall(r'<symbol\s+id="([a-z0-9-]+)"', sprite))),
     }
     template = (root / TEMPLATE).read_text(encoding="utf-8")

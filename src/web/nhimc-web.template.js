@@ -32,7 +32,7 @@
     } else if (mode === 'dots') {
       html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + ' aria-label="' + label + '"></button>';
     } else {
-      html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + '>' + icon + '<span class="label">' + label + '</span></button>';
+      html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + ' aria-label="' + label + '" title="' + label + '">' + icon + '<span class="label">' + label + '</span></button>';
     }
     return html + (item.children && item.children.length ? menuItems(item.children, activeId, mode) : '');
   }).join('');
@@ -164,6 +164,8 @@
   const head = '<meta name="nhimc-core-version" content="' + D.version + '"><style data-nhimc-component-bundle="canonical">' + D.css + closeStyle;
   if (themeColor !== 'nhimc-default') doc = doc.replace(/(<html\b)/i, (m) => m + ' data-theme-color="' + themeColor + '"');
   doc = doc.replace(/(<head\b[^>]*>)/i, (m) => m + head);
+  // Theme overlays go after the Frame's own [data-theme] token blocks (same specificity, later wins).
+  doc = doc.replace(/<\/head\s*>/i, (m) => '<style data-nhimc-theme-color-bundle="canonical">' + D.themeCss + closeStyle + m);
   const sprite = D.sprite.replace('<svg ', () => '<svg hidden aria-hidden="true" style="display:none" ');
   doc = doc.replace('</body>', () => sprite + '\n</body>');
   doc = doc.replace(/<title>[\s\S]*?<\/title>/i, () => '<title>' + esc(title) + '</title>');

@@ -140,8 +140,8 @@ def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> st
             )
         else:
             rendered.append(
-                f'<button type="button" data-menu-id="{item.id}" data-screen-target="{item.id}"{current}>'
-                f'{icon}<span class="label">{label}</span></button>'
+                f'<button type="button" data-menu-id="{item.id}" data-screen-target="{item.id}"{current} '
+                f'aria-label="{label}" title="{label}">{icon}<span class="label">{label}</span></button>'
             )
         if item.children:
             rendered.append(_menu_items(item.children, active_id, mode=mode))

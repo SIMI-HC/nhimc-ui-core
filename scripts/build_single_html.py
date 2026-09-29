@@ -522,7 +522,9 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
     _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests)
     font_css = _font_css(root, digests)
     component_css = (root / "src/generated/components/components.css").read_text(encoding="utf-8")
-    layout_css = (root / "src/layouts/primitives.css").read_text(encoding="utf-8") + "\n" + theme_color_css(root) + "\n"
+    primitives_css = (root / "src/layouts/primitives.css").read_text(encoding="utf-8")
+    theme_css = theme_color_css(root)
+    layout_css = primitives_css + "\n" + theme_css + "\n"
     color_match = re.search(r"<html\b[^>]*\bdata-theme-color=[\"']([a-z0-9-]+)[\"']", stripped, re.I)
     theme_color = color_match.group(1) if color_match else DEFAULT_THEME_COLOR
     if theme_color not in theme_color_ids(root):
@@ -574,12 +576,18 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
         f'<meta name="nhimc-runtime-token" content="{runtime_token}">\n'
         f'<style data-nhimc-component-bundle="canonical">\n{component_css.replace("</style", "<\\/style")}\n</style>\n'
         f'<style data-nhimc-font-bundle="canonical">\n{font_css}\n</style>\n'
-        f'<style data-nhimc-layout-bundle="primitives">\n{layout_css.replace("</style", "<\\/style")}\n</style>\n'
+        f'<style data-nhimc-layout-bundle="primitives">\n{primitives_css.replace("</style", "<\\/style")}\n</style>\n'
         f'<script id="nhimc-completion-manifest" type="application/json">{completion_json}</script>'
     )
     html, count = re.subn(r"(<head\b[^>]*>)", lambda match: f"{match.group(1)}\n{head}", html, count=1, flags=re.I)
     if count != 1:
         raise ValueError("canonical frame is missing its head")
+    # Theme colour overlays must come after the Frame's own [data-theme] token blocks. Both have the same
+    # specificity, so the later one wins; at the head start the Frame's default colours overrode the theme.
+    theme_block = f'<style data-nhimc-theme-color-bundle="canonical">\n{theme_css.replace("</style", "<\\/style")}\n</style>\n'
+    html, count = re.subn(r"</head\s*>", lambda match: theme_block + match.group(0), html, count=1, flags=re.I)
+    if count != 1:
+        raise ValueError("canonical frame is missing its head end")
     _validate_standalone(html)
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary_name: str | None = None

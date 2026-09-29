@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+- **로컬 빌더·Web Runtime Frame 렌더링 결함 수정** (Frame: blog 1.2.0, top 1.1.0).
+  - 테마 색이 적용되지 않던 문제: `[data-theme-color="pear"]` 등 Theme 덮어쓰기 CSS가 `<head>` 맨 앞에 들어가 Frame 자체의 `[data-theme="light"]{--color-primary:#003d94…}`(같은 우선순위, 나중 것이 이김)에 덮였습니다. 라이트 모드에서 mint·pear·apricot·neutral이 모두 남색으로 나왔고 **로컬 빌더와 Web Runtime 두 경로 모두, 모든 Frame**에서 같았습니다(다크는 선택자가 더 구체적이라 정상). Theme 덮어쓰기를 `</head>` 직전의 별도 `<style data-nhimc-theme-color-bundle>`로 옮겼습니다(`build_single_html.py`, `build_web_runtime.py`, `nhimc-web.template.js`).
+  - 메뉴 아이콘이 크게 렌더되던 문제: BLOG 헤더 메뉴에는 svg 크기 규칙이 없어(TOP은 17px) 1440px에서 56px로 라벨을 덮었고, BLOG·TOP의 모바일 Drawer 메뉴 아이콘도 크기 규칙이 없어 열면 184px였습니다. `scripts/frame_patches.py`가 BLOG 헤더 아이콘(17px, 라벨 옆)과 BLOG·TOP Drawer 아이콘(18px)을 정합니다. `.topnav button span.label{display:none}`(1024px 미만 아이콘 모드)은 TOP과 같은 의도이며, 아이콘만 남는 메뉴 버튼이 이름을 잃지 않도록 메뉴 버튼에 `aria-label`·`title`을 넣었습니다.
+  - 검증: `scripts/frame_render.py`가 모든 Frame × Theme 6종 × 라이트/다크 × 1440/768/375px × 로컬 빌더/Web Runtime = 504칸에서 계산된 `--color-primary`·주요 Button 색, 메뉴 아이콘 크기·라벨 겹침·접근 가능한 이름, 가로 스크롤을 측정합니다(`--frame-render-only`, `verify_all`, `verify_release`). 완료 검증(`verify_standalone_browser.mjs`)도 선택한 테마의 `--color-primary`와 메뉴 아이콘 상한(24px)을 확인하므로, 예전처럼 PASS인데 화면이 깨진 산출물이 나오지 않습니다.
 - Marketplace 등록 파일 추가: `.claude-plugin/marketplace.json`(Claude Code)과 `.agents/plugins/marketplace.json`(Codex). 저장소에 마켓플레이스 파일이 없어 `marketplace add`가 404 / "Marketplace file not found"로 실패하던 문제입니다.
 
 - **BLOG Frame 스크롤 소유자** (`blog`, Frame 1.1.0). 원인: BLOG 헤더의 투명은 테마 블록의 `background-color: transparent !important`로만 유지되어, 문서 스크롤 화면에서 헤더를 sticky로 바꾸면 투명한 채 콘텐츠와 겹쳤습니다. `scripts/frame_patches.py` 1.2.0이 스크롤 소유자를 BLOG Frame 안의 상태(`<html data-scroll-owner="main|document">`)로 추가했습니다. 새 Layout variant는 만들지 않았습니다.

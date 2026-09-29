@@ -40,6 +40,10 @@ def verify_all(root: Path = ROOT, include_canonical: bool = True) -> int:
                 "blog scroll owner",
                 [sys.executable, "scripts/run_browser_tests.py", "--blog-scroll-owner-only"],
             ),
+            (
+                "frame render",
+                [sys.executable, "scripts/run_browser_tests.py", "--frame-render-only"],
+            ),
         ]
     results = []
     for label, command in checks:

@@ -130,7 +130,15 @@ async function main() {
       }
       if (ids.length) document.querySelector('[data-screen-target="' + ids[0] + '"]')?.click();
     }
+    // The selected theme colour must be the computed one, and every menu icon on screen must stay icon-sized.
+    const primaryHex = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim().replace('#', '');
+    const primaryRgb = primaryHex.length === 6 ? [0, 2, 4].map(index => parseInt(primaryHex.slice(index, index + 2), 16)) : null;
+    const menuIcons = [...document.querySelectorAll('.topnav svg, .nav-drawer nav svg, .nav-link svg')]
+      .filter(icon => icon.getClientRects().length > 0)
+      .map(icon => { const box = icon.getBoundingClientRect(); return Math.max(box.width, box.height); });
     return {
+      primaryRgb,
+      maxMenuIcon: menuIcons.length ? Math.max(...menuIcons) : 0,
       presentationOverflow,
       protocol: location.protocol,
       href: location.href,
@@ -166,6 +174,8 @@ async function main() {
     state.fontCount === 6,
     state.svgControls === true,
     (state.presentationOverflow ?? []).length === 0,
+    !expected.primaryRgb || JSON.stringify(state.primaryRgb) === JSON.stringify(expected.primaryRgb),
+    (state.maxMenuIcon ?? 0) <= 24,
     state.unicodeSubstitutes === false,
     state.linkedResources === 0,
     state.marker === runtimeToken,

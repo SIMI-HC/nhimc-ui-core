@@ -24,6 +24,10 @@ frameVersion always means the same Frame.
          Anchors get a scroll-margin that clears the sticky header.
        The forced `background:transparent!important` theme rules on .site-header / .statusbar are removed; the header
        surface is now the semantic token --site-header-surface.
+1.3.0  Menu icons (BLOG and TOP). The BLOG nav had no rule for its svg icons (TOP has 17px beside the label), so menu icons
+       rendered at their intrinsic size over the label. BLOG now lays the icon out like TOP; the label is hidden below
+       1024px as in TOP, and the menu buttons carry aria-label/title so an icon-only menu keeps an accessible name.
+       The mobile drawer menu icons of BLOG and TOP (18px beside the label) were unsized too.
 """
 from __future__ import annotations
 
@@ -120,5 +124,25 @@ def _patch_blog_scroll_owner(layout: str) -> str:
     return layout.replace("<html ", '<html data-scroll-owner="main" ', 1)
 
 
+NAV_ICON_MARKER = "nhimc-nav-icons"
+# The TOP Frame sizes its header menu icons (17px, label beside it). The BLOG copy of the same nav lost that rule, so a
+# menu with icons rendered its svg at the intrinsic size (56px) over the label. Both frames also had no size rule for
+# the icons of the mobile drawer menu (184px once opened). Same size and layout as the rest of the Frame system.
+_HEADER_NAV_ICON_RULES = """.topnav button{display:flex;align-items:center;gap:7px}
+.topnav button svg{width:17px;height:17px;display:block;flex:none}
+"""
+_DRAWER_NAV_ICON_RULES = """.nav-drawer nav button{display:flex;align-items:center;gap:10px}
+.nav-drawer nav button svg{width:18px;height:18px;display:block;flex:none}
+"""
+
+
+def _patch_nav_icons(layout: str) -> str:
+    if 'class="topnav"' not in layout or NAV_ICON_MARKER in layout:
+        return layout
+    rules = (_HEADER_NAV_ICON_RULES if is_blog_layout(layout) else "") + _DRAWER_NAV_ICON_RULES
+    end = layout.rindex("</style>")
+    return layout[:end] + f"\n/* {NAV_ICON_MARKER} */\n" + rules + layout[end:]
+
+
 def apply_frame_patches(layout: str) -> str:
-    return _patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_radius(layout)))
+    return _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_radius(layout))))

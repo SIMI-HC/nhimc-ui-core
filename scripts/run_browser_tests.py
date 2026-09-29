@@ -321,6 +321,19 @@ def _frame_expectations(root: Path, frame_id: str) -> dict:
     }
 
 
+def _expected_primary_rgb(root: Path, html: str) -> list[int] | None:
+    """--color-primary the artifact must compute, from its own data-theme / data-theme-color and the theme catalog."""
+    tag = re.search(r"<html[^>]*>", html, re.I)
+    attrs = tag.group(0) if tag else ""
+    mode = "dark" if re.search(r"data-theme=[\"']dark[\"']", attrs, re.I) else "light"
+    color = re.search(r"data-theme-color=[\"']([a-z0-9-]+)[\"']", attrs, re.I)
+    theme_id = color.group(1) if color else "nhimc-default"
+    catalog = json.loads((root / "vendor/nhimc-design/tokens/themes/catalog.yaml").read_text(encoding="utf-8"))
+    theme = next((item for item in catalog["themes"] if item["id"] == theme_id), None)
+    value = (theme or {}).get("tokens", {}).get(mode, {}).get("primary", "").lstrip("#")
+    return [int(value[index:index + 2], 16) for index in (0, 2, 4)] if len(value) == 6 else None
+
+
 def _run_standalone_artifact(
     browser: Path, output: Path, receipt: Path | None = None, root: Path = ROOT
 ) -> int:
@@ -342,6 +355,7 @@ def _run_standalone_artifact(
     except (ValueError, KeyError, OSError) as error:
         print(f"standalone file: FAIL ({error})")
         return 1
+    expected["primaryRgb"] = _expected_primary_rgb(root, html)
     tags = _inventory(html).tags
     role_count = lambda role: sum(attrs.get("data-nhimc-role") == role for _, attrs in tags)
     static_contract = {
@@ -531,6 +545,7 @@ def main() -> int:
     parser.add_argument("--content-layout-only", action="store_true")
     parser.add_argument("--presentation-safe-area-only", action="store_true")
     parser.add_argument("--blog-scroll-owner-only", action="store_true")
+    parser.add_argument("--frame-render-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
@@ -541,6 +556,7 @@ def main() -> int:
         args.content_layout_only,
         args.presentation_safe_area_only,
         args.blog_scroll_owner_only,
+        args.frame_render_only,
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
@@ -567,6 +583,14 @@ def main() -> int:
         for item in report["problems"]:
             print(f"  {item}")
         print(f"presentation safe area: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
+        return 0 if report["all_passed"] else 1
+    if args.frame_render_only:
+        from scripts.frame_render import run_frame_render
+
+        report = run_frame_render(ROOT)
+        for item in report["problems"]:
+            print(f"  {item}")
+        print(f"frame render: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
         return 0 if report["all_passed"] else 1
     if args.blog_scroll_owner_only:
         from scripts.blog_scroll_owner import run_blog_scroll_owner
