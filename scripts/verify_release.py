@@ -6,6 +6,7 @@ import sys
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.release_tag import expected_tag, tag_exists
 from scripts.skill_resources import compare as compare_skill_resources
 from scripts.validate_contracts import validate_contracts
 from scripts.validate_design import validate_design
@@ -77,6 +78,12 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
         categories.append("public safety")
     if compare_skill_resources(root):
         categories.append("skill resources sync")
+    try:
+        tagged = tag_exists(root, expected_tag(root))
+    except (OSError, ValueError):
+        tagged = False
+    if not tagged:
+        categories.append("release tag")
 
     if unresolved_release_blockers(root / "PUBLIC_ASSET_REVIEW.md"):
         categories.append("public asset review")

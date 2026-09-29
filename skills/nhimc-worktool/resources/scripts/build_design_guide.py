@@ -67,6 +67,14 @@ def _data_uri(path: Path, media: str) -> str:
     return f"data:{media};base64,{base64.b64encode(path.read_bytes()).decode('ascii')}"
 
 
+def _release_date(root: Path, version: str) -> str:
+    changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
+    match = re.search(rf"^## \[{re.escape(version)}\] - (\d{{4}}-\d{{2}}-\d{{2}})", changelog, re.M)
+    if not match:
+        raise ValueError(f"CHANGELOG.md has no entry for version {version}")
+    return match.group(1)
+
+
 VIEW_NAV = (
     '<nav class="view-nav" id="viewNav" aria-label="화면 이동">'
     '<a href="#" data-view="gallery">Design Guide</a>'
@@ -121,6 +129,7 @@ def build_guide(root: Path) -> Path:
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")
     extra_js = (root / "src/guide/guide-extra.js").read_text(encoding="utf-8")
     version = (root / "VERSION").read_text(encoding="utf-8").strip()
+    release_date = _release_date(root, version)
     source_base = f"https://github.com/SIMI-HC/nhimc-ui-core/blob/v{version}/"
     row = _data_uri(root / "vendor/nhimc-design/branding/brandmark-row-logo.svg", "image/svg+xml")
     solo = _data_uri(root / "vendor/nhimc-design/branding/brandmark-solo-logo-1.svg", "image/svg+xml")
@@ -137,7 +146,7 @@ def build_guide(root: Path) -> Path:
     html = _sub(html, r'<link rel="stylesheet" href="design-tokens.css">\s*<link rel="stylesheet" href="design-guide.css">', "")
     html = _sub(html, r'<script src="design-guide-data.js"></script>\s*<script src="design-guide.js"></script>', "")
     html = _replace(html, 'src="assets/logo/brandmark-row-logo.svg"', f'src="{row}"')
-    html = _replace(html, "<small>NHIMC Design System</small>", "<small>NhimcDesign · nhimc-worktool</small>")
+    html = _replace(html, "<small>NHIMC Design System</small>", f"<small>v{version} · 최종 업데이트 {release_date}</small>")
     html = _sub(html, r'<a class="brand" href="[^"]*"[^>]*>', '<a class="brand" href="#" aria-label="Design Guide 처음으로">')
     html = _sub(html, r'<nav class="doc-links".*?</nav>', VIEW_NAV)
     html = _replace(html, "NHIMC Design System의 Frame, Template, Component, Icon을 한눈에 확인할 수 있습니다.", "NHIMC UI Core의 Frame, Component, Icon을 한눈에 확인할 수 있습니다.")

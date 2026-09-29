@@ -51,7 +51,7 @@ class PlatformAdapterTests(unittest.TestCase):
         ):
             data = json.loads((ROOT / relative).read_text(encoding="utf-8"))
             self.assertEqual("nhimc-worktool", data["name"], relative)
-            self.assertIn("NhimcDesign", data["description"], relative)
+            self.assertNotIn("NhimcDesign", data["description"], relative)
         skill = (ROOT / "skills/nhimc-worktool/SKILL.md").read_text(encoding="utf-8")
         self.assertTrue(skill.startswith("---\nname: nhimc-worktool\n"))
         self.assertFalse((ROOT / "skills/nhimc-ui").exists())
@@ -125,7 +125,7 @@ class PlatformAdapterTests(unittest.TestCase):
         for status in ("READY", "WEB_BOOTSTRAP", "UNSUPPORTED"):
             self.assertIn(status, text)
         self.assertNotIn("INSTALLED", text)
-        self.assertIn("bootstrap.md만 읽고 NHIMC UI Core를 준비해줘.", text)
+        self.assertIn("이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)", text)
         self.assertIn("이송업무 관리 화면 만들어줘.", text)
 
     def test_gemini_web_without_install_capability_is_not_ready(self):

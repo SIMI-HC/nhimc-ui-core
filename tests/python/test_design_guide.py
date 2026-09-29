@@ -20,7 +20,7 @@ class DesignGuideTests(unittest.TestCase):
     def test_committed_guide_matches_its_sources(self):
         with tempfile.TemporaryDirectory() as folder:
             temporary = Path(folder)
-            for name in ("src", "vendor", "registry", "VERSION"):
+            for name in ("src", "vendor", "registry", "VERSION", "CHANGELOG.md"):
                 source = ROOT / name
                 target = temporary / name
                 if source.is_dir():
@@ -68,6 +68,15 @@ class DesignGuideTests(unittest.TestCase):
         project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
         self.assertEqual("guide/nhimc-design-guide.html", project["designGuide"])
         self.assertTrue((ROOT / project["designGuide"]).is_file())
+
+    def test_guide_header_shows_version_and_release_date_not_the_old_project_name(self):
+        html = GUIDE.read_text(encoding="utf-8")
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        match = re.search(rf"^## \[{re.escape(version)}\] - (\d{{4}}-\d{{2}}-\d{{2}})", changelog, re.M)
+        self.assertIsNotNone(match, "CHANGELOG.md has no entry for the current VERSION")
+        self.assertIn(f"v{version} · 최종 업데이트 {match.group(1)}", html)
+        self.assertNotIn("NhimcDesign", html)
 
     def test_guide_keeps_the_canonical_source_buttons_and_the_prompt_is_short(self):
         html = GUIDE.read_text(encoding="utf-8")

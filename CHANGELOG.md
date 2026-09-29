@@ -1,5 +1,14 @@
 # 변경 이력
 
+## [1.4.2] - 2026-09-29
+
+- **버전-태그 동기화 안전장치 추가.** v1.4.0·v1.4.1이 커밋만 되고 git 태그가 만들어지지 않아 bootstrap.md·Design Guide가 안내하는 `v1.4.1` githack·jsdelivr 링크가 실제로는 404였던 문제를 발견하고 수정했습니다(누락된 `v1.4.0`, `v1.4.1` 태그를 해당 릴리스 커밋에 만들어 푸시).
+  - `scripts/release_tag.py` 신설: `VERSION`에 맞는 `v<VERSION>` 태그를 만들고 `origin`에 푸시합니다. 이미 있고 같은 커밋을 가리키면 그대로 두고, 다른 커밋을 가리키면 오류로 막습니다.
+  - `scripts/verify_release.py`가 이제 현재 `VERSION`에 대응하는 git 태그가 없으면 `RELEASE BLOCKED: release tag`로 막습니다. `README.md`의 릴리스 절차에 `python scripts/release_tag.py` 단계를 추가했습니다(`verify_all.py` 다음, `verify_release.py` 전).
+- **"NhimcDesign을 GitHub로 옮긴 프로젝트" 같은 옛 마이그레이션 문구를 전부 정리.** `README.md`(정본 출처 행, 플러그인·스킬 이름 행의 괄호 설명, 첫 인용문), `bootstrap.md`, `SKILL.md`(제목·설명·본문), `src/guide/sections.html`(설치 안내 문단과 노트), 4개 플러그인 매니페스트(`plugin.json`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, `gemini-extension.json`)의 `description`에서 "NhimcDesign(NHIMC Worktool)을 GitHub로 옮긴 프로젝트" 서술과 "(기존 NhimcDesign와 동일)" 표기를 제거했습니다. 벤더 스냅샷 커밋 고정 사실(`08c45402eece`)은 "NhimcDesign" 이름 없이 별도 행으로 유지했습니다.
+- **Design Guide 헤더에 버전과 릴리스 날짜 표시.** `scripts/build_design_guide.py`가 `CHANGELOG.md`에서 현재 `VERSION`에 해당하는 날짜를 읽어 헤더 부제(옛 "NhimcDesign · nhimc-worktool" 문구 자리)에 "v{version} · 최종 업데이트 {날짜}"를 넣습니다. 릴리스마다 재빌드하면 자동으로 최신 날짜로 갱신됩니다.
+- 회귀 테스트: `tests/python/test_release_tag.py`(신규), `verify_release.py`의 태그 게이트, Design Guide 헤더 문구·"NhimcDesign" 완전 제거를 확인하는 테스트를 추가했습니다.
+
 ## [1.4.1] - 2026-09-29
 
 - **최초 진입 프롬프트가 `.git` 주소를 쓰던 문제 수정.** 사용자가 처음 붙여넣는 문장에 `https://github.com/SIMI-HC/nhimc-ui-core.git`이 들어 있으면 AI가 `bootstrap.md`를 읽기도 전에 clone부터 하는 경우가 있었고("클론하지 않습니다"라는 문서 안 지침은 이미 늦게 읽힘), 로컬 사본을 읽고도 "raw로 읽었다"고 착각하는 경우도 있었습니다.
