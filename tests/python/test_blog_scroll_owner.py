@@ -9,6 +9,7 @@ from scripts import blog_scroll_owner as gate
 from scripts import canonical_frame, frame_patches
 from scripts.canonical_frame import FRAME_FILES, FramePayload, MenuItem, render_canonical_frame
 from scripts.frame_patches import BLOG_SCROLL_MARKER, apply_frame_patches
+from scripts.test_profiles import slow_test
 
 ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = ROOT / "vendor/nhimc-design/layouts"
@@ -94,6 +95,7 @@ class BlogScrollOwnerRenderTests(unittest.TestCase):
         self.assertEqual("main", frame["scrollOwners"]["default"])
 
 
+@slow_test
 class BlogScrollOwnerBrowserTests(unittest.TestCase):
     def test_main_and_document_scroll_at_375_768_and_1440_in_light_and_dark(self):
         report = gate.run_blog_scroll_owner(ROOT)

@@ -288,6 +288,23 @@ class DesignRuleTests(unittest.TestCase):
     def test_repository_does_not_publish_test_fixtures_as_design_examples(self):
         self.assertFalse((ROOT / "examples").exists())
 
+    def test_choice_group_is_reset_to_left_align_inside_content(self):
+        # components.css ships .choice-group with margin:0 auto;width:max-content (showcase centering),
+        # which pulled RadioGroup/CheckboxGroup to the middle of a real Content column. primitives.css
+        # must reset it the same way it already resets .field for real pages.
+        css = (ROOT / "src/layouts/primitives.css").read_text(encoding="utf-8")
+        self.assertIn(
+            '[data-nhimc-role="content"] .choice-group{margin:0;width:auto;justify-items:start;text-align:left}',
+            css,
+        )
+
+    def test_scroll_table_uses_a_configurable_minimum_width(self):
+        # Short tables should fit their card without inheriting a forced 640px overflow.
+        # Wide tables can opt into the old behavior through --table-min at the wrapper.
+        css = (ROOT / "src/layouts/primitives.css").read_text(encoding="utf-8")
+        self.assertIn(".nhimc-scroll table{min-width:var(--table-min,100%)}", css)
+        self.assertNotIn(".nhimc-scroll table{min-width:640px}", css)
+
 
 if __name__ == "__main__":
     unittest.main()

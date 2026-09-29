@@ -55,6 +55,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
+- `nhimc-scroll` 안 `table`의 최소 너비는 기본이 컨테이너 폭(`--table-min: 100%`)입니다. 열이 많아 넓게 둬야 하면 `<div class="nhimc-scroll" style="--table-min:640px">`처럼 지정합니다.
 
 ## Core 아이콘 추가 절차
 
@@ -109,4 +110,4 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ChatGPT Web은 검증된 Builder Bridge가 실제 연결되고 다운로드 시험까지 통과한 경우에만 `READY`입니다. 저장소 컨텍스트만 있으면 `WEB_BOOTSTRAP / context-only`입니다.
 
-저장소 변경 완료 전 `python scripts/verify_all.py`, 공개 릴리스 판단 전 `python scripts/verify_release.py`를 실행합니다.
+저장소 유지보수 검증은 목적별로 한 단계만 실행합니다. 개발 중 빠른 확인은 `python scripts/verify_all.py --quick`, 일반 변경의 최종 인계 전에는 `python scripts/verify_all.py`, 공개 릴리스 판단에는 전체 검증을 내부에 포함한 `python scripts/verify_release.py`를 실행합니다. `verify_release.py` 직전에 `verify_all.py`를 중복 실행하지 않습니다.

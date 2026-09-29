@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
-import subprocess
 import sys
+import time
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -32,43 +32,11 @@ def unresolved_release_blockers(review: Path) -> list[str]:
 
 def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int:
     root = root.resolve()
+    started = time.perf_counter()
     categories: list[str] = []
     if run_full_verification:
-        if verify_all(root, include_canonical=False):
+        if verify_all(root):
             categories.append("verification gate")
-        canonical_gates = (
-            ("canonical snapshot", [sys.executable, "scripts/verify_nhimc_design_sync.py"]),
-            (
-                "canonical frame parity",
-                [
-                    sys.executable, "scripts/run_browser_tests.py",
-                    "--canonical-parity-only", "--all-frames",
-                ],
-            ),
-            (
-                "content layout",
-                [sys.executable, "scripts/run_browser_tests.py", "--content-layout-only"],
-            ),
-            (
-                "presentation safe area",
-                [sys.executable, "scripts/run_browser_tests.py", "--presentation-safe-area-only"],
-            ),
-            (
-                "blog scroll owner",
-                [sys.executable, "scripts/run_browser_tests.py", "--blog-scroll-owner-only"],
-            ),
-            (
-                "frame render",
-                [sys.executable, "scripts/run_browser_tests.py", "--frame-render-only"],
-            ),
-            (
-                "outside click",
-                [sys.executable, "scripts/run_browser_tests.py", "--outside-click-only"],
-            ),
-        )
-        for label, command in canonical_gates:
-            if subprocess.run(command, cwd=root, check=False).returncode:
-                categories.append(label)
 
     if any(item.blocking for item in validate_contracts(root)):
         categories.append("contract validation")
@@ -100,7 +68,10 @@ def verify_release(root: Path = ROOT, run_full_verification: bool = True) -> int
     if categories:
         print(f"RELEASE BLOCKED: {', '.join(dict.fromkeys(categories))}")
         return 1
-    print("RELEASE PASS: public artifact requirements satisfied")
+    print(
+        "RELEASE PASS: public artifact requirements satisfied"
+        f" in {time.perf_counter() - started:.1f}s"
+    )
     return 0
 
 

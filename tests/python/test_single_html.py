@@ -11,6 +11,7 @@ from scripts.build_single_html import (
     inspect_completion_manifest,
     parse_authoring_screens,
 )
+from scripts.test_profiles import slow_test
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -344,6 +345,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
                     self.assertNotEqual(0, result.returncode, name)
                     self.assertFalse(output.exists(), name)
 
+    @slow_test
     def test_standalone_file_option_opens_the_actual_artifact(self):
         with tempfile.TemporaryDirectory(prefix="NHIMC 실제 산출물 ") as folder:
             output = Path(folder) / "index.html"
@@ -372,6 +374,7 @@ class SingleHtmlArtifactTests(unittest.TestCase):
             self.assertIn("index.html", browser.stdout)
             self.assertIn("standalone file: PASS", browser.stdout)
 
+    @slow_test
     def test_actual_artifact_browser_check_rejects_startup_errors_and_marker_spoof(self):
         cases = {
             "sync-error": 'throw new Error("business startup failed");',
@@ -420,6 +423,7 @@ throw new Error('spoofed startup failure');
                     self.assertNotEqual(0, browser.returncode, name)
                     self.assertIn("standalone file: FAIL", browser.stdout)
 
+    @slow_test
     def test_actual_artifact_browser_check_rejects_sidecar_navigation(self):
         with tempfile.TemporaryDirectory(prefix="NHIMC sidecar navigation ") as folder:
             root = Path(folder)
@@ -483,6 +487,7 @@ setTimeout(() => { location.href = 'sidecar.html'; }, 0);
             self.assertNotEqual(0, result.returncode)
             self.assertFalse(output.exists())
 
+    @slow_test
     def test_generated_html_runs_from_file_url_without_network(self):
         result = subprocess.run(
             [sys.executable, "scripts/run_browser_tests.py", "--standalone-only"],

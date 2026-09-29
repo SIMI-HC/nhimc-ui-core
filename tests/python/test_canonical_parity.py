@@ -1,8 +1,10 @@
 import unittest
 
 from scripts.run_browser_tests import DEFAULT_VIEWPORTS, run_parity_matrix
+from scripts.test_profiles import slow_test
 
 
+@slow_test
 class CanonicalParityMatrixTests(unittest.TestCase):
     def test_release_gate_covers_every_canonical_frame(self):
         result = run_parity_matrix(viewports=DEFAULT_VIEWPORTS)

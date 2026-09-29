@@ -8,6 +8,7 @@ import unittest
 from scripts.build_single_html import build_single_html
 from scripts.build_web_runtime import build_web_runtime
 from scripts.run_browser_tests import find_browser
+from scripts.test_profiles import slow_test
 
 ROOT = Path(__file__).resolve().parents[2]
 WEB_FIXTURE = ROOT / "tests/fixtures/web/index.html"
@@ -50,6 +51,7 @@ class WebRuntimeTests(unittest.TestCase):
             generated = build_web_runtime(temporary).read_text(encoding="utf-8")
         self.assertEqual(committed, generated, "run python scripts/build_web_runtime.py")
 
+    @slow_test
     def test_runtime_frame_matches_offline_builder_frame(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:
@@ -60,6 +62,7 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertIn('data-nhimc-role="app-shell"', web)
         self.assertEqual(offline, web)
 
+    @slow_test
     def test_runtime_multi_page_frame_matches_offline_builder_frame(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:
@@ -70,6 +73,7 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertIn('data-menu-id="orders"', web)
         self.assertEqual(offline, web)
 
+    @slow_test
     def test_runtime_top_frame_and_theme_color_match_offline_builder(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:
@@ -83,6 +87,7 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertEqual(_frame_markup(offline_dom), _frame_markup(web_dom))
         self.assertNotEqual(_frame_markup(web_dom), "")
 
+    @slow_test
     def test_runtime_page_opened_from_a_korean_file_name_logs_no_console_errors(self):
         browser = find_browser()
         runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
@@ -115,6 +120,7 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertIn("root.style.visibility = 'hidden'", runtime)
         self.assertGreaterEqual(runtime.count("reveal()"), 3)
 
+    @slow_test
     def test_head_placed_script_renders_the_frame_and_reveals_the_page(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:
@@ -130,6 +136,7 @@ class WebRuntimeTests(unittest.TestCase):
             self.assertTrue(report["shell"])
             self.assertEqual([], report["messages"])
 
+    @slow_test
     def test_saved_offline_html_is_self_contained_and_opens_without_network(self):
         browser = find_browser()
         runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
@@ -159,6 +166,7 @@ class WebRuntimeTests(unittest.TestCase):
             self.assertTrue(report["shell"])
             self.assertEqual([], report["messages"])
 
+    @slow_test
     def test_runtime_rejects_forbidden_content(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:

@@ -12,11 +12,13 @@ from scripts.artifact_delivery import (
     deliver_verified_artifact,
     load_matching_receipt,
 )
+from scripts.test_profiles import slow_test
 
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
+@slow_test
 class ArtifactDeliveryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

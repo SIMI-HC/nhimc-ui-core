@@ -3,12 +3,14 @@ import tempfile
 import unittest
 
 from scripts.artifact_delivery import build_and_verify
+from scripts.test_profiles import slow_test
 
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / "tests/fixtures/authoring/transport-management/index.html"
 
 
+@slow_test
 class TransportManagementArtifactTests(unittest.TestCase):
     def test_transport_management_build_is_canonical_and_offline(self):
         with tempfile.TemporaryDirectory() as folder:

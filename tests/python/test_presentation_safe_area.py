@@ -16,6 +16,7 @@ from scripts.canonical_frame import (
     presentation_slides,
     render_canonical_frame,
 )
+from scripts.test_profiles import slow_test
 
 ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = ROOT / "vendor/nhimc-design/layouts"
@@ -36,11 +37,13 @@ def _script(html: str) -> str:
 
 
 class PresentationBaseContractTests(unittest.TestCase):
+    @slow_test
     def test_both_frames_pass_safe_area_centering_lifecycle_parity_and_contrast(self):
         report = psa.run_presentation_safe_area(ROOT)
         self.assertEqual([], report["problems"])
         self.assertEqual(48, report["cells"])
 
+    @slow_test
     def test_the_checks_catch_the_original_overlap_when_the_safe_area_patch_is_missing(self):
         with mock.patch.object(canonical_frame, "apply_frame_patches", frame_patches._patch_logo_tile):
             with tempfile.TemporaryDirectory() as folder:
@@ -49,6 +52,7 @@ class PresentationBaseContractTests(unittest.TestCase):
                 found = psa.problems(cells, psa.measure(ROOT, cells))
         self.assertTrue(any("Safe Area" in item or "centred" in item or "slide" in item for item in found), found)
 
+    @slow_test
     def test_the_checks_catch_lost_animation_when_the_frame_falls_back_to_the_generic_runtime(self):
         with mock.patch.object(canonical_frame, "PRESENTATION_RUNTIME", FRAME_RUNTIME):
             with tempfile.TemporaryDirectory() as folder:
@@ -148,6 +152,7 @@ class PresentationBaseContractTests(unittest.TestCase):
         self.assertIn("presentationRuntime", runtime)
         self.assertIn("presentationDirection", runtime)
 
+    @slow_test
     def test_delivery_accepts_presentation_content_and_rejects_content_that_exceeds_the_safe_area(self):
         with tempfile.TemporaryDirectory() as folder:
             work = Path(folder)

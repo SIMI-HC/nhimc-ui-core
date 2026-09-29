@@ -104,6 +104,7 @@ Claude Code 대화창에서는 `/plugin marketplace add SIMI-HC/nhimc-ui-core`�
 ```powershell
 python scripts/build_verified_artifact.py --input path/to/source.html --output path/to/index.html
 python scripts/run_browser_tests.py --standalone-file path/to/index.html
+python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
@@ -111,6 +112,8 @@ python scripts/build_release.py release/nhimc-ui-core-1.4.3.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.
+
+검증은 목적별로 한 단계만 실행합니다. 개발 중에는 브라우저 의존 테스트와 대규모 화면 행렬을 제외한 `python scripts/verify_all.py --quick`, 일반 변경의 최종 인계 전에는 전체 `python scripts/verify_all.py`, 공개 릴리스 판단에는 전체 검증을 내부에 포함한 `python scripts/verify_release.py`를 사용합니다. `verify_release.py` 직전에 `verify_all.py`를 따로 실행하지 않습니다. 각 게이트는 단계별 및 전체 소요 시간을 출력합니다.
 
 `VERSION`을 올린 커밋을 푸시한 뒤에는 반드시 `python scripts/release_tag.py`로 `v<VERSION>` 태그를 만들어 `origin`에 푸시하세요. bootstrap.md와 Design Guide가 안내하는 githack·jsdelivr 링크는 이 태그가 있어야 동작하며, `scripts/verify_release.py`는 이제 태그가 없으면 `RELEASE BLOCKED: release tag`로 막습니다.
 

@@ -7,6 +7,7 @@ from scripts import canonical_frame, frame_patches
 from scripts import frame_render as gate
 from scripts.build_single_html import build_single_html
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
+from scripts.test_profiles import slow_test
 
 ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = ROOT / "vendor/nhimc-design/layouts"
@@ -57,6 +58,7 @@ class FrameRenderStaticTests(unittest.TestCase):
         self.assertIn("""' aria-label="' + label + '" title="' + label""", runtime)
 
 
+@slow_test
 class FrameRenderBrowserTests(unittest.TestCase):
     def test_theme_colour_and_menu_icons_render_on_both_paths(self):
         report = gate.run_frame_render(ROOT, frames=("top", "blog", "left"), themes=("nhimc-default", "pear", "neutral"))
