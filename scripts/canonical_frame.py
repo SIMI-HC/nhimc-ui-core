@@ -114,7 +114,7 @@ def presentation_slides(content_html: str, payload: "FramePayload") -> str:
 
         return PANEL_OPEN.sub(add_class, content_html)
     slide_id = payload.menu[0].id if payload.menu else payload.active_id
-    return f'<section class="slide" id="{slide_id}" data-screen-panel="{slide_id}">{content_html}</section>'
+    return f'<section class="slide" id="screen-{slide_id}" data-screen-panel="{slide_id}">{content_html}</section>'
 
 
 def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> str:
@@ -128,8 +128,11 @@ def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> st
         )
         label = escape(item.label)
         if mode == "side":
+            # The rendered fragment target is namespaced (screen-<id>) so it never collides with an icon
+            # symbol id in the sprite; data-menu-id/data-screen-target still carry the raw menu id for the
+            # runtime's [data-screen-panel] matching, so navigation behavior is unaffected.
             rendered.append(
-                f'<a class="nav-link" href="{escape(item.href, quote=True)}" data-menu-id="{item.id}" '
+                f'<a class="nav-link" href="#screen-{item.id}" data-menu-id="{item.id}" '
                 f'data-screen-target="{item.id}"{current}><span class="nav-chip">{icon}</span>'
                 f'<span class="nav-label">{label}</span></a>'
             )
@@ -221,7 +224,17 @@ def render_layout(
     if sprite:
         hidden_sprite = sprite.replace("<svg ", '<svg hidden aria-hidden="true" style="display:none" ', 1)
         rendered = rendered.replace("</body>", hidden_sprite + "\n</body>", 1)
+    _reject_duplicate_ids(rendered)
     return rendered
+
+
+def _reject_duplicate_ids(document: str) -> None:
+    """Duplicate HTML ids are invalid and silently break id-based lookups such as <use href="#id">,
+    which resolves to whichever element with that id happens to come first in document order."""
+    ids = re.findall(r'<\w+\b[^>]*\sid="([^"]+)"', document)
+    duplicates = sorted({value for value in ids if ids.count(value) > 1})
+    if duplicates:
+        raise ValueError(f"duplicate element id in canonical frame output: {', '.join(duplicates)}")
 
 
 def render_canonical_frame(root: Path, frame_id: str, payload: FramePayload) -> str:

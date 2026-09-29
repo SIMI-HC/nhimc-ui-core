@@ -4,7 +4,7 @@
   "frames": [
     {
       "id": "nhimc-default",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -32,7 +32,7 @@
         },
         {
           "path": "scripts/canonical_frame.py",
-          "sha256": "2923a6ab6a5af0989d83c1a2cae8f96bba1f6abc501e2c174567390fd2e110b7"
+          "sha256": "a52bdace1028c580eff6576769d1d04c5590d7167eafd9fb1e0cff9b84d5089b"
         },
         {
           "path": "src/generated/frame/frame-runtime.js",

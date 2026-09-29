@@ -101,7 +101,7 @@ class PresentationBaseContractTests(unittest.TestCase):
     def test_the_frame_owns_the_slide_markup(self):
         single = presentation_slides('<main data-nhimc-role="content"></main>', _payload())
         self.assertEqual(
-            '<section class="slide" id="today" data-screen-panel="today"><main data-nhimc-role="content"></main></section>', single
+            '<section class="slide" id="screen-today" data-screen-panel="today"><main data-nhimc-role="content"></main></section>', single
         )
         panels = presentation_slides('<section id="a" data-screen-panel="a"></section><section id="b" data-screen-panel="b" hidden></section>', _payload())
         self.assertEqual(2, panels.count('class="slide"'))
@@ -128,7 +128,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.4.0", "nhimc-top": "1.3.0", "nhimc-default": "1.2.0", "nhimc-left-blank": "1.2.0", "nhimc-top-left": "1.2.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.4.0", "nhimc-top": "1.3.0", "nhimc-default": "1.2.1", "nhimc-left-blank": "1.2.0", "nhimc-top-left": "1.2.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

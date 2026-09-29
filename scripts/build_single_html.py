@@ -371,7 +371,7 @@ def _parse_authoring(
         content_html = screens[0].content_html
     else:
         content_html = "".join(
-            f'<section id="{screen.screen_id}" data-screen-panel="{screen.screen_id}"'
+            f'<section id="screen-{screen.screen_id}" data-screen-panel="{screen.screen_id}"'
             f'{"" if index == 0 else " hidden"}>{screen.content_html}</section>'
             for index, screen in enumerate(screens)
         )

@@ -132,6 +132,26 @@ class SingleHtmlArtifactTests(unittest.TestCase):
                 self.assertIn(f'data-screen-panel="{menu_id}"', html)
                 self.assertIn(f'data-menu-id="{menu_id}"', html)
 
+    def test_menu_id_matching_an_icon_name_does_not_collide_with_its_symbol(self):
+        # tests/fixtures/authoring/multi-page/index.html uses menu id "dashboard" with icon "dashboard":
+        # the icon symbol's id and the panel's rendered id used to collide, so <use href="#dashboard">
+        # resolved to the <section>, not the <symbol>, and the icon silently failed to render.
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "index.html"
+            build_single_html(ROOT, ROOT / "tests/fixtures/authoring/multi-page/index.html", output)
+            html = output.read_text(encoding="utf-8")
+            occurrences = re.findall(r'<(\w+)\b[^>]*\sid="dashboard"', html)
+            self.assertEqual(["symbol"], occurrences)
+
+    def test_no_duplicate_ids_anywhere_in_the_built_artifact(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / "index.html"
+            build_single_html(ROOT, ROOT / "tests/fixtures/authoring/multi-page/index.html", output)
+            html = output.read_text(encoding="utf-8")
+            ids = re.findall(r'<\w+\b[^>]*\sid="([^"]+)"', html)
+            duplicates = {value for value in ids if ids.count(value) > 1}
+            self.assertEqual(set(), duplicates)
+
     def test_fragment_title_comes_from_the_page_heading_and_keeps_html_hints(self):
         from scripts.build_single_html import normalize_authoring
 
