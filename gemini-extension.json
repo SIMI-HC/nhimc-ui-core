@@ -1,6 +1,6 @@
 {
   "name": "nhimc-worktool",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "일산병원 업무 화면을 정본 Frame·Theme·Component로 조합하는 디자인 시스템 스킬.",
   "contextFileName": "GEMINI.md"
 }
