@@ -28,7 +28,10 @@
     const label = esc(item.label);
     let html;
     if (mode === 'side') {
-      html = '<a class="nav-link" href="' + esc(item.href) + '" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + '><span class="nav-chip">' + icon + '</span><span class="nav-label">' + label + '</span></a>';
+      // The rendered fragment target is namespaced (screen-<id>) so it never collides with an icon symbol
+      // id in the sprite; data-menu-id/data-screen-target still carry the raw menu id for the runtime's
+      // [data-screen-panel] matching, so navigation behavior is unaffected.
+      html = '<a class="nav-link" href="#screen-' + item.id + '" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + '><span class="nav-chip">' + icon + '</span><span class="nav-label">' + label + '</span></a>';
     } else if (mode === 'dots') {
       html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + ' aria-label="' + label + '"></button>';
     } else {
@@ -107,7 +110,7 @@
     content = panels.map((panel, index) => {
       const main = panel.querySelector('main[data-nhimc-role="content"]');
       if (!main) fail('screen ' + panel.dataset.screenPanel + ' must contain one content root');
-      return '<section id="' + esc(panel.dataset.screenPanel) + '" data-screen-panel="' + esc(panel.dataset.screenPanel) + '"' + (index ? ' hidden' : '') + '>' + main.outerHTML + '</section>';
+      return '<section id="screen-' + esc(panel.dataset.screenPanel) + '" data-screen-panel="' + esc(panel.dataset.screenPanel) + '"' + (index ? ' hidden' : '') + '>' + main.outerHTML + '</section>';
     }).join('');
   } else {
     if (roots.length !== 1) fail('exactly one content root is required');
@@ -136,7 +139,7 @@
     if (/data-screen-panel=/.test(content)) {
       content = content.replace(/<section\b([^>]*\bdata-screen-panel=[^>]*)>/g, (match, attrs) => (/\bclass=/.test(attrs) ? match : '<section class="slide"' + attrs + '>'));
     } else {
-      content = '<section class="slide" id="' + menu[0].id + '" data-screen-panel="' + menu[0].id + '">' + content + '</section>';
+      content = '<section class="slide" id="screen-' + menu[0].id + '" data-screen-panel="' + menu[0].id + '">' + content + '</section>';
     }
   }
   let doc = D.layouts[kind].replace(/(<html\b[^>]*\bdata-theme=")[^"]+("[^>]*>)/i, '$1' + theme + '$2');
@@ -169,6 +172,14 @@
   const sprite = D.sprite.replace('<svg ', () => '<svg hidden aria-hidden="true" style="display:none" ');
   doc = doc.replace('</body>', () => sprite + '\n</body>');
   doc = doc.replace(/<title>[\s\S]*?<\/title>/i, () => '<title>' + esc(title) + '</title>');
+  // Duplicate ids are invalid and silently break id-based lookups such as <use href="#id">, which resolves
+  // to whichever element with that id happens to come first in document order.
+  {
+    const seen = new Map();
+    for (const match of doc.matchAll(/<\w+\b[^>]*\sid="([^"]+)"/g)) seen.set(match[1], (seen.get(match[1]) || 0) + 1);
+    const dupes = [...seen].filter(([, count]) => count > 1).map(([id]) => id);
+    if (dupes.length) fail('duplicate element id in canonical frame output: ' + dupes.join(', '));
+  }
   // Swap the page with DOM APIs instead of document.open()/write(): those re-navigate the frame and
   // log "Unsafe attempt to load URL ... 'file:' URLs are treated as unique security origins" on file://.
   installExport(doc);
