@@ -237,7 +237,7 @@ class NhimcDesignSyncTests(unittest.TestCase):
 
 class RepositoryCanonicalSnapshotTests(unittest.TestCase):
     def test_snapshot_counts_nine_templates(self):
-        source = Path(r"C:\Projects\NhimcDesign\.agents\skills\nhimc-worktool")
+        source = ROOT / VENDOR_PREFIX
         self.assertEqual(snapshot_counts(source)["templates"], 9)
 
     def test_repository_contains_complete_pinned_snapshot(self):
