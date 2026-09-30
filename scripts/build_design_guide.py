@@ -109,6 +109,13 @@ BUILDER_PROMPT_JS = """  function updateBuilderPrompt(){
     builderCopy.disabled=!(builderState.frame||builderState.theme||requirement);
   }"""
 
+# Frames this repo patches after the upstream sync; upstream's updatedAt would otherwise show a stale date.
+FRAME_UPDATED_AT = {
+    "left": "2026-09-30T10:01:00+09:00",
+    "left-blank": "2026-09-30T10:01:00+09:00",
+    "top-left": "2026-09-30T08:54:00+09:00",
+}
+
 
 def build_guide(root: Path) -> Path:
     root = root.resolve()
@@ -124,6 +131,8 @@ def build_guide(root: Path) -> Path:
     for item in gallery["items"]:
         if item["id"] in PRESENTATION_COPY:
             item.update(PRESENTATION_COPY[item["id"]])
+        if item["id"] in FRAME_UPDATED_AT:
+            item["updatedAt"] = FRAME_UPDATED_AT[item["id"]]
     data = json.dumps(gallery, ensure_ascii=False, separators=(",", ":"))
     sections = (root / "src/guide/sections.html").read_text(encoding="utf-8")
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")
