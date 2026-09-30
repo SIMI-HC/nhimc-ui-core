@@ -52,8 +52,8 @@ class FramePatchTests(unittest.TestCase):
             patched = apply_frame_patches((LAYOUTS / name).read_text(encoding="utf-8"))
             added = patched.split(frame_patches.SIDEBAR_GRADIENT_MARKER)[1].split("</style>")[0]
             self.assertIn("linear-gradient(180deg,var(--sidebar-gradient-top),var(--sidebar-gradient-bottom))", added, name)
-            self.assertIn("--sidebar-gradient-top:rgba(255,255,255,.32)", added, name)
-            self.assertIn("--sidebar-gradient-bottom:rgba(0,0,0,.22)", added, name)
+            self.assertIn("--sidebar-gradient-top:rgba(255,255,255,.16)", added, name)
+            self.assertIn("--sidebar-gradient-bottom:rgba(0,0,0,.26)", added, name)
             self.assertIn("@media (min-width:768px){.app-shell{background-image", added, "the mobile shell keeps its canvas")
             self.assertNotIn(".brand-row", added, "no panel or border around the logo")
             self.assertNotIn(".brand-mark", added, name)

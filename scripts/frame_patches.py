@@ -159,8 +159,8 @@ SIDEBAR_GRADIENT_MARKER = "nhimc-sidebar-gradient"
 # Without the white tile the logo's own navy block melted into the flat navy sidebar. The sidebar/shell colour now fades
 # from lighter (top, where the logo is) to darker (bottom) so the logo's blue stays visible. Translucent overlays on the
 # sidebar token, so every colour theme keeps working. Desktop / tablet only: the mobile shell keeps its canvas.
-_SIDEBAR_GRADIENT_RULES = """:root{--sidebar-gradient-top:rgba(255,255,255,.32);--sidebar-gradient-bottom:rgba(0,0,0,.22)}
-[data-theme="dark"]{--sidebar-gradient-top:rgba(255,255,255,.12);--sidebar-gradient-bottom:rgba(0,0,0,.30)}
+_SIDEBAR_GRADIENT_RULES = """:root{--sidebar-gradient-top:rgba(255,255,255,.16);--sidebar-gradient-bottom:rgba(0,0,0,.26)}
+[data-theme="dark"]{--sidebar-gradient-top:rgba(255,255,255,.07);--sidebar-gradient-bottom:rgba(0,0,0,.30)}
 @media (min-width:768px){.app-shell{background-image:linear-gradient(180deg,var(--sidebar-gradient-top),var(--sidebar-gradient-bottom))}}
 """
 DEFAULT_HEADER_MARKER = "nhimc-default-header-spacing"

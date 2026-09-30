@@ -40,7 +40,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         }
       ]
     },
@@ -66,7 +66,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         }
       ]
     },
@@ -92,7 +92,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         }
       ]
     },
@@ -119,7 +119,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         }
       ]
     },
@@ -151,7 +151,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -188,7 +188,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -220,7 +220,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "0a20c0fe496bfdade89863d0d7074f6a55f862ec0a8aad2d0d3a5fb312c8756c"
+          "sha256": "dd405f7376ca342d20d019abc767c22505bec38cce3a257d874ee858d327b0ef"
         }
       ],
       "scrollOwners": {
