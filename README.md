@@ -6,17 +6,17 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
-| 프로젝트(NHIMC UI Core) | `2.0.0` | `VERSION`, `registry/project.json` |
+| 프로젝트(NHIMC UI Core) | `2.0.1` | `VERSION`, `registry/project.json` |
 | Frame | `1.3.0` (left, left-blank, top, top-left), `1.1.0` (presentation, presentation-vertical), `1.4.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
-| Web Runtime | `@v2.0.0` | `dist/nhimc-web.js` |
+| Web Runtime | `@v2.0.1` | `dist/nhimc-web.js` |
 | 완료 파일 매니페스트 | `schemaVersion 4` | `index.html`의 `nhimc-completion-manifest` |
 
 - 버전은 Semantic Versioning을 따릅니다. PATCH는 계약을 깨지 않는 수정, MINOR는 하위호환 기능(Frame·Theme·Component·플랫폼 추가), MAJOR는 Frame·Component·Token·Branding·Bootstrap 계약의 Breaking Change입니다.
 - Frame 버전은 프로젝트 버전과 따로 올라갑니다. 같은 Frame 버전은 같은 Frame 소스와 자산을 뜻합니다.
 - 같은 이름의 스킬이 이미 설치되어 있으면 저장소 `VERSION`이 더 새로울 때만 갱신됩니다.
-- 변경 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다. Web Runtime 주소의 태그(`@v2.0.0`)는 릴리스마다 함께 올립니다.
+- 변경 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다. Web Runtime 주소의 태그(`@v2.0.1`)는 릴리스마다 함께 올립니다.
 
 ## 사용법
 
@@ -37,7 +37,7 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 
 ### Design Guide (설치 가이드 · 사용법 · 프롬프트 만들기)
 
-`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.0.0/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
+`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.0.1/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
 
 ### 메뉴와 Page
 
@@ -48,7 +48,7 @@ Frame은 고정이고 메뉴와 Page는 AI가 업무 요구에 맞춰 정합니�
 웹 AI는 빌더를 실행할 수 없으므로 **Web Runtime**으로 프롬프트 안에서 끝냅니다. AI가 만드는 HTML은 Content(`main[data-nhimc-role="content"]`)와 `<head>`에 넣는 다음 한 줄뿐입니다.
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.0.0/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.0.1/dist/nhimc-web.js"></script>
 ```
 
 Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다. 인터넷과 외부 스크립트를 허용하는 곳에서 열어야 하며, 미리보기일 뿐 오프라인 검증된 `index.html`은 아니고 아무 파일도 자동으로 저장하지 않습니다. 브라우저 검증까지 거친, 외부 링크 없는 오프라인 파일이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 요청하세요(코드 실행으로 `build_verified_artifact.py`를 돌립니다). `dist/nhimc-web.js`는 `python scripts/build_web_runtime.py`로만 생성합니다.
@@ -108,7 +108,7 @@ python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
-python scripts/build_release.py release/nhimc-ui-core-2.0.0.zip
+python scripts/build_release.py release/nhimc-ui-core-2.0.1.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.
