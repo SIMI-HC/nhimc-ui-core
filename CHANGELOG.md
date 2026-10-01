@@ -1,5 +1,20 @@
 # 변경 이력
 
+## [2.1.0] - 2026-10-01
+
+- **BLOG·TOP·DEFAULT Frame의 `site-header` 높이를 64px에서 56px로 줄임** (BLOG 1.5.0, TOP·DEFAULT(top-left) 1.4.0). 모바일 드로어 머리(56px)와 같은 높이입니다.
+  - BLOG: `--site-header-height` 값을 56px로 바꿨습니다. 문서 스크롤(`document`)일 때 헤더에 가려지지 않게 앵커가 띄우는 간격도 이 값을 따라 56px + 16px로 줄어듭니다.
+  - TOP: `.site-header`의 `height`를 56px로 바꿨습니다.
+  - DEFAULT(top-left): 첫 번째 행 높이(`grid-template-rows`)를 데스크톱·모바일 모두 56px로 바꿨습니다. 사이드바 접힘 너비 64px는 헤더가 아니라 그대로입니다.
+  - LEFT·LEFT BLANK·PRESENTATION Frame은 바뀌지 않았습니다. 보호 파일 `frame_patches.py` 해시를 모든 Frame에서 새로 갱신했습니다. `blog_scroll_owner.py` 브라우저 검증은 헤더 높이 기대값을 56으로 바꿨습니다.
+  - `guide/nhimc-design-guide-easy.html`은 예전 TOP Frame(64px)이 박힌 완성 파일이라 이번 변경에 따라오지 않습니다(원본이 저장소에 없어 다시 빌드하지 못함).
+- **카드 머리·팝업 머리·필수/선택 배지에 구분 색 추가 (`data-nhimc-accent`)**: 참고한 CancerFormAuto 화면처럼 구역마다 파스텔 색을 입힐 수 있게 Core 레이아웃(`src/layouts/primitives.css`)에 속성 하나로 쓰는 색 규칙을 추가했습니다. 값은 `sky`·`pear`·`apricot`·`yellow`·`purple`·`pink`·`amber`. 예전에는 `style="background:var(--color-chip-sky)…"`를 카드마다 직접 적어야 했습니다.
+  - `ContentCard`: `<section class="card nhimc-card" data-nhimc-accent="sky">`로 머리 배경·글자색·테두리가 한 번에 바뀝니다. 머리의 건수 글자도 같은 색으로 읽힙니다.
+  - `Dialog`: `<dialog class="dialog-box" data-nhimc-accent="sky">`로 팝업 머리에 같은 색이 들어가고 위쪽 모서리가 둥글게 맞습니다.
+  - `Badge`: `<span class="badge" data-nhimc-accent="pink">필수</span>`. 입력 라벨(`label.field`) 안의 배지는 줄 높이를 밀지 않게 작게 맞춥니다.
+  - 모든 색 테마에서 동작합니다. 칩 색은 라이트·다크 모두 같은 파스텔이고, 글자색은 테마의 `--color-accent-*-foreground`가 있으면 그 값을, 없으면 `--color-chip-foreground`를 씁니다. `purple`·`pink`·`amber` 칩은 Color Mix 테마에만 정의돼 있어 다른 테마에서는 각각 `sky`·`apricot`·`yellow` 색으로 대신 보입니다(일곱 색을 모두 쓰려면 `theme: color-mix`).
+  - Frame은 바뀌지 않았습니다(Frame 버전·보호 파일 해시 그대로).
+- **Design Guide 업데이트 시각 갱신**: 위 변경이 닿는 Card·Dialog·Badge Component의 업데이트 시각을 2026.10.01 15:55으로 바꾸고, 세 미리보기에 새 색 변형을 보여줍니다. 가이드 빌더의 시각 보정표 이름을 `FRAME_UPDATED_AT`에서 `UPDATED_AT`으로 바꿨습니다(Frame 외 항목도 보정하므로).
 ## [2.0.2] - 2026-09-30
 
 - **Design Guide Frame 업데이트 시각 갱신**: 그라데이션·헤더 간격을 고친 LEFT, LEFT BLANK, DEFAULT(top-left) Frame이 업스트림의 옛 업데이트 시각(2026.09.18·09.21)을 그대로 보여주던 것을 이번 수정 시각으로 바꿨습니다.

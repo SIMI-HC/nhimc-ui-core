@@ -109,12 +109,53 @@ BUILDER_PROMPT_JS = """  function updateBuilderPrompt(){
     builderCopy.disabled=!(builderState.frame||builderState.theme||requirement);
   }"""
 
-# Frames this repo patches after the upstream sync; upstream's updatedAt would otherwise show a stale date.
-FRAME_UPDATED_AT = {
+# Items this repo patches after the upstream sync; upstream's updatedAt would otherwise show a stale date.
+UPDATED_AT = {
     "left": "2026-09-30T10:01:00+09:00",
     "left-blank": "2026-09-30T10:01:00+09:00",
-    "top-left": "2026-09-30T08:54:00+09:00",
+    "top-left": "2026-10-01T16:00:00+09:00",
+    "top": "2026-10-01T16:00:00+09:00",
+    "blog": "2026-10-01T16:00:00+09:00",
+    "Card": "2026-10-01T15:55:00+09:00",
+    "Dialog": "2026-10-01T15:55:00+09:00",
+    "Badge": "2026-10-01T15:55:00+09:00",
 }
+
+SHOWCASE = "../../assets/components/showcase.html"
+_SHOWCASE_PATCHES = (
+    (
+        '<div class="card"><strong>병동 운영 현황</strong><p>관련 정보를 하나의 surface에 묶습니다.</p></div>',
+        '<div class="card"><strong>병동 운영 현황</strong><p>관련 정보를 하나의 surface에 묶습니다.</p></div>'
+        '<div style="display:grid;gap:12px;margin-top:14px;text-align:left">'
+        '<section class="card nhimc-card" data-nhimc-accent="sky"><div class="nhimc-card-head"><strong>1. 환자 정보</strong>'
+        '<div class="nhimc-card-head-end"><span>필수 3건</span></div></div>'
+        '<div class="nhimc-card-body"><p style="margin:0">머리와 테두리에 data-nhimc-accent 색을 입힌 ContentCard입니다.</p></div></section>'
+        '<section class="card nhimc-card" data-nhimc-accent="pear"><div class="nhimc-card-head"><strong>2. 신청인</strong></div>'
+        '<div class="nhimc-card-body"><p style="margin:0">sky · pear · apricot · yellow · purple · pink · amber</p></div></section></div>',
+    ),
+    ('<dialog class="dialog-box" aria-labelledby="dialogSpecimenTitle">', '<dialog class="dialog-box" data-nhimc-accent="sky" aria-labelledby="dialogSpecimenTitle">'),
+    (
+        '<span class="badge bad">오류</span></div></section>',
+        '<span class="badge bad">오류</span><span class="badge" data-nhimc-accent="pink">필수</span>'
+        '<span class="badge" data-nhimc-accent="pear">선택</span><span class="badge" data-nhimc-accent="sky">안내</span></div></section>',
+    ),
+)
+
+
+def _patch_showcase(document: str, primitives_css: str, tokens_css: str) -> str:
+    """Show the Core accent variants in the Card, Dialog and Badge specimens (upstream specimens carry none).
+
+    The specimen document defines no chip colours, so the first (root) value of each chip token is copied in.
+    """
+    for old, new in _SHOWCASE_PATCHES:
+        if document.count(old) != 1:
+            raise ValueError(f"showcase patch did not apply: {old[:60]}")
+        document = document.replace(old, new)
+    chips = {}
+    for name, value in re.findall(r"(--color-chip-[a-z]+):\s*(#[0-9a-fA-F]{6})", tokens_css):
+        chips.setdefault(name, value)
+    root = ":root{" + ";".join(f"{name}:{value}" for name, value in chips.items()) + "}"
+    return document.replace("</head>", f"<style>{root}{primitives_css}</style></head>", 1)
 
 
 def build_guide(root: Path) -> Path:
@@ -128,11 +169,14 @@ def build_guide(root: Path) -> Path:
     gallery["documents"] = {
         key: apply_frame_patches(value) if "/layouts/" in key else value for key, value in gallery["documents"].items()
     }
+    gallery["documents"][SHOWCASE] = _patch_showcase(
+        gallery["documents"][SHOWCASE], (root / "src/layouts/primitives.css").read_text(encoding="utf-8"), css
+    )
     for item in gallery["items"]:
         if item["id"] in PRESENTATION_COPY:
             item.update(PRESENTATION_COPY[item["id"]])
-        if item["id"] in FRAME_UPDATED_AT:
-            item["updatedAt"] = FRAME_UPDATED_AT[item["id"]]
+        if item["id"] in UPDATED_AT:
+            item["updatedAt"] = UPDATED_AT[item["id"]]
     data = json.dumps(gallery, ensure_ascii=False, separators=(",", ":"))
     sections = (root / "src/guide/sections.html").read_text(encoding="utf-8")
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")

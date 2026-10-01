@@ -22,6 +22,26 @@ def _logo_radii(css: str) -> list[str]:
 
 
 class FramePatchTests(unittest.TestCase):
+    def test_blog_top_and_default_site_header_is_56px(self):
+        height = frame_patches.SITE_HEADER_HEIGHT
+        self.assertEqual(56, height)
+        for name in ("blog.html", "top.html", "top-left.html"):
+            raw = (LAYOUTS / name).read_text(encoding="utf-8")
+            self.assertIn("64px", raw, f"{name}: the canonical header is 64px")
+            patched = apply_frame_patches(raw)
+            self.assertEqual(patched, apply_frame_patches(patched), f"{name}: patch is not idempotent")
+        blog = apply_frame_patches((LAYOUTS / "blog.html").read_text(encoding="utf-8"))
+        self.assertIn(f"--site-header-height:{height}px", blog)
+        top = apply_frame_patches((LAYOUTS / "top.html").read_text(encoding="utf-8"))
+        self.assertIn(f".site-header{{flex:0 0 auto;height:{height}px;background:#fff", top)
+        self.assertNotIn("height:64px", top)
+        default = apply_frame_patches((LAYOUTS / "top-left.html").read_text(encoding="utf-8"))
+        self.assertEqual(2, default.count(f"grid-template-rows:{height}px minmax(0,1fr) 28px"))
+        self.assertNotIn("grid-template-rows:64px", default)
+        for name in ("left.html", "left-blank.html"):
+            raw = (LAYOUTS / name).read_text(encoding="utf-8")
+            self.assertEqual(raw, frame_patches._patch_header_height(raw), f"{name} keeps its header")
+
     def test_logo_has_no_white_tile_in_every_frame_that_has_one(self):
         checked = 0
         for name in sorted(set(FRAME_FILES.values())):

@@ -77,7 +77,7 @@ class PresentationBaseContractTests(unittest.TestCase):
                     expected = frame_patches._patch_blog_scroll_owner(expected)
                 if name in {"blog.html", "top.html"}:
                     expected = frame_patches._patch_nav_icons(expected)
-                expected = frame_patches._patch_default_header_spacing(frame_patches._patch_sidebar_gradient(expected))
+                expected = frame_patches._patch_header_height(frame_patches._patch_default_header_spacing(frame_patches._patch_sidebar_gradient(expected)))
                 self.assertEqual(expected, patched, name)
                 self.assertNotIn(frame_patches.SAFE_AREA_MARKER, patched, name)
                 self.assertNotIn("presentation-direction", patched, name)
@@ -132,7 +132,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.4.0", "nhimc-top": "1.3.0", "nhimc-default": "1.3.0", "nhimc-left-blank": "1.3.0", "nhimc-top-left": "1.3.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.5.0", "nhimc-top": "1.4.0", "nhimc-default": "1.3.0", "nhimc-left-blank": "1.3.0", "nhimc-top-left": "1.4.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

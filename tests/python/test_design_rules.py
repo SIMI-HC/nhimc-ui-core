@@ -305,6 +305,24 @@ class DesignRuleTests(unittest.TestCase):
         self.assertIn(".nhimc-scroll table{min-width:var(--table-min,100%)}", css)
         self.assertNotIn(".nhimc-scroll table{min-width:640px}", css)
 
+    def test_accent_tints_card_head_dialog_head_and_badge_in_every_theme(self):
+        # Accent colours replace per-card inline backgrounds. Chips are root tokens (all themes), the foreground
+        # tokens exist only for Color Mix, so each accent must fall back to --color-chip-foreground.
+        css = (ROOT / "src/layouts/primitives.css").read_text(encoding="utf-8")
+        for name in ("sky", "pear", "apricot", "yellow", "purple", "pink", "amber"):
+            self.assertRegex(
+                css,
+                re.escape(f'[data-nhimc-accent="{name}"]{{--nhimc-accent-surface:var(--color-chip-{name}')
+                + r"(,var\(--color-chip-[a-z]+\))?\);"
+                + re.escape(f"--nhimc-accent-foreground:var(--color-accent-{name}-foreground,var(--color-chip-foreground))}}"),
+            )
+        for selector in (
+            ".nhimc-card[data-nhimc-accent]>.nhimc-card-head{background:var(--nhimc-accent-surface)",
+            ".dialog-box[data-nhimc-accent]>.dialog-head{background:var(--nhimc-accent-surface)",
+            ".badge[data-nhimc-accent]{background:var(--nhimc-accent-surface)",
+        ):
+            self.assertIn(selector, css)
+
 
 if __name__ == "__main__":
     unittest.main()

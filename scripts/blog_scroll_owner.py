@@ -121,7 +121,7 @@ def problems(cells: list[dict], results: list[dict]) -> list[str]:
         owner = cell["owner"]
         expect(result.get("owner") == owner, f"app-shell scroll owner is {result.get('owner')!r}")
         expect(result.get("position") != "sticky" or result.get("headerAlpha") == 1, "SiteHeader is sticky and transparent")
-        expect(abs(result.get("headerHeight", 0) - 64) <= EPSILON, f"SiteHeader height is {result.get('headerHeight')}")
+        expect(abs(result.get("headerHeight", 0) - 56) <= EPSILON, f"SiteHeader height is {result.get('headerHeight')}")
         expect(not result.get("pageOverflowX"), "the page scrolls horizontally")
         expect(result.get("scrollRange", 0) > 100, "the long Content did not produce a scroll range")
         expect(result.get("firstBelowHeader"), "the first Content block starts under the SiteHeader")

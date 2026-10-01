@@ -32,6 +32,9 @@ frameVersion always means the same Frame.
        rendered at their intrinsic size over the label. BLOG now lays the icon out like TOP; the label is hidden below
        1024px as in TOP, and the menu buttons carry aria-label/title so an icon-only menu keeps an accessible name.
        The mobile drawer menu icons of BLOG and TOP (18px beside the label) were unsized too.
+1.5.0  SiteHeader height 64px -> 56px. BLOG takes it from --site-header-height (so the sticky offset follows), TOP from
+       .site-header and DEFAULT (top-left) from the first app-shell grid row, on desktop and mobile.
+       Registry versions: BLOG 1.5.0, TOP and DEFAULT 1.4.0.
 """
 from __future__ import annotations
 
@@ -100,6 +103,9 @@ def _patch_presentation_safe_area(layout: str) -> str:
     return layout.replace('class="app-shell"', f'class="app-shell" data-presentation-direction="{direction}"', 1)
 
 
+# BLOG, TOP and DEFAULT (top-left) SiteHeader: the canonical 64px is cut to 56px (the same height as the mobile drawer head).
+SITE_HEADER_HEIGHT = 56
+
 SCROLL_OWNERS = ("main", "document")
 BLOG_SCROLL_MARKER = "nhimc-blog-scroll-owner"
 _BLOG_HEADER = re.compile(r"\.site-header\{flex:0 0 auto;height:64px;background:transparent")
@@ -109,7 +115,7 @@ _DOCUMENT = 'html[data-scroll-owner="document"]'
 # ponytail: the state lives on <html> so the root scroller can be freed without :has() (the offline target Edge is 92).
 _BLOG_SCROLL_OWNER_RULES = f"""
 /* {BLOG_SCROLL_MARKER}: main (default) keeps the app-shell at 100svh and Main scrolls; document lets the page scroll. */
-.app-shell{{--site-header-height:64px;--site-header-surface:transparent}}
+.app-shell{{--site-header-height:{SITE_HEADER_HEIGHT}px;--site-header-surface:transparent}}
 .site-header{{flex:none;height:var(--site-header-height);background:var(--site-header-surface)}}
 {_DOCUMENT},{_DOCUMENT} body{{height:auto;overflow:visible}}
 {_DOCUMENT}{{scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar-thumb) var(--color-scrollbar-track)}}
@@ -182,6 +188,16 @@ def _patch_default_header_spacing(layout: str) -> str:
     return layout[:end] + f"\n/* {DEFAULT_HEADER_MARKER} */\n" + _DEFAULT_HEADER_RULES + layout[end:]
 
 
+_TOP_HEADER = re.compile(r"(\.site-header\{flex:0 0 auto;)height:64px(;background:#fff)")
+_DEFAULT_ROWS = "grid-template-rows:64px minmax(0,1fr) 28px"
+
+
+def _patch_header_height(layout: str) -> str:
+    """TOP sets the height on .site-header, DEFAULT on the first app-shell grid row; BLOG takes it from its scroll-owner token."""
+    layout = _TOP_HEADER.sub(rf"\g<1>height:{SITE_HEADER_HEIGHT}px\g<2>", layout)
+    return layout.replace(_DEFAULT_ROWS, f"grid-template-rows:{SITE_HEADER_HEIGHT}px minmax(0,1fr) 28px")
+
+
 def apply_frame_patches(layout: str) -> str:
     patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_tile(layout))))
-    return _patch_default_header_spacing(_patch_sidebar_gradient(patched))
+    return _patch_header_height(_patch_default_header_spacing(_patch_sidebar_gradient(patched)))

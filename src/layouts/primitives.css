@@ -32,6 +32,25 @@
 .nhimc-card-head-end{margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3)}
 .nhimc-card-head-end>span{color:var(--color-muted-foreground);font-size:12px}
 .nhimc-card-body{padding:18px;display:grid;gap:var(--space-3)}
+/* Accent: data-nhimc-accent="sky|pear|apricot|yellow|purple|pink|amber" tints a ContentCard (head + outline), a Dialog head
+   or a Badge. Classification only; primary actions stay NHIMC blue. The chips are fixed pastels in light and dark, and
+   --color-chip-foreground is the fallback where a theme defines no --color-accent-*-foreground (it does only for Color Mix).
+   purple, pink and amber chips exist only in Color Mix too, so in the other themes they fall back to sky, apricot and yellow (solid pastels, readable in dark). */
+[data-nhimc-accent="sky"]{--nhimc-accent-surface:var(--color-chip-sky);--nhimc-accent-foreground:var(--color-accent-sky-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="pear"]{--nhimc-accent-surface:var(--color-chip-pear);--nhimc-accent-foreground:var(--color-accent-pear-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="apricot"]{--nhimc-accent-surface:var(--color-chip-apricot);--nhimc-accent-foreground:var(--color-accent-apricot-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="yellow"]{--nhimc-accent-surface:var(--color-chip-yellow);--nhimc-accent-foreground:var(--color-accent-yellow-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="purple"]{--nhimc-accent-surface:var(--color-chip-purple,var(--color-chip-sky));--nhimc-accent-foreground:var(--color-accent-purple-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="pink"]{--nhimc-accent-surface:var(--color-chip-pink,var(--color-chip-apricot));--nhimc-accent-foreground:var(--color-accent-pink-foreground,var(--color-chip-foreground))}
+[data-nhimc-accent="amber"]{--nhimc-accent-surface:var(--color-chip-amber,var(--color-chip-yellow));--nhimc-accent-foreground:var(--color-accent-amber-foreground,var(--color-chip-foreground))}
+.nhimc-card[data-nhimc-accent]{border-color:var(--nhimc-accent-surface)}
+.nhimc-card[data-nhimc-accent]>.nhimc-card-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-surface)}
+.nhimc-card[data-nhimc-accent]>.nhimc-card-head>h2{background-color:transparent!important;color:inherit!important}
+.nhimc-card[data-nhimc-accent]>.nhimc-card-head>span,.nhimc-card[data-nhimc-accent]>.nhimc-card-head .nhimc-card-head-end>span{color:inherit}
+.dialog-box[data-nhimc-accent]>.dialog-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-surface);border-radius:11px 11px 0 0}
+.dialog-box[data-nhimc-accent]>.dialog-head .icon-btn{color:inherit}
+.badge[data-nhimc-accent]{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground)}
+.field>span>.badge{padding:1px 8px;margin-left:4px}
 .nhimc-scroll{overflow:auto;max-width:100%}
 .nhimc-scroll table{min-width:var(--table-min,100%)}
 .nhimc-pagination{display:flex;justify-content:center;gap:var(--space-2);padding:var(--space-4);border-top:1px solid var(--color-border-accent)}

@@ -54,6 +54,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 ```
 
 - 제목과 건수·버튼이 한 줄이면 `nhimc-card-head`(카드 안) 또는 `nhimc-toolbar`+`nhimc-toolbar-end`(카드 밖)를 씁니다. 직접 `display:flex`를 쓰지 않습니다.
+- 구역을 색으로 구분하려면 `<section class="card nhimc-card" data-nhimc-accent="sky">`처럼 속성 하나만 붙입니다(`sky`·`pear`·`apricot`·`yellow`·`purple`·`pink`·`amber`). 카드 머리와 테두리, `<dialog class="dialog-box">`의 머리, `badge`(필수·선택 표시)에 같은 방식으로 쓰며 `style="background:…"` 인라인 색은 쓰지 않습니다. 분류용 강조일 뿐 주요 버튼은 계속 `btn primary`입니다. `purple`·`pink`·`amber`는 `theme: color-mix`에서만 고유 색이고, 다른 테마에서는 `sky`·`apricot`·`yellow` 색으로 대신 보입니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 - `nhimc-scroll` 안 `table`의 최소 너비는 기본이 컨테이너 폭(`--table-min: 100%`)입니다. 열이 많아 넓게 둬야 하면 `<div class="nhimc-scroll" style="--table-min:640px">`처럼 지정합니다.
 
@@ -90,7 +91,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Web(context-only)에서는 Web Runtime 사용
 
-빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.0.2/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
+빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.1.0/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
 
 ## Self-check (완료 전 5개 계약)
 
