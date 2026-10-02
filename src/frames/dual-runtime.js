@@ -23,6 +23,7 @@
     rail.href = '#group-' + id;
     rail.dataset.railGroup = id;
     rail.title = label(root);
+    rail.setAttribute('aria-label', label(root));
     const icon = root.querySelector('.nav-chip svg');
     if (icon) rail.append(icon.cloneNode(true));
     rail.append(el('span', 'rail-label', label(root)));

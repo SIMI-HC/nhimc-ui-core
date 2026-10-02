@@ -25,7 +25,7 @@ _DUAL_CSS = """
 .rail-link svg{width:22px;height:22px;display:block}
 .rail-link:hover{background:var(--color-sidebar-brand-10);color:var(--color-sidebar-brand-foreground)}
 .rail-link[aria-current="page"]{background:var(--color-sidebar-brand-18);color:var(--color-sidebar-brand-foreground)}
-.rail-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.rail-label{display:none}
 .sub-lists{grid-area:1/2/3/3;position:relative;min-width:0;min-height:0;overflow:hidden;display:grid;grid-template-rows:minmax(0,1fr);background:var(--color-card);color:var(--color-card-foreground);border-right:1px solid var(--color-border);transition:opacity var(--motion-fast) ease-in-out,border-color var(--motion-base) ease-in-out}
 .sub-group{width:var(--panel-width);min-height:0;padding:0 10px 12px;overflow-y:auto;scrollbar-width:none;display:grid;align-content:start;gap:2px}.sub-group[hidden]{display:none}
 .sub-title{position:sticky;top:0;z-index:1;height:var(--header-height);margin:0 -10px 8px;padding:0 52px 0 20px;display:flex;align-items:center;background:var(--color-card);font-size:15px;font-weight:700}
