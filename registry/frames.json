@@ -114,11 +114,11 @@
         },
         {
           "path": "scripts/derived_frames.py",
-          "sha256": "7624dc5d7ee4dc2e60f0eff1d3fca14687b514f791c8c2f6515ba9f67fbe9e3d"
+          "sha256": "d12c198c3a4c3a881488ca59a1f963f1bba1eb7218cfb8c5da58c5d3a306e12d"
         },
         {
           "path": "src/frames/dual-runtime.js",
-          "sha256": "6c49624619bd085b5642f3a62c344406c034ae9019e09c4cfa13148381295146"
+          "sha256": "092657a0c34292a5732b944f0d270b77b5695f4e38944815005da6af5f531915"
         }
       ],
       "derivedFrom": "nhimc-default",

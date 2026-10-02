@@ -19,7 +19,8 @@ class FrameFixTests(unittest.TestCase):
         self.assertIn("padding-inline:var(--blog-edge) max(24px,calc(var(--blog-edge-raw) + var(--scrollbar-inline-size,10px)))", layout)
 
     def test_left_dual_drawer_keeps_its_labels(self):
-        self.assertIn(".mobile-panel .nav-label{position:static;", _DUAL_CSS)
+        self.assertIn(".mobile-panel>.sidebar-nav{", _DUAL_CSS)
+        self.assertIn(".sub-lists .nav-label{position:static;", _DUAL_CSS)
 
 
 if __name__ == "__main__":
