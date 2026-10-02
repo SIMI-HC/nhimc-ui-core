@@ -30,6 +30,7 @@ from scripts.frame_patches import apply_frame_patches
 ROOT = Path(__file__).resolve().parents[1]
 BROWSER_PATHS = [
     Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+    Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
     Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
     Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
 ]
@@ -544,6 +545,7 @@ def main() -> int:
     parser.add_argument("--blog-scroll-owner-only", action="store_true")
     parser.add_argument("--frame-render-only", action="store_true")
     parser.add_argument("--outside-click-only", action="store_true")
+    parser.add_argument("--modal-stability-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
     args = parser.parse_args()
     if (args.width is None) != (args.height is None):
@@ -556,6 +558,7 @@ def main() -> int:
         args.blog_scroll_owner_only,
         args.frame_render_only,
         args.outside_click_only,
+        args.modal_stability_only,
     ))
     if modes > 1:
         parser.error("standalone and canonical parity modes are mutually exclusive")
@@ -590,6 +593,14 @@ def main() -> int:
         for item in report["problems"]:
             print(f"  {item}")
         print(f"outside click: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
+        return 0 if report["all_passed"] else 1
+    if args.modal_stability_only:
+        from scripts.modal_stability import run_modal_stability
+
+        report = run_modal_stability(ROOT)
+        for item in report["problems"]:
+            print(f"  {item}")
+        print(f"modal stability: {report['cells']} cells x {', '.join(report['browsers'])} {'PASS' if report['all_passed'] else 'FAIL'}")
         return 0 if report["all_passed"] else 1
     if args.frame_render_only:
         from scripts.frame_render import run_frame_render

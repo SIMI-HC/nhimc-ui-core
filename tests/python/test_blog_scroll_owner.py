@@ -67,7 +67,7 @@ class BlogScrollOwnerStaticTests(unittest.TestCase):
         self.assertIn("--site-header-surface:rgba(10,10,10,.4)", rules['[data-theme="dark"] .app-shell'])
         self.assertIn("backdrop-filter:blur(12px)", rules[".site-header"])
         self.assertIn("--shadow-lg:", self.blog, "the canonical shadow token must exist in the Frame")
-        self.assertIn("scroll-margin-top:calc(var(--site-header-height) + 16px)", rules['html[data-scroll-owner="document"] [id]'])
+        self.assertIn("scroll-margin-top:calc(var(--site-header-height) + 16px)", rules['html[data-scroll-owner="document"] .content [id]'])
 
     def test_sticky_is_never_combined_with_a_transparent_surface(self):
         for selector, body in _rules(self.blog):
@@ -101,7 +101,7 @@ class BlogScrollOwnerRenderTests(unittest.TestCase):
 
     def test_registry_records_the_new_frame_version_and_state(self):
         frame = next(item for item in json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"] if item["id"] == "nhimc-blog")
-        self.assertEqual("1.7.0", frame["version"])
+        self.assertEqual("1.7.1", frame["version"])
         self.assertEqual(["main", "document"], frame["scrollOwners"]["states"])
         self.assertEqual("main", frame["scrollOwners"]["default"])
 

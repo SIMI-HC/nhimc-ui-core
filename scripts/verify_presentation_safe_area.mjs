@@ -214,8 +214,11 @@ const behaviorExpression = `(async () => {
 
 async function main() {
   const port = await waitForDevToolsPort({ activePort: join(profile, 'DevToolsActivePort'), browser });
-  const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
-  const target = targets.find((item) => item.type === 'page');
+  let target;
+  for (let attempt = 0; attempt < 100 && !target; attempt += 1) {
+    target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((item) => item.type === 'page');
+    if (!target) await new Promise((resolve) => setTimeout(resolve, 50));
+  }
   if (!target) throw new Error('browser page target was not found');
   socket = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {

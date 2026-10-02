@@ -45,6 +45,10 @@ frameVersion always means the same Frame.
 1.7.0  BLOG layout: Content is one centred column (--blog-width 1080px, also the Page primitive's --page-max) and the
        SiteHeader lines up with it: brand on the left, the menu pushed to the right next to the utilities. Registry
        version: BLOG 1.7.0.
+1.7.1  BLOG: the scroll-margin that clears the sticky header applies to Content anchors only (.content [id]). It used to
+       match every id, so focusing the help button when its sheet closed scrolled the page by 63px (document scroll).
+       Document scroll also ignores a page scroll lock (overflow:hidden on html/body) so opening a dialog cannot drop the
+       scrollbar gutter or un-stick the header.
 1.2.0  PRESENTATION frames (presentation, presentation-vertical): the Ilsan Hospital logo (the TOP Frame's SVG, 32px) sits
        top-left on the same row as the help button. Registry versions: PRESENTATION and PRESENTATION VERTICAL 1.2.0.
 """
@@ -132,13 +136,16 @@ _BLOG_SCROLL_OWNER_RULES = f"""
 [data-theme="dark"] .app-shell{{--site-header-surface:rgba(10,10,10,.4)}}
 .site-header{{flex:none;height:var(--site-header-height);background:var(--site-header-surface);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);position:relative;z-index:8}}
 .content{{margin-top:calc(var(--site-header-height) * -1);padding-top:calc(var(--site-header-height) + 24px)}}
-[id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
-{_DOCUMENT},{_DOCUMENT} body{{height:auto;overflow:visible}}
+.content [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
+{_DOCUMENT},{_DOCUMENT} body{{height:auto}}
+/* A dialog's scroll lock (overflow:hidden on html/body) would drop the scrollbar and un-stick the header; the Frame keeps its layout. */
+{_DOCUMENT}{{overflow-y:auto!important}}
+{_DOCUMENT} body{{overflow:visible!important}}
 {_DOCUMENT}{{scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar-thumb) var(--color-scrollbar-track)}}
 {_DOCUMENT} .app-shell{{height:auto;min-height:100vh;min-height:100svh}}
 {_DOCUMENT} .site-header{{position:sticky;top:0;border-bottom:1px solid var(--color-border-accent);box-shadow:var(--shadow-lg)}}
 {_DOCUMENT} .content{{flex:1 0 auto;overflow:visible}}
-{_DOCUMENT} [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
+{_DOCUMENT} .content [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
 /* BLOG layout: one centred reading column; the header lines up with it (brand left, menu right, utilities last). */
 .app-shell{{--blog-width:1080px;--page-max:var(--blog-width);--blog-edge:max(24px,calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2))}}
 {_DOCUMENT} .app-shell{{--blog-edge:max(24px,calc((100% - var(--blog-width)) / 2))}}

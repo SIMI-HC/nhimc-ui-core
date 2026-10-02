@@ -1,5 +1,12 @@
 # 변경 이력
 
+## [Unreleased]
+
+- **검증 안정화**: `verify_all.py`가 독립 검사를 4개씩 병렬로 실행합니다(`--jobs 1`로 순차 실행). 브라우저 검증 스크립트 4개는 페이지 target이 목록에 올라올 때까지 재시도해 간헐적인 "browser page target was not found"를 없앴고, 브라우저 탐색 경로에 `Program Files (x86)`의 Chrome을 추가해 `:has()`를 지원하지 않는 구형 Edge로 넘어가지 않게 했습니다.
+- **다이얼로그를 열 때 화면이 흔들리는지 점검하는 게이트 추가** (`scripts/modal_stability.py`, `verify_modal_stability.mjs`, `verify_all.py`의 "modal stability"): 세로 스크롤바가 있는 긴 화면에서 도움말 시트·모바일 메뉴를 열기 전/열린 중/닫은 뒤에 헤더와 첫 카드의 x·y·width와 스크롤 위치가 같은지, 맨 위·중간 두 경우, 설치된 Chrome·Edge 모두에서 잽니다. 페이지 스크롤 잠금(`overflow:hidden`을 html/body에 거는 경우) 시나리오도 포함합니다.
+  - LEFT·LEFT BLANK·LEFT DUAL·TOP·DEFAULT·BLOG(`main`)는 이미 흔들림이 없었습니다(잠금을 걸어도 그대로). Frame 쪽 스크롤 잠금 코드는 없고, 스크롤 컨테이너의 `scrollbar-gutter:stable`도 이중으로 잡히지 않습니다.
+  - **BLOG 1.7.1** `document` 스크롤에서 두 가지를 고쳤습니다. ① 앵커용 `scroll-margin-top`이 모든 `[id]`에 걸려 있어서 도움말 시트를 닫고 포커스가 헤더의 도움말 버튼으로 돌아갈 때 페이지가 63px 위로 튀었습니다 → `.content [id]`로 한정. ② html/body에 `overflow:hidden` 잠금이 걸리면 스크롤바(17px)가 사라지고 sticky 헤더가 풀렸습니다 → `document` 스크롤은 그 잠금을 무시합니다(`overflow-y:auto!important`, body `overflow:visible!important`). 대신 이 모드에서는 모달이 열려도 뒤 화면이 스크롤될 수 있습니다.
+
 ## [2.2.0] - 2026-10-02
 
 - **LEFT DUAL의 하위 메뉴 패널을 접을 수 있게**: 패널 제목 줄 오른쪽 끝의 접기 버튼으로 224px 패널을 접어 88px 레일만 남깁니다. 접힌 상태에서는 별도 펼침 버튼 없이 레일 메뉴를 누르면 패널이 다시 펼쳐집니다. 접고 펼 때 패널 폭이 부드럽게 줄고 늘며, 메뉴가 많아도 레일·패널에 스크롤바가 보이지 않습니다(키가 작은 화면에서는 레일 항목이 촘촘해짐). 브랜드 줄 아래 구분선은 뺐습니다.

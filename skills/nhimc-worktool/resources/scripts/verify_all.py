@@ -1,4 +1,5 @@
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import shutil
 import subprocess
@@ -75,24 +76,39 @@ def verification_checks(
                 "outside click",
                 [sys.executable, "scripts/run_browser_tests.py", "--outside-click-only"],
             ),
+            (
+                "modal stability",
+                [sys.executable, "scripts/run_browser_tests.py", "--modal-stability-only"],
+            ),
         ]
     return checks
 
 
+def run_check(root: Path, label: str, command: list[str]) -> tuple[str, int, float, str]:
+    started = time.perf_counter()
+    completed = subprocess.run(
+        command, cwd=root, check=False, text=True, encoding="utf-8", errors="replace",
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    )
+    return label, completed.returncode, time.perf_counter() - started, completed.stdout
+
+
 def verify_all(
-    root: Path = ROOT, include_canonical: bool = True, quick: bool = False
+    root: Path = ROOT, include_canonical: bool = True, quick: bool = False, jobs: int = 4
 ) -> int:
     root = root.resolve()
     checks = verification_checks(root, include_canonical=include_canonical, quick=quick)
-    results = []
     started = time.perf_counter()
-    for label, command in checks:
-        print(f"[verify] {label}", flush=True)
-        check_started = time.perf_counter()
-        completed = subprocess.run(command, cwd=root, check=False)
-        elapsed = time.perf_counter() - check_started
-        print(f"[verify] {label}: {elapsed:.1f}s", flush=True)
-        results.append((label, completed.returncode, elapsed))
+
+    def run_and_report(check: tuple[str, list[str]]) -> tuple[str, int, float]:
+        label, code, elapsed, output = run_check(root, *check)
+        # print each finished check as one block so parallel output never interleaves
+        print(f"[verify] {label}: {elapsed:.1f}s\n{output if code else ''}", end="", flush=True)
+        return label, code, elapsed
+
+    # ponytail: checks assumed independent (own temp dirs, port 0); --jobs 1 restores serial order
+    with ThreadPoolExecutor(max_workers=max(1, jobs)) as pool:
+        results = list(pool.map(run_and_report, checks))
     failures = [label for label, code, _ in results if code]
     if failures:
         print(f"VERIFY FAILED: {', '.join(failures)}")
@@ -112,5 +128,6 @@ if __name__ == "__main__":
         action="store_true",
         help="skip browser-backed Python tests and browser matrix gates",
     )
+    parser.add_argument("--jobs", type=int, default=4, help="parallel checks (1 = serial)")
     arguments = parser.parse_args()
-    raise SystemExit(verify_all(quick=arguments.quick))
+    raise SystemExit(verify_all(quick=arguments.quick, jobs=arguments.jobs))

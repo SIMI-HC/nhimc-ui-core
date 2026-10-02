@@ -70,7 +70,7 @@ class VerificationProfileTests(unittest.TestCase):
 
     def test_full_checks_preserve_every_existing_gate(self):
         labels = [label for label, _ in verification_checks(ROOT)]
-        self.assertEqual(14, len(labels))
+        self.assertEqual(15, len(labels))
         for label in (
             "canonical frame parity",
             "presentation safe area",
