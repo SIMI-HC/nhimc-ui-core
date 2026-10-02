@@ -5,6 +5,7 @@ from html import escape
 from pathlib import Path
 import re
 
+from scripts.derived_frames import DERIVED_BASE, derive_layout, variant_runtime
 from scripts.frame_patches import SCROLL_OWNERS, apply_frame_patches
 from scripts.icon_overlay import merged_sprite
 
@@ -30,6 +31,12 @@ FRAME_FILES = {
     "nhimc-blog": "blog.html",
     "blog": "blog.html",
 }
+# Frames derived from a vendored layout (scripts/derived_frames.py); FRAME_FILES stays the vendored layouts only.
+DERIVED_FILES = {
+    "nhimc-left-dual": "left-dual.html",
+    "left-dual": "left-dual.html",
+}
+ALL_FRAME_FILES = {**FRAME_FILES, **DERIVED_FILES}
 
 
 @dataclass(frozen=True)
@@ -118,7 +125,7 @@ def presentation_slides(content_html: str, payload: "FramePayload") -> str:
     return f'<section class="slide" id="screen-{slide_id}" data-screen-panel="{slide_id}">{content_html}</section>'
 
 
-def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> str:
+def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str, parent: str = "") -> str:
     rendered: list[str] = []
     for item in items:
         current = ' aria-current="page"' if item.id == active_id else ""
@@ -132,9 +139,11 @@ def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> st
             # The rendered fragment target is namespaced (screen-<id>) so it never collides with an icon
             # symbol id in the sprite; data-menu-id/data-screen-target still carry the raw menu id for the
             # runtime's [data-screen-panel] matching, so navigation behavior is unaffected.
+            # data-parent-id keeps the hierarchy that the flat list loses (LEFT DUAL builds its second panel from it).
+            owner = f' data-parent-id="{parent}"' if parent else ""
             rendered.append(
                 f'<a class="nav-link" href="#screen-{item.id}" data-menu-id="{item.id}" '
-                f'data-screen-target="{item.id}"{current}><span class="nav-chip">{icon}</span>'
+                f'data-screen-target="{item.id}"{owner}{current}><span class="nav-chip">{icon}</span>'
                 f'<span class="nav-label">{label}</span></a>'
             )
         elif mode == "dots":
@@ -148,12 +157,12 @@ def _menu_items(items: tuple[MenuItem, ...], active_id: str, *, mode: str) -> st
                 f'aria-label="{label}" title="{label}">{icon}<span class="label">{label}</span></button>'
             )
         if item.children:
-            rendered.append(_menu_items(item.children, active_id, mode=mode))
+            rendered.append(_menu_items(item.children, active_id, mode=mode, parent=item.id))
     return "".join(rendered)
 
 
 def _replace_navigation(document: str, payload: FramePayload, frame_kind: str) -> str:
-    mode = "dots" if frame_kind.startswith("presentation") else "side" if frame_kind in {"left", "left-blank", "top-left"} else "top"
+    mode = "dots" if frame_kind.startswith("presentation") else "side" if frame_kind in {"left", "left-blank", "left-dual", "top-left"} else "top"
     nav_pattern = re.compile(
         r'(<nav\b[^>]*data-nhimc-navigation-source="manifest"[^>]*data-navigation-view="(?P<view>desktop|mobile)"[^>]*>)(.*?)(</nav\s*>)',
         re.IGNORECASE | re.DOTALL,
@@ -238,17 +247,24 @@ def _reject_duplicate_ids(document: str) -> None:
         raise ValueError(f"duplicate element id in canonical frame output: {', '.join(duplicates)}")
 
 
+def layout_source(root: Path, filename: str) -> str:
+    """The unpatched layout of a Frame: the vendored file, or the one derived from its vendored base."""
+    kind = Path(filename).stem
+    text = (root / "vendor/nhimc-design/layouts" / f"{DERIVED_BASE.get(kind, kind)}.html").read_text(encoding="utf-8")
+    return derive_layout(kind, text, root=root) if kind in DERIVED_BASE else text
+
+
 def render_canonical_frame(root: Path, frame_id: str, payload: FramePayload) -> str:
     root = root.resolve()
     try:
-        filename = FRAME_FILES[frame_id]
+        filename = ALL_FRAME_FILES[frame_id]
     except KeyError as error:
         raise ValueError(f"unknown canonical frame: {frame_id}") from error
-    layout = apply_frame_patches((root / "vendor/nhimc-design/layouts" / filename).read_text(encoding="utf-8"))
+    layout = apply_frame_patches(layout_source(root, filename))
     sprite = merged_sprite(root, (root / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8"))
     frame_kind = Path(filename).stem
     runtime_file = PRESENTATION_RUNTIME if frame_kind.startswith("presentation") else FRAME_RUNTIME
-    runtime = (root / runtime_file).read_text(encoding="utf-8")
+    runtime = (root / runtime_file).read_text(encoding="utf-8") + variant_runtime(frame_kind, root)
     return render_layout(
         layout,
         payload,

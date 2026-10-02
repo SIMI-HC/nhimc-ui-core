@@ -1,6 +1,6 @@
 // Measure the BLOG scroll-owner contract in headless Chrome by really scrolling long Content.
-//   main     : app-shell is 100svh, the transparent SiteHeader stays put, Main (.content) scrolls, the page does not.
-//   document : the page scrolls, the SiteHeader is sticky on an opaque surface, anchors clear the header.
+//   main     : app-shell is 100svh, the translucent SiteHeader stays put, Main (.content) scrolls, the page does not.
+//   document : the page scrolls, the SiteHeader is sticky on a translucent blurred surface, anchors clear the header.
 // usage: node verify_blog_scroll_owner.mjs <browser> <matrix-json>
 import { spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';

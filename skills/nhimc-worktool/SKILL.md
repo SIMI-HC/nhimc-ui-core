@@ -83,7 +83,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 ## Design Guide와 프롬프트 힌트
 
 - 준비가 끝나면 `guide/nhimc-design-guide.html`을 열어 줍니다. 못 열면 `디자인 가이드: <전체 주소 .html까지, 한 줄, 코드 블록 없이>` 형식의 클릭 링크로 전달합니다(주소는 `bootstrap.md` 참고). 절차는 `bootstrap.md`의 “준비 완료 후: Design Guide 열기”를 따릅니다.
-- 요청에 `frame:` / `theme:` / `requirements:` 줄이 있으면 각각 `<html data-frame>` / `<html data-theme-color>` / 화면 요구사항으로 반영합니다. `(미선택 - AI 추천)`이면 업무에 맞춰 고릅니다. `frame:` 줄이 없을 때도 같고(`left`로 고정하지 않음), `theme:` 줄이 없으면 `nhimc-default`를 씁니다.
+- 요청에 `frame:` / `theme:` / `requirements:` 줄이 있으면 각각 `<html data-frame>` / `<html data-theme-color>` / 화면 요구사항으로 반영합니다. `(미선택 - AI 추천)`이면 업무에 맞춰 고릅니다. 단 AI 추천은 `left`/`left-blank`를 고르지 않고 `top-left`(=DEFAULT Frame)·`top` 중에서 고르며(애매하면 `top-left`), 소식·콘텐츠형 화면이면 `blog`도 가능합니다. `left-dual`(아이콘 레일+하위 메뉴 패널을 둔 2단계 메뉴용 LEFT)도 후보지만 가장 후순위입니다 — 메뉴가 2단계이고 하위 화면이 많아 `top-left`·`top`으로 담기 어려울 때만 고릅니다. 이 규칙은 `rules/layout.md`의 자동 선택 순서(마지막 폴백 LEFT, blog 제외)보다 우선합니다(vendor 파일은 그대로 두므로 여기서 덮어씁니다), `presentation`/`presentation-vertical`은 PPT·발표·슬라이드용일 때만 고릅니다. `frame:` 줄이 없을 때도 같고(`left`로 고정하지 않음), `theme:` 줄이 없으면 `nhimc-default`를 씁니다.
 
 ## 웹에서도 코드 실행이 되면 완성 파일을 첨부
 
@@ -91,7 +91,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 
 ## Web(context-only)에서는 Web Runtime 사용
 
-빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.1.0/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
+빌더를 실행할 수 없으면 `<main data-nhimc-role="content">…</main>`, 선택적 메뉴 JSON, 그리고 `<head>`에 넣은 `<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.2.0/dist/nhimc-web.js"></script>` 한 줄로 HTML 하나를 완성합니다(본문 끝에 두면 스타일 없는 화면이 잠깐 보입니다). Runtime이 정본 Frame·Font·Icon·Logo를 씌우므로 `<nhimc-frame>`, 폰트, 아이콘, CSS를 직접 넣지 않습니다. 인터넷과 외부 스크립트가 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고 로컬 환경(Claude Code · Codex · Gemini CLI)에서 다시 요청하도록 안내합니다. Web Runtime은 미리보기만 하며 아무 파일도 자동으로 저장하지 않으므로, 브라우저 검증을 거친 외부 링크 없는 `index.html`이 필요하면 로컬 환경에서 빌더로 다시 만들도록 안내하세요.
 
 ## Self-check (완료 전 5개 계약)
 

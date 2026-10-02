@@ -13,6 +13,7 @@ class CanonicalParityMatrixTests(unittest.TestCase):
             {
                 "left",
                 "left-blank",
+                "left-dual",
                 "top",
                 "top-left",
                 "presentation",
@@ -24,7 +25,7 @@ class CanonicalParityMatrixTests(unittest.TestCase):
         self.assertEqual(
             {"1440x900", "1024x768", "390x844"}, set(result["viewports"])
         )
-        self.assertEqual(42, len(result["results"]))
+        self.assertEqual(48, len(result["results"]))
         self.assertTrue(result["all_passed"], result)
 
 

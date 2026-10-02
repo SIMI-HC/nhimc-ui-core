@@ -16,6 +16,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
+from scripts.derived_frames import DERIVED_BASE
 from scripts.content_rules import validate_content
 from scripts.theme_colors import DEFAULT_THEME_COLOR, theme_color_css, theme_color_ids
 from scripts.validate_contracts import validate_contracts
@@ -517,7 +518,7 @@ def build_single_html(root: Path, source: Path, output: Path) -> Path:
     frame_id, payload = _parse_authoring(stripped, raw_menu, business_script, screens)
 
     upstream, digests = _upstream(root)
-    layout_name = _frame_kind(frame_id)
+    layout_name = DERIVED_BASE.get(_frame_kind(frame_id), _frame_kind(frame_id))  # derived Frames verify their vendored base
     _verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{layout_name}.html", digests)
     _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests)
     font_css = _font_css(root, digests)

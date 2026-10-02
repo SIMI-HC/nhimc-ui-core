@@ -16,7 +16,8 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.build_single_html import _font_css, _upstream, _verified_vendor_bytes
-from scripts.canonical_frame import FRAME_FILES
+from scripts.canonical_frame import ALL_FRAME_FILES
+from scripts.derived_frames import DERIVED_BASE, derive_layout, dual_runtime
 from scripts.frame_patches import apply_frame_patches
 from scripts.icon_overlay import merged_sprite
 from scripts.theme_colors import theme_color_css, theme_color_ids
@@ -30,10 +31,12 @@ CDN_BASE = "https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core"
 def build_web_runtime(root: Path = ROOT) -> Path:
     root = root.resolve()
     _, digests = _upstream(root)
-    layouts = {
-        Path(name).stem: apply_frame_patches(_verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{name}", digests).decode("utf-8"))
-        for name in sorted(set(FRAME_FILES.values()))
-    }
+    def layout(name: str) -> str:
+        kind = Path(name).stem
+        base = _verified_vendor_bytes(root, f"vendor/nhimc-design/layouts/{DERIVED_BASE.get(kind, kind)}.html", digests).decode("utf-8")
+        return apply_frame_patches(derive_layout(kind, base, root=root) if kind in DERIVED_BASE else base)
+
+    layouts = {Path(name).stem: layout(name) for name in sorted(set(ALL_FRAME_FILES.values()))}
     sprite = merged_sprite(root, _verified_vendor_bytes(root, "vendor/nhimc-design/icons/nhimc-icons.svg", digests).decode("utf-8"))
     runtime = (root / "src/generated/frame/frame-runtime.js").read_text(encoding="utf-8")
     presentation_runtime = (root / "src/presentation/presentation-runtime.js").read_text(encoding="utf-8")
@@ -54,6 +57,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
         "sprite": sprite,
         "runtime": runtime,
         "presentationRuntime": presentation_runtime,
+        "dualRuntime": dual_runtime(root),
         "css": css,
         "themeCss": theme_color_css(root),
         "icons": sorted(set(re.findall(r'<symbol\s+id="([a-z0-9-]+)"', sprite))),

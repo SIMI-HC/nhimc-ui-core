@@ -1,5 +1,16 @@
 # 변경 이력
 
+## [2.2.0] - 2026-10-02
+
+- **LEFT DUAL의 하위 메뉴 패널을 접을 수 있게**: 패널 제목 줄 오른쪽 끝의 접기 버튼으로 224px 패널을 접어 88px 레일만 남깁니다. 접힌 상태에서는 별도 펼침 버튼 없이 레일 메뉴를 누르면 패널이 다시 펼쳐집니다. 접고 펼 때 패널 폭이 부드럽게 줄고 늘며, 메뉴가 많아도 레일·패널에 스크롤바가 보이지 않습니다(키가 작은 화면에서는 레일 항목이 촘촘해짐). 브랜드 줄 아래 구분선은 뺐습니다.
+- **LEFT DUAL Frame 추가** (1.0.0): vendor 파일은 그대로 두고 LEFT 레이아웃에서 파생합니다(`scripts/derived_frames.py`, `canonical_frame.layout_source`).
+  - `left-dual`: 1단계 메뉴는 아이콘+이름 레일(88px, 이름 글자 10px, 맨 위 36px 일산병원 마크, 마크 위아래 여백 10px로 TOP Frame 로고와 같음), 선택한 메뉴의 하위(children) 화면은 옆 패널(224px, 제목 줄 높이가 헤더와 같고 아래 선은 없음)에 나옵니다. 하위 메뉴가 없는 항목은 패널에 자기 자신만 나옵니다. 레일·패널은 `src/frames/dual-runtime.js`가 평평한 LEFT 메뉴에서 만들고, 그러려고 side 메뉴 링크에 `data-parent-id`를 달았습니다. 1024px 미만은 햄버거 드로어입니다.
+  - AI 추천 후보에는 들어가지만 가장 후순위입니다(`top-left`·`top`으로 담기 어려운 2단계·다수 하위 화면 메뉴일 때만). `frame: left-dual`로 명시해도 됩니다.
+- **BLOG Frame 레이아웃 개선** (BLOG 1.7.0): 내용이 가운데 한 줄(최대 1080px)로 모이고, 헤더는 로고 왼쪽·메뉴 오른쪽(도움말·테마 버튼 앞)이고 안쪽 폭이 내용 칸(Page의 좌우 여백은 BLOG에서 0)의 좌우 끝과 같습니다(좁은 화면 포함).
+- **Design Guide의 Frame·Component 목록을 업데이트 시각 최신순으로 정렬**하고, 바뀐 Frame(BLOG·PRESENTATION 둘·LEFT DUAL)의 업데이트 시각을 2026.10.02로 갱신했습니다.
+- **AI 추천 규칙 위치 정정**: 앞서 `vendor/.../rules/layout.md`를 고쳤더니 vendor 해시 검증(`upstream.digest`)이 깨져 되돌렸습니다. AI 추천 제한은 `bootstrap.md`·`SKILL.md`에만 두고 layout.md보다 우선한다고 적었습니다.
+- **BLOG Frame의 `site-header`를 반투명으로 변경** (BLOG 1.6.0): `--site-header-surface`를 페이지 배경(캔버스)색 40%(`rgba`)로 두고 `backdrop-filter: blur(12px)`를 추가했습니다. `main`·`document` 스크롤 모두 같고, `document`의 sticky 헤더는 테두리·그림자를 그대로 유지합니다. 눈에 보이도록 `main` 스크롤도 Main이 헤더 밑까지 올라와 내용이 헤더 뒤로 비치게 했습니다(음수 margin + header 높이만큼 padding-top, 앵커는 `scroll-margin-top`). 완전 투명 + sticky 조합만 계속 금지합니다. 보호 파일 `frame_patches.py` 해시를 모든 Frame에서 갱신하고 `dist/nhimc-web.js`를 다시 빌드했습니다.
+- **PRESENTATION·PRESENTATION VERTICAL Frame 왼쪽 위에 일산병원 로고 추가** (두 Frame 1.2.0): TOP Frame의 로고 SVG를 도움말 버튼과 같은 줄(top 20px)에 32px 높이(모바일 26px)로 넣었습니다.
 ## [2.1.0] - 2026-10-01
 
 - **BLOG·TOP·DEFAULT Frame의 `site-header` 높이를 64px에서 56px로 줄임** (BLOG 1.5.0, TOP·DEFAULT(top-left) 1.4.0). 모바일 드로어 머리(56px)와 같은 높이입니다.

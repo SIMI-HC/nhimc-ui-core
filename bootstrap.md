@@ -52,12 +52,12 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.1.0/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.2.0/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v2.1.0`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.1.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v2.2.0`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.2.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -82,8 +82,8 @@ Content 작성 규칙(발표용):
 
 스크롤 소유자는 새 Layout이 아니라 **BLOG Frame 안의 상태**입니다. `<html data-scroll-owner="main|document">`(웹 실행은 `<nhimc-frame data-scroll-owner>`도 가능)로 고르고, 없으면 `main`입니다.
 
-- `main`(기본): app-shell은 `100svh`, SiteHeader는 `flex:none`(sticky 아님, 투명 유지), **Main(`.content`)만 스크롤**합니다.
-- `document`: 문서 전체가 스크롤합니다. SiteHeader는 sticky로 바뀌고 **반드시 불투명**(`background: var(--color-background)`, `border-bottom: 1px solid var(--color-border-accent)`, 정본 `--shadow-lg`)입니다. sticky + 투명 조합은 만들지 않습니다.
+- `main`(기본): app-shell은 `100svh`, SiteHeader는 `flex:none`(sticky 아님, 반투명), **Main(`.content`)만 스크롤**합니다.
+- `document`: 문서 전체가 스크롤합니다. SiteHeader는 sticky로 바뀌고 **반투명 + blur**(`--site-header-surface` 캔버스색(`#f4f7fa`/`#0a0a0a`) 40% 불투명 + `backdrop-filter: blur(12px)`, `border-bottom: 1px solid var(--color-border-accent)`, 정본 `--shadow-lg`)입니다. sticky + 완전 투명 조합은 만들지 않습니다.
 - 앵커(`#id`)는 sticky 헤더 높이를 반영한 `scroll-margin-top`으로 이동합니다. 페이지에서 따로 보정하지 않습니다.
 - 헤더 색은 `!important`가 아니라 토큰(`--site-header-surface`)으로 제어합니다. 로고·내비게이션·도움말·모바일 메뉴·Footer는 두 상태에서 같습니다.
 - 소유자 전환은 `document.documentElement.dataset.scrollOwner`만 바꾸면 됩니다.
@@ -92,7 +92,7 @@ Content 작성 규칙(발표용):
 
 사용자 요청에 다음 줄이 있으면(Design Guide의 “프롬프트 만들기” 결과) 그대로 따릅니다. 값 뒤의 ` — 이름`은 설명이므로 무시하고 첫 토큰만 id로 씁니다.
 
-- `frame: <id>` → 저작 원본 `<html data-frame="<id>">` (`left`, `left-blank`, `top`, `top-left`, `presentation`, `presentation-vertical`, `blog`). `frame:` 줄이 없으면 `(미선택 - AI 추천)`과 똑같이 취급해, 업무에 맞춰 AI가 고릅니다. `nhimc-default`는 레지스트리 내부 id일 뿐이며 `frame:` 값으로 쓰지 않습니다 — 사용자가 "디폴트로 해줘"라고 명시하면 `left`를 뜻합니다.
+- `frame: <id>` → 저작 원본 `<html data-frame="<id>">` (`left`, `left-blank`, `left-dual`, `top`, `top-left`, `presentation`, `presentation-vertical`, `blog`). `frame:` 줄이 없으면 `(미선택 - AI 추천)`과 똑같이 취급해, 업무에 맞춰 AI가 고릅니다. 단 AI 추천은 `left`/`left-blank`를 고르지 않고 `top-left`(=DEFAULT Frame)·`top` 중에서 고르며(애매하면 `top-left`), 소식·콘텐츠형 화면이면 `blog`도 가능합니다. `left-dual`(아이콘 레일+하위 메뉴 패널을 둔 2단계 메뉴용 LEFT)도 후보지만 가장 후순위입니다 — 메뉴가 2단계이고 하위 화면이 많아 `top-left`·`top`으로 담기 어려울 때만 고릅니다. 이 규칙은 `rules/layout.md`의 자동 선택 순서(마지막 폴백 LEFT, blog 제외)보다 우선합니다(vendor 파일은 그대로 두므로 여기서 덮어씁니다), `presentation`/`presentation-vertical`은 PPT·발표·슬라이드용일 때만 고릅니다. `nhimc-default`는 레지스트리 내부 id일 뿐이며 `frame:` 값으로 쓰지 않습니다 — 사용자가 "디폴트로 해줘"라고 명시하면 `left`를 뜻합니다.
 - `scroll-owner: <main|document>` → BLOG 전용. `<html data-scroll-owner="document">`. 없으면 `main`. 아래 “BLOG Frame 스크롤 소유자” 참고.
 - `theme: <id>` → `<html data-theme-color="<id>">` (`nhimc-default`, `mint`, `pear`, `apricot`, `neutral`, `color-mix`). 라이트/다크는 `data-theme="light|dark"`.
 - `requirements: …` → 화면 요구사항. 메뉴와 Page 구성은 이 내용에서 AI가 판단합니다.
@@ -184,7 +184,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.1.0/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.2.0/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>

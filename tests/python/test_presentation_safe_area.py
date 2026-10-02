@@ -87,6 +87,8 @@ class PresentationBaseContractTests(unittest.TestCase):
         once = frame_patches.apply_frame_patches(raw)
         self.assertEqual(once, frame_patches.apply_frame_patches(once))
         restored = once.replace(' data-presentation-direction="horizontal"', "", 1)
+        restored = re.sub(r'<div class="brand-logo">.*?</div><div class="utility">', '<div class="utility">', restored, count=1, flags=re.DOTALL)
+        restored = re.sub(re.escape("/* " + frame_patches.PRESENTATION_LOGO_MARKER + " */") + r".*?(?=</style>)", "", restored, count=1, flags=re.DOTALL)
         start = restored.index("\n/* " + frame_patches.SAFE_AREA_MARKER)
         cut = raw.rindex("</style>")
         self.assertEqual(raw[:cut], restored[:start])
@@ -124,7 +126,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             frame = frames[frame_id]
             self.assertEqual("presentation", frame["extends"])
             self.assertEqual(base["sharedRuntime"], frame["implementation"])
-            self.assertEqual("1.1.0", frame["version"])
+            self.assertEqual("1.2.0", frame["version"])
             for name in base["frameOwns"]:
                 self.assertIn(name, frame["owns"], frame_id)
             for name in ("branding", "presentation-header", "presentation-controller", "content-safe-area", "content-center", "slide-transition", "slide-navigation"):
@@ -132,7 +134,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.5.0", "nhimc-top": "1.4.0", "nhimc-default": "1.3.0", "nhimc-left-blank": "1.3.0", "nhimc-top-left": "1.4.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.7.0", "nhimc-top": "1.4.0", "nhimc-default": "1.3.0", "nhimc-left-blank": "1.3.0", "nhimc-top-left": "1.4.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

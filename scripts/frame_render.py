@@ -26,7 +26,7 @@ from scripts.run_browser_tests import find_browser
 from scripts.theme_colors import DEFAULT_THEME_COLOR, theme_color_ids
 
 ROOT = Path(__file__).resolve().parents[1]
-FRAMES = ("left", "left-blank", "top", "top-left", "presentation", "presentation-vertical", "blog")
+FRAMES = ("left", "left-blank", "left-dual", "top", "top-left", "presentation", "presentation-vertical", "blog")
 MODES = ("light", "dark")
 VIEWPORTS = ((1440, 900), (768, 900), (375, 800))
 PATHS = ("offline", "web")
@@ -132,7 +132,7 @@ def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list
             found.append(f"{label}: primary Button is rgb{tuple(result.get('buttonRgb') or ())}, expected rgb{tuple(want)}")
     if result.get("pageOverflowX"):
         found.append(f"{label}: the page scrolls horizontally")
-    if not result.get("icons") and cell["frame"] not in {"presentation", "presentation-vertical"} and cell["width"] >= 768:
+    if not result.get("icons") and cell["frame"] not in {"presentation", "presentation-vertical"} and cell["width"] >= 768             and not (cell["frame"] == "left-dual" and cell["width"] < 1024):  # LEFT DUAL's rail is a drawer below 1024px
         found.append(f"{label}: no menu icon was measured")
     for icon in result.get("icons", []):
         if icon["width"] > MAX_ICON or icon["height"] > MAX_ICON:

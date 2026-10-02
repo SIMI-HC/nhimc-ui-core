@@ -122,7 +122,7 @@ class DesignGuideTests(unittest.TestCase):
         self.assertIn(f"@v{version}/guide/nhimc-design-guide.html", bootstrap)
 
     def test_prompt_frame_and_theme_ids_are_supported_by_the_builder(self):
-        from scripts.canonical_frame import FRAME_FILES
+        from scripts.canonical_frame import ALL_FRAME_FILES as FRAME_FILES
         from scripts.theme_colors import theme_color_ids
 
         data = _data(GUIDE.read_text(encoding="utf-8"))

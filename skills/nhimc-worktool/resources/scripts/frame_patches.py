@@ -22,9 +22,10 @@ frameVersion always means the same Frame.
        Slide lifecycle, transitions and navigation live in src/presentation/presentation-runtime.js.
 1.2.0  BLOG scroll owner. The scroll owner is a state of the one BLOG Frame (html[data-scroll-owner]), not a new
        layout variant:
-       - "main" (default): app-shell is 100svh, the transparent SiteHeader is flex:none and Main scrolls.
-       - "document": the page scrolls; the SiteHeader becomes sticky on an opaque --color-background surface with a
-         --color-border-accent bottom border and the canonical --shadow-lg. Sticky + transparent is never produced.
+       - "main" (default): app-shell is 100svh, the translucent SiteHeader is flex:none and Main scrolls.
+       - "document": the page scrolls; the SiteHeader becomes sticky on the same translucent (40%) canvas surface with a
+         backdrop blur, a --color-border-accent bottom border and the canonical --shadow-lg. Sticky + fully transparent is
+         never produced.
          Anchors get a scroll-margin that clears the sticky header.
        The forced `background:transparent!important` theme rules on .site-header / .statusbar are removed; the header
        surface is now the semantic token --site-header-surface.
@@ -35,9 +36,21 @@ frameVersion always means the same Frame.
 1.5.0  SiteHeader height 64px -> 56px. BLOG takes it from --site-header-height (so the sticky offset follows), TOP from
        .site-header and DEFAULT (top-left) from the first app-shell grid row, on desktop and mobile.
        Registry versions: BLOG 1.5.0, TOP and DEFAULT 1.4.0.
+1.6.0  BLOG SiteHeader is translucent: --site-header-surface is the page canvas colour of each theme (#f4f7fa / #0a0a0a) at 40% alpha
+       (rgba, no color-mix: the offline target Edge is 92) plus a 12px backdrop blur, in both scroll owners. The sticky
+       document header keeps its border and shadow; only fully transparent sticky headers stay forbidden.
+       Main now extends under the header (negative margin + header-height padding-top, header z-index 8) so scrolling
+       content is really seen through the translucent header in both owners; with the Main scroll it used to sit below.
+       Registry version: BLOG 1.6.0.
+1.7.0  BLOG layout: Content is one centred column (--blog-width 1080px, also the Page primitive's --page-max) and the
+       SiteHeader lines up with it: brand on the left, the menu pushed to the right next to the utilities. Registry
+       version: BLOG 1.7.0.
+1.2.0  PRESENTATION frames (presentation, presentation-vertical): the Ilsan Hospital logo (the TOP Frame's SVG, 32px) sits
+       top-left on the same row as the help button. Registry versions: PRESENTATION and PRESENTATION VERTICAL 1.2.0.
 """
 from __future__ import annotations
 
+from pathlib import Path
 import re
 
 LOGO_SELECTORS = ("brand-asset", "hospital-brand-logo", "brand-mark")
@@ -115,14 +128,27 @@ _DOCUMENT = 'html[data-scroll-owner="document"]'
 # ponytail: the state lives on <html> so the root scroller can be freed without :has() (the offline target Edge is 92).
 _BLOG_SCROLL_OWNER_RULES = f"""
 /* {BLOG_SCROLL_MARKER}: main (default) keeps the app-shell at 100svh and Main scrolls; document lets the page scroll. */
-.app-shell{{--site-header-height:{SITE_HEADER_HEIGHT}px;--site-header-surface:transparent}}
-.site-header{{flex:none;height:var(--site-header-height);background:var(--site-header-surface)}}
+.app-shell{{--site-header-height:{SITE_HEADER_HEIGHT}px;--site-header-surface:rgba(244,247,250,.4)}}
+[data-theme="dark"] .app-shell{{--site-header-surface:rgba(10,10,10,.4)}}
+.site-header{{flex:none;height:var(--site-header-height);background:var(--site-header-surface);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);position:relative;z-index:8}}
+.content{{margin-top:calc(var(--site-header-height) * -1);padding-top:calc(var(--site-header-height) + 24px)}}
+[id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
 {_DOCUMENT},{_DOCUMENT} body{{height:auto;overflow:visible}}
 {_DOCUMENT}{{scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:var(--color-scrollbar-thumb) var(--color-scrollbar-track)}}
-{_DOCUMENT} .app-shell{{--site-header-surface:var(--color-background);height:auto;min-height:100vh;min-height:100svh}}
-{_DOCUMENT} .site-header{{position:sticky;top:0;z-index:8;border-bottom:1px solid var(--color-border-accent);box-shadow:var(--shadow-lg)}}
+{_DOCUMENT} .app-shell{{height:auto;min-height:100vh;min-height:100svh}}
+{_DOCUMENT} .site-header{{position:sticky;top:0;border-bottom:1px solid var(--color-border-accent);box-shadow:var(--shadow-lg)}}
 {_DOCUMENT} .content{{flex:1 0 auto;overflow:visible}}
 {_DOCUMENT} [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
+/* BLOG layout: one centred reading column; the header lines up with it (brand left, menu right, utilities last). */
+.app-shell{{--blog-width:1080px;--page-max:var(--blog-width);--blog-edge:max(24px,calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2))}}
+{_DOCUMENT} .app-shell{{--blog-edge:max(24px,calc((100% - var(--blog-width)) / 2))}}
+.content [data-nhimc-role="content"]{{padding-inline:0}}
+.content{{grid-template-columns:minmax(0,var(--blog-width));justify-content:center}}
+.site-header{{padding-inline:var(--blog-edge) calc(var(--blog-edge) + var(--scrollbar-inline-size,10px))}}
+{_DOCUMENT} .site-header{{padding-inline:var(--blog-edge)}}
+.spacer{{order:1}}
+.topnav{{order:2;margin-left:0;margin-right:12px}}
+.utility{{order:3}}
 """
 
 
@@ -198,6 +224,28 @@ def _patch_header_height(layout: str) -> str:
     return layout.replace(_DEFAULT_ROWS, f"grid-template-rows:{SITE_HEADER_HEIGHT}px minmax(0,1fr) 28px")
 
 
+PRESENTATION_LOGO_MARKER = "nhimc-presentation-logo"
+_TOP_LAYOUT = Path(__file__).resolve().parents[1] / "vendor/nhimc-design/layouts/top.html"
+_LOGO_SVG = re.compile(r'<svg class="hospital-brand-logo".*?</svg>', re.DOTALL)
+# Same row as the help button (.utility: top:20px, 40px buttons); the logo is the TOP Frame's own SVG, no tile.
+_PRESENTATION_LOGO_RULES = f"""/* {PRESENTATION_LOGO_MARKER} */
+.brand-logo{{position:absolute;top:20px;left:20px;height:40px;display:flex;align-items:center;z-index:6}}
+.brand-logo .hospital-brand-logo{{width:auto;height:32px;display:block;flex:none}}
+@media(max-width:767px){{.brand-logo .hospital-brand-logo{{height:26px}}}}
+"""
+
+
+def _patch_presentation_logo(layout: str) -> str:
+    if not is_presentation_layout(layout) or PRESENTATION_LOGO_MARKER in layout:
+        return layout
+    logo = _LOGO_SVG.search(_TOP_LAYOUT.read_text(encoding="utf-8"))
+    if logo is None:
+        raise ValueError("hospital logo not found in the TOP layout")
+    end = layout.rindex("</style>")
+    layout = layout[:end] + _PRESENTATION_LOGO_RULES + layout[end:]
+    return layout.replace('<div class="utility">', f'<div class="brand-logo">{logo.group(0)}</div><div class="utility">', 1)
+
+
 def apply_frame_patches(layout: str) -> str:
-    patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_safe_area(_patch_logo_tile(layout))))
+    patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_logo(_patch_presentation_safe_area(_patch_logo_tile(layout)))))
     return _patch_header_height(_patch_default_header_spacing(_patch_sidebar_gradient(patched)))

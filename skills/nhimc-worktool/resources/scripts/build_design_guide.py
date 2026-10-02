@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import copy
 import json
 from pathlib import Path
 import re
@@ -21,6 +22,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.build_single_html import _font_css, _upstream
+from scripts.derived_frames import derive_layout
 from scripts.frame_patches import apply_frame_patches
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -115,10 +117,23 @@ UPDATED_AT = {
     "left-blank": "2026-09-30T10:01:00+09:00",
     "top-left": "2026-10-01T16:00:00+09:00",
     "top": "2026-10-01T16:00:00+09:00",
-    "blog": "2026-10-01T16:00:00+09:00",
+    "blog": "2026-10-02T09:21:00+09:00",
+    "left-dual": "2026-10-02T09:21:00+09:00",
+    "presentation": "2026-10-02T09:21:00+09:00",
+    "presentation-vertical": "2026-10-02T09:21:00+09:00",
     "Card": "2026-10-01T15:55:00+09:00",
     "Dialog": "2026-10-01T15:55:00+09:00",
     "Badge": "2026-10-01T15:55:00+09:00",
+}
+
+# Frames derived from LEFT (scripts/derived_frames.py). The Guide previews their derived layout; the item starts as a LEFT copy.
+DERIVED_ITEMS = {
+    "left-dual": {
+        "name": "LEFT DUAL Frame",
+        "title": "left-dual:v1",
+        "description": "아이콘+이름 레일(84px)과 선택한 그룹의 하위 화면 목록 패널(216px)을 나란히 두는 이중 사이드바 변형. 메뉴가 많고 2단계 구조인 리포트·관리 콘솔에 어울립니다. 1단계 메뉴가 레일, 그 하위 메뉴(children)가 패널에 나옵니다.",
+        "variant": "sidebar-rail-plus-panel",
+    },
 }
 
 SHOWCASE = "../../assets/components/showcase.html"
@@ -166,6 +181,19 @@ def build_guide(root: Path) -> Path:
     css = (upstream / "design-tokens.css").read_text(encoding="utf-8") + "\n" + (upstream / "design-guide.css").read_text(encoding="utf-8")
     script = (upstream / "design-guide.js").read_text(encoding="utf-8")
     gallery = json.loads((upstream / "gallery-data.json").read_text(encoding="utf-8"))
+    left_item = next(item for item in gallery["items"] if item["id"] == "left")
+    left_layout = gallery["documents"][left_item["source"]]
+    for frame_id, copy_fields in DERIVED_ITEMS.items():
+        source = f"../../assets/layouts/{frame_id}.html"
+        gallery["documents"][source] = derive_layout(frame_id, left_layout, root=root)
+        item = copy.deepcopy(left_item)
+        item.update(
+            id=frame_id, name=copy_fields["name"], title=copy_fields["title"], description=copy_fields["description"],
+            source=source, previewSource=source, sourceHash=left_item["sourceHash"],
+        )
+        item["contract"]["variant"] = copy_fields["variant"]
+        gallery["items"].append(item)
+        gallery["counts"]["frame"] += 1
     gallery["documents"] = {
         key: apply_frame_patches(value) if "/layouts/" in key else value for key, value in gallery["documents"].items()
     }
@@ -175,8 +203,11 @@ def build_guide(root: Path) -> Path:
     for item in gallery["items"]:
         if item["id"] in PRESENTATION_COPY:
             item.update(PRESENTATION_COPY[item["id"]])
+        if item["id"] == "blog":
+            item["description"] = item["description"].replace("투명 SiteHeader", "반투명 SiteHeader")
         if item["id"] in UPDATED_AT:
             item["updatedAt"] = UPDATED_AT[item["id"]]
+    gallery["items"].sort(key=lambda item: item["updatedAt"], reverse=True)  # newest Frame/Component first (stable)
     data = json.dumps(gallery, ensure_ascii=False, separators=(",", ":"))
     sections = (root / "src/guide/sections.html").read_text(encoding="utf-8")
     extra_css = (root / "src/guide/guide-extra.css").read_text(encoding="utf-8")

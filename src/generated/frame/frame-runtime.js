@@ -8,6 +8,11 @@
   const themeButton = document.getElementById('themeToggle');
   const themeLabel = document.getElementById('themeLabel');
 
+  // A folded rail shows no labels, so every menu link keeps its name as a tooltip (the layouts' own scripts did this).
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (!link.title) link.title = link.querySelector('.nav-label')?.textContent.trim() || '';
+  });
+
   const mobileNav = document.querySelector('[data-navigation-view="mobile"]');
   const desktopNav = document.querySelector('[data-navigation-view="desktop"]');
   if (mobileNav?.dataset.navigationClone === 'desktop' && desktopNav) {

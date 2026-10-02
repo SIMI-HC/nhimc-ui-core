@@ -23,7 +23,7 @@ from scripts.build_single_html import (
     build_single_html,
     inspect_completion_manifest,
 )
-from scripts.canonical_frame import FramePayload, MenuItem, render_canonical_frame
+from scripts.canonical_frame import FramePayload, MenuItem, layout_source, render_canonical_frame
 from scripts.frame_patches import apply_frame_patches
 
 
@@ -39,7 +39,7 @@ BROWSER_NAMES = (
 )
 DEFAULT_VIEWPORTS = ((1440, 900), (1024, 768), (390, 844))
 CANONICAL_FRAMES = (
-    "left", "left-blank", "top", "top-left", "presentation",
+    "left", "left-blank", "left-dual", "top", "top-left", "presentation",
     "presentation-vertical", "blog",
 )
 
@@ -188,9 +188,8 @@ def run_parity_matrix(root: Path = ROOT, viewports=DEFAULT_VIEWPORTS) -> dict:
     with tempfile.TemporaryDirectory(prefix="NHIMC all frame parity ") as folder:
         test_root = Path(folder)
         for frame in CANONICAL_FRAMES:
-            source = root / "vendor/nhimc-design/layouts" / f"{frame}.html"
             (test_root / f"{frame}-source.html").write_text(
-                apply_frame_patches(source.read_text(encoding="utf-8")), encoding="utf-8", newline="\n"
+                apply_frame_patches(layout_source(root, f"{frame}.html")), encoding="utf-8", newline="\n"
             )
             adapted = render_canonical_frame(root, frame, _canonical_payload())
             (test_root / f"{frame}-adapted.html").write_text(
@@ -309,12 +308,10 @@ FRAME_CONTROL_IDS = ("sidebarToggle", "mobileMenuOpen", "slidePrev", "slideNext"
 
 def _frame_expectations(root: Path, frame_id: str) -> dict:
     """What the exact verifier must find in an artifact of this Frame, read from the Frame layout itself."""
-    from scripts.canonical_frame import FRAME_FILES
+    from scripts.canonical_frame import ALL_FRAME_FILES, layout_source
     from scripts.frame_patches import apply_frame_patches
 
-    layout = apply_frame_patches(
-        (root / "vendor/nhimc-design/layouts" / FRAME_FILES[frame_id]).read_text(encoding="utf-8")
-    )
+    layout = apply_frame_patches(layout_source(root, ALL_FRAME_FILES[frame_id]))
     return {
         "statusbar": 'data-nhimc-role="statusbar"' in layout,
         "controls": [name for name in FRAME_CONTROL_IDS if f'id="{name}"' in layout],

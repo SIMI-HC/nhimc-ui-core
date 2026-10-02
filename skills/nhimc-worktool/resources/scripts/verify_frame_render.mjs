@@ -57,11 +57,11 @@ export const measureExpression = `(() => {
     icons: [],
   };
   // every menu icon that is on screen: bounded size, no overlap with its label, an accessible name
-  for (const svg of document.querySelectorAll('.topnav svg, .nav-link svg, .nav-drawer nav svg')) {
+  for (const svg of document.querySelectorAll('.topnav svg, .nav-link svg, .rail-link svg, .nav-drawer nav svg')) {
     const owner = svg.closest('button, a');
     if (!owner || !shown(svg)) continue;
     const box = rect(svg);
-    const label = owner.querySelector('.label, .nav-label');
+    const label = owner.querySelector('.label, .nav-label, .rail-label');
     const labelShown = label && shown(label) && getComputedStyle(label).display !== 'none';
     const use = svg.querySelector('use');
     const href = use ? (use.getAttribute('href') || use.getAttribute('xlink:href') || '') : '';

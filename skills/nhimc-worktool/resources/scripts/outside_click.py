@@ -20,7 +20,7 @@ from scripts.frame_render import fragment
 from scripts.run_browser_tests import find_browser
 
 ROOT = Path(__file__).resolve().parents[1]
-FRAMES = ("left", "left-blank", "top", "top-left", "blog")
+FRAMES = ("left", "left-blank", "left-dual", "top", "top-left", "blog")
 VIEWPORTS = ((1440, 900), (390, 844))
 
 

@@ -22,7 +22,7 @@
     throw new Error(message);
   };
 
-  const menuItems = (items, activeId, mode) => items.map((item) => {
+  const menuItems = (items, activeId, mode, parent = '') => items.map((item) => {
     const current = item.id === activeId ? ' aria-current="page"' : '';
     const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#' + esc(item.icon) + '"></use></svg>';
     const label = esc(item.label);
@@ -31,13 +31,13 @@
       // The rendered fragment target is namespaced (screen-<id>) so it never collides with an icon symbol
       // id in the sprite; data-menu-id/data-screen-target still carry the raw menu id for the runtime's
       // [data-screen-panel] matching, so navigation behavior is unaffected.
-      html = '<a class="nav-link" href="#screen-' + item.id + '" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + '><span class="nav-chip">' + icon + '</span><span class="nav-label">' + label + '</span></a>';
+      html = '<a class="nav-link" href="#screen-' + item.id + '" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + (parent ? ' data-parent-id="' + parent + '"' : '') + current + '><span class="nav-chip">' + icon + '</span><span class="nav-label">' + label + '</span></a>';
     } else if (mode === 'dots') {
       html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + ' aria-label="' + label + '"></button>';
     } else {
       html = '<button type="button" data-menu-id="' + item.id + '" data-screen-target="' + item.id + '"' + current + ' aria-label="' + label + '" title="' + label + '">' + icon + '<span class="label">' + label + '</span></button>';
     }
-    return html + (item.children && item.children.length ? menuItems(item.children, activeId, mode) : '');
+    return html + (item.children && item.children.length ? menuItems(item.children, activeId, mode, item.id) : '');
   }).join('');
 
   const replaceRoleContents = (doc, role, contents) => {
@@ -131,7 +131,7 @@
   if (scrollOwner !== 'main' && kind !== 'blog') fail('data-scroll-owner="' + scrollOwner + '" is supported by the blog frame only.');
   const themeColor = (source.getAttribute('data-theme-color') || 'nhimc-default').toLowerCase();
   if (!D.themeColors.includes(themeColor)) fail('unknown theme color: ' + themeColor + '. Use one of ' + D.themeColors.join(', '));
-  const mode = kind.startsWith('presentation') ? 'dots' : ['left', 'left-blank', 'top-left'].includes(kind) ? 'side' : 'top';
+  const mode = kind.startsWith('presentation') ? 'dots' : ['left', 'left-blank', 'left-dual', 'top-left'].includes(kind) ? 'side' : 'top';
   const projectTitle = (document.querySelector('nhimc-frame') && document.querySelector('nhimc-frame').dataset.projectTitle) || title;
 
   // PRESENTATION Content lives in the Frame's own slide markup; the Frame owns the slide, its Safe Area and lifecycle.
@@ -162,7 +162,7 @@
   const scripts = [...doc.matchAll(/<script>[\s\S]*?<\/script\s*>/gi)];
   if (scripts.length !== 1) fail('canonical runtime script must occur exactly once');
   const closeScript = '<' + '/script>';
-  doc = doc.slice(0, scripts[0].index) + '<script>\n' + (kind.startsWith('presentation') ? D.presentationRuntime : D.runtime) + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
+  doc = doc.slice(0, scripts[0].index) + '<script>\n' + (kind.startsWith('presentation') ? D.presentationRuntime : D.runtime + (kind === 'left-dual' ? D.dualRuntime : '')) + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
   const closeStyle = '<' + '/style>';
   const head = '<meta name="nhimc-core-version" content="' + D.version + '"><style data-nhimc-component-bundle="canonical">' + D.css + closeStyle;
   if (themeColor !== 'nhimc-default') doc = doc.replace(/(<html\b)/i, (m) => m + ' data-theme-color="' + themeColor + '"');

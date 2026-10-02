@@ -26,6 +26,14 @@ def _rules(css: str) -> list[tuple[str, str]]:
     return [tuple(rule.rsplit("{", 1)) for rule in css.split("}") if "{" in rule]
 
 
+def _merged(css: str) -> dict[str, str]:
+    """Bodies of every rule that repeats a selector, joined (the patch layers rules on the canonical ones)."""
+    merged: dict[str, str] = {}
+    for selector, body in _rules(css):
+        merged[selector.strip()] = merged.get(selector.strip(), "") + body + ";"
+    return merged
+
+
 class BlogScrollOwnerStaticTests(unittest.TestCase):
     def setUp(self):
         self.blog = apply_frame_patches((LAYOUTS / "blog.html").read_text(encoding="utf-8"))
@@ -39,22 +47,25 @@ class BlogScrollOwnerStaticTests(unittest.TestCase):
     def test_default_is_main_scroll_with_a_100svh_shell_and_a_flex_none_header(self):
         self.assertRegex(self.blog, r'<html data-scroll-owner="main" ')
         self.assertIn("height:100svh", self.blog)
-        rules = dict((selector.strip(), body) for selector, body in _rules(self.blog))
+        rules = _merged(self.blog)
         self.assertIn("flex:none", rules[".site-header"])
-        self.assertRegex(rules[".content"], r"flex:1;min-height:0;overflow:auto")
+        self.assertRegex(self.blog, r"\.content\{flex:1;min-height:0;overflow:auto")
+        self.assertIn("margin-top:calc(var(--site-header-height) * -1)", rules[".content"])
 
     def test_no_forced_transparent_styles_remain(self):
         self.assertNotIn("transparent!important", self.blog)
         self.assertNotIn("transparent !important", self.blog)
         self.assertIn("header:not(.site-header)", self.blog)
 
-    def test_document_state_is_opaque_sticky_bordered_and_shadowed_by_tokens(self):
-        rules = {selector.strip(): body for selector, body in _rules(self.blog)}
+    def test_document_state_is_translucent_sticky_bordered_and_shadowed_by_tokens(self):
+        rules = _merged(self.blog)
         header = rules['html[data-scroll-owner="document"] .site-header']
         self.assertIn("position:sticky", header)
         self.assertIn("border-bottom:1px solid var(--color-border-accent)", header)
         self.assertIn("box-shadow:var(--shadow-lg)", header)
-        self.assertIn("--site-header-surface:var(--color-background)", rules['html[data-scroll-owner="document"] .app-shell'])
+        self.assertIn("--site-header-surface:rgba(244,247,250,.4)", self.blog)
+        self.assertIn("--site-header-surface:rgba(10,10,10,.4)", rules['[data-theme="dark"] .app-shell'])
+        self.assertIn("backdrop-filter:blur(12px)", rules[".site-header"])
         self.assertIn("--shadow-lg:", self.blog, "the canonical shadow token must exist in the Frame")
         self.assertIn("scroll-margin-top:calc(var(--site-header-height) + 16px)", rules['html[data-scroll-owner="document"] [id]'])
 
@@ -90,7 +101,7 @@ class BlogScrollOwnerRenderTests(unittest.TestCase):
 
     def test_registry_records_the_new_frame_version_and_state(self):
         frame = next(item for item in json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"] if item["id"] == "nhimc-blog")
-        self.assertEqual("1.5.0", frame["version"])
+        self.assertEqual("1.7.0", frame["version"])
         self.assertEqual(["main", "document"], frame["scrollOwners"]["states"])
         self.assertEqual("main", frame["scrollOwners"]["default"])
 
