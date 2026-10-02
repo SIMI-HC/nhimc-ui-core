@@ -1,7 +1,8 @@
 # 변경 이력
 
-## [Unreleased]
+## [2.3.0] - 2026-10-02
 
+- **LEFT DUAL 레일을 아이콘만 보이게**: 1단계 메뉴 레일에서 이름 글자를 빼고(스크린리더용으로는 남김) 폭을 88px에서 64px로 줄였습니다. 항목은 44px 정사각 아이콘 버튼이고 항목 사이는 14px(키가 작은 화면에서는 6px)이며, 하위 메뉴 패널(224px)은 그대로입니다. 접으면 64px 레일만 남습니다.
 - **검증 안정화**: `verify_all.py`가 독립 검사를 4개씩 병렬로 실행합니다(`--jobs 1`로 순차 실행). 브라우저 검증 스크립트 4개는 페이지 target이 목록에 올라올 때까지 재시도해 간헐적인 "browser page target was not found"를 없앴고, 브라우저 탐색 경로에 `Program Files (x86)`의 Chrome을 추가해 `:has()`를 지원하지 않는 구형 Edge로 넘어가지 않게 했습니다.
 - **다이얼로그를 열 때 화면이 흔들리는지 점검하는 게이트 추가** (`scripts/modal_stability.py`, `verify_modal_stability.mjs`, `verify_all.py`의 "modal stability"): 세로 스크롤바가 있는 긴 화면에서 도움말 시트·모바일 메뉴를 열기 전/열린 중/닫은 뒤에 헤더와 첫 카드의 x·y·width와 스크롤 위치가 같은지, 맨 위·중간 두 경우, 설치된 Chrome·Edge 모두에서 잽니다. 페이지 스크롤 잠금(`overflow:hidden`을 html/body에 거는 경우) 시나리오도 포함합니다.
   - LEFT·LEFT BLANK·LEFT DUAL·TOP·DEFAULT·BLOG(`main`)는 이미 흔들림이 없었습니다(잠금을 걸어도 그대로). Frame 쪽 스크롤 잠금 코드는 없고, 스크롤 컨테이너의 `scrollbar-gutter:stable`도 이중으로 잡히지 않습니다.

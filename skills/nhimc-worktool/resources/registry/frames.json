@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "2.2.0",
+  "projectVersion": "2.3.0",
   "frames": [
     {
       "id": "nhimc-default",
@@ -114,7 +114,7 @@
         },
         {
           "path": "scripts/derived_frames.py",
-          "sha256": "a92b2b59d1f2fc97b414f67d8df35f29eb47089e1153eff84d7c09bdcbe57b16"
+          "sha256": "7529a329509431a3d06606c90461320e9bf7ad8c108821d9e0a18a81c4b4cfdb"
         },
         {
           "path": "src/frames/dual-runtime.js",
