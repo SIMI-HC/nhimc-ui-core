@@ -76,7 +76,7 @@ class PresentationBaseContractTests(unittest.TestCase):
                 if name == "blog.html":
                     expected = frame_patches._patch_blog_scroll_owner(expected)
                 if name in {"blog.html", "top.html"}:
-                    expected = frame_patches._patch_nav_icons(expected)
+                    expected = frame_patches._patch_nav_icons(frame_patches._patch_mobile_menu_color(expected))
                 expected = frame_patches._patch_header_height(frame_patches._patch_default_header_spacing(frame_patches._patch_sidebar_gradient(expected)))
                 self.assertEqual(expected, patched, name)
                 self.assertNotIn(frame_patches.SAFE_AREA_MARKER, patched, name)

@@ -3,6 +3,8 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+import { waitForDevToolsPort } from './devtools_port.mjs';
+
 const [browserPath, artifactUrl, runtimeToken] = process.argv.slice(2);
 // Per-frame expectations derived from the Frame layout (defaults match the LEFT frame).
 const expected = { statusbar: true, controls: ['sidebarToggle', 'mobileMenuOpen'], ...JSON.parse(process.argv[5] || '{}') };
@@ -27,15 +29,7 @@ const browser = spawn(browserPath, [
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-async function waitForDebugPort() {
-  const activePort = join(profile, 'DevToolsActivePort');
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    if (existsSync(activePort)) return readFileSync(activePort, 'utf8').split(/\r?\n/)[0];
-    if (browser.exitCode !== null) throw new Error(`browser exited before DevTools started: ${browser.exitCode}`);
-    await delay(50);
-  }
-  throw new Error('timed out waiting for the browser DevTools port');
-}
+const waitForDebugPort = () => waitForDevToolsPort({ activePort: join(profile, 'DevToolsActivePort'), browser });
 
 let socket;
 let nextId = 1;
