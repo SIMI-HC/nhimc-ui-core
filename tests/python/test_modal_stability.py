@@ -3,7 +3,7 @@ import unittest
 
 from scripts import modal_stability as gate
 from scripts.frame_patches import apply_frame_patches
-from scripts.test_profiles import slow_test
+from scripts.test_profiles import gate_covered
 
 ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = ROOT / "vendor/nhimc-design/layouts"
@@ -30,7 +30,7 @@ class ModalStabilityStaticTests(unittest.TestCase):
         )
 
 
-@slow_test
+@gate_covered
 class ModalStabilityBrowserTests(unittest.TestCase):
     def test_help_sheet_and_mobile_menu_do_not_move_the_page_in_every_installed_browser(self):
         report = gate.run_modal_stability(ROOT)

@@ -16,7 +16,7 @@ from scripts.canonical_frame import (
     presentation_slides,
     render_canonical_frame,
 )
-from scripts.test_profiles import slow_test
+from scripts.test_profiles import gate_covered, slow_test
 
 ROOT = Path(__file__).resolve().parents[2]
 LAYOUTS = ROOT / "vendor/nhimc-design/layouts"
@@ -37,7 +37,7 @@ def _script(html: str) -> str:
 
 
 class PresentationBaseContractTests(unittest.TestCase):
-    @slow_test
+    @gate_covered
     def test_both_frames_pass_safe_area_centering_lifecycle_parity_and_contrast(self):
         report = psa.run_presentation_safe_area(ROOT)
         self.assertEqual([], report["problems"])

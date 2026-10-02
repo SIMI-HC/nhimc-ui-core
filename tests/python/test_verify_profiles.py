@@ -87,6 +87,16 @@ class VerificationProfileTests(unittest.TestCase):
         self.assertEqual(0, full_excluded)
         self.assertEqual(full.countTestCases(), quick.countTestCases() + excluded)
 
+    def test_verify_all_runs_the_gated_profile_because_the_gates_cover_the_browser_matrices(self):
+        self.assertEqual("gated", verification_checks(ROOT)[0][1][-1])
+        gated, gated_excluded = build_suite(ROOT, "gated")
+        full, _ = build_suite(ROOT, "full")
+        quick, quick_excluded = build_suite(ROOT, "quick")
+        self.assertGreaterEqual(gated_excluded, 5)
+        self.assertLess(gated_excluded, quick_excluded)
+        self.assertGreater(gated.countTestCases(), quick.countTestCases())
+        self.assertEqual(full.countTestCases(), gated.countTestCases() + gated_excluded)
+
     def test_release_uses_the_single_full_verification_entry_point(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

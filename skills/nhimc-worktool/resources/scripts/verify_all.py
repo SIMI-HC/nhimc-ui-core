@@ -22,7 +22,7 @@ def verification_checks(
                 sys.executable,
                 "scripts/run_python_tests.py",
                 "--profile",
-                "quick" if quick else "full",
+                "quick" if quick else "gated",
             ],
         ),
         ("node tests", [npm, "run", "test:node"]),

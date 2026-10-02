@@ -44,9 +44,10 @@ _DUAL_CSS = """
 .mobile-panel{padding-bottom:0}
 .mobile-panel>.sidebar-nav{flex:1;min-height:0;margin:16px -8px 0;padding:0;display:grid;grid-template-columns:64px minmax(0,1fr)}
 .mobile-panel .rail-list{grid-area:1/1;padding:8px 0}
-.mobile-panel .sub-lists{grid-area:1/2;border-right:0;border-top-left-radius:12px}
+.mobile-panel .sub-lists{grid-area:1/2;background:transparent;color:var(--color-sidebar-brand-foreground);border-right:0;border-left:1px solid var(--color-sidebar-brand-18)}
 .mobile-panel .sub-group{width:auto}
-.mobile-panel .sub-title{padding:0 20px}
+.mobile-panel .sub-title{padding:0 20px;background:transparent}
+.mobile-panel .sub-lists .nav-link:hover,.mobile-panel .sub-lists .nav-link[aria-current="page"]{background:var(--color-sidebar-brand-18)}
 @media (max-width:1023px){.sub-lists .nav-link{gap:10px;justify-content:flex-start}.sub-lists .nav-label{position:static;max-width:none;opacity:1;visibility:visible}.app-shell{grid-template-columns:minmax(0,1fr);background:var(--color-canvas)}body{background:var(--color-canvas)}.sidebar{display:none}.site-header{padding:0 10px}.mobile-menu{display:inline-flex}.utility span{display:none}.utility{width:36px;padding:0}.main{padding:20px 12px}.statusbar{padding:0 12px}}
 """
 

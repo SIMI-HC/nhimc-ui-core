@@ -271,7 +271,8 @@ def _patch_mobile_menu_color(layout: str) -> str:
     which turns black on a dark page when color-scheme is not dark (e.g. a host that pins color-scheme). Name the colour like
     the other header buttons do."""
     for rule in _MOBILE_MENU_RULES:
-        layout = layout.replace(rule, rule + "color:var(--fg);", 1)
+        if rule + "color:var(--fg);" not in layout:
+            layout = layout.replace(rule, rule + "color:var(--fg);", 1)
     return layout
 
 

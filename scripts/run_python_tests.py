@@ -18,7 +18,10 @@ def build_suite(root: Path, profile: str) -> tuple[unittest.TestSuite, int]:
     discovered = unittest.defaultTestLoader.discover(
         str(root / "tests/python"), pattern="test_*.py"
     )
-    return select_tests(discovered, include_slow=profile == "full")
+    # quick: no browser tests; gated: browser tests except those a verify_all gate already runs; full: everything
+    return select_tests(
+        discovered, include_slow=profile != "quick", include_gate_covered=profile == "full"
+    )
 
 
 def run_python_tests(root: Path = ROOT, profile: str = "full") -> int:
@@ -34,7 +37,7 @@ def run_python_tests(root: Path = ROOT, profile: str = "full") -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--profile", choices=("quick", "full"), default="full")
+    parser.add_argument("--profile", choices=("quick", "gated", "full"), default="full")
     arguments = parser.parse_args(argv)
     return run_python_tests(profile=arguments.profile)
 
