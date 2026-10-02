@@ -4,3 +4,5 @@
 *.zip binary
 
 vendor/nhimc-design/** -text -diff
+
+skills/nhimc-worktool/resources/vendor/** -text -diff
