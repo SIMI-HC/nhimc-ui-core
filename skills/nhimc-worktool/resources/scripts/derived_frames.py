@@ -40,7 +40,7 @@ _DUAL_CSS = """
 .is-collapsed .sidebar{grid-template-columns:var(--rail-width) 0}
 .is-collapsed .sub-lists{opacity:0;border-right-color:transparent;visibility:hidden;transition:opacity var(--motion-fast) ease-in-out,border-color var(--motion-base) ease-in-out,visibility 0s linear var(--motion-base)}
 @media (max-height:760px){.rail-list{gap:6px;padding:12px 0}.rail-link{width:40px;height:40px}.rail-link svg{width:20px;height:20px}}
-@media (max-width:1023px){.app-shell{grid-template-columns:minmax(0,1fr);background:var(--color-canvas)}body{background:var(--color-canvas)}.sidebar{display:none}.site-header{padding:0 10px}.mobile-menu{display:inline-flex}.utility span{display:none}.utility{width:36px;padding:0}.main{padding:20px 12px}.statusbar{padding:0 12px}}
+@media (max-width:1023px){.mobile-panel .nav-link{gap:10px;padding-inline:8px;justify-content:flex-start}.mobile-panel .nav-link[aria-current="page"]{background:var(--color-sidebar-brand-18)}.mobile-panel .nav-link[aria-current="page"] .nav-chip{box-shadow:none}.mobile-panel .nav-label{position:static;max-width:176px;opacity:1;visibility:visible}.app-shell{grid-template-columns:minmax(0,1fr);background:var(--color-canvas)}body{background:var(--color-canvas)}.sidebar{display:none}.site-header{padding:0 10px}.mobile-menu{display:inline-flex}.utility span{display:none}.utility{width:36px;padding:0}.main{padding:20px 12px}.statusbar{padding:0 12px}}
 """
 
 # Demo menu of the static preview: the link ids already in left.html, grouped under the first rail item.

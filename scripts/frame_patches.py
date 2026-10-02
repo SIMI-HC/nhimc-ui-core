@@ -48,7 +48,12 @@ frameVersion always means the same Frame.
 1.7.1  BLOG: the scroll-margin that clears the sticky header applies to Content anchors only (.content [id]). It used to
        match every id, so focusing the help button when its sheet closed scrolled the page by 63px (document scroll).
        Document scroll also ignores a page scroll lock (overflow:hidden on html/body) so opening a dialog cannot drop the
-       scrollbar gutter or un-stick the header.
+       scrollbar gutter or un-stick the header. The header's right padding adds the scrollbar gutter only while the column is
+       centred (max(24px, edge + gutter)), so a narrow screen keeps 24px on both sides. The hamburger names its colour
+       (color:var(--fg)) instead of using the default button colour, which turned black on a dark page when color-scheme
+       stayed light.
+1.4.1  TOP: the hamburger names its colour (color:var(--fg)); with the browser's default button colour it was black (invisible)
+       on a dark page whose color-scheme stayed light. Registry version: TOP 1.4.1.
 1.2.0  PRESENTATION frames (presentation, presentation-vertical): the Ilsan Hospital logo (the TOP Frame's SVG, 32px) sits
        top-left on the same row as the help button. Registry versions: PRESENTATION and PRESENTATION VERTICAL 1.2.0.
 """
@@ -147,11 +152,12 @@ _BLOG_SCROLL_OWNER_RULES = f"""
 {_DOCUMENT} .content{{flex:1 0 auto;overflow:visible}}
 {_DOCUMENT} .content [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
 /* BLOG layout: one centred reading column; the header lines up with it (brand left, menu right, utilities last). */
-.app-shell{{--blog-width:1080px;--page-max:var(--blog-width);--blog-edge:max(24px,calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2))}}
+.app-shell{{--blog-width:1080px;--page-max:var(--blog-width);--blog-edge-raw:calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2);--blog-edge:max(24px,var(--blog-edge-raw))}}
 {_DOCUMENT} .app-shell{{--blog-edge:max(24px,calc((100% - var(--blog-width)) / 2))}}
 .content [data-nhimc-role="content"]{{padding-inline:0}}
 .content{{grid-template-columns:minmax(0,var(--blog-width));justify-content:center}}
-.site-header{{padding-inline:var(--blog-edge) calc(var(--blog-edge) + var(--scrollbar-inline-size,10px))}}
+/* Right side: stay level with the column (edge + scrollbar gutter) when it is centred, but never wider than the left on a narrow screen. */
+.site-header{{padding-inline:var(--blog-edge) max(24px,calc(var(--blog-edge-raw) + var(--scrollbar-inline-size,10px)))}}
 {_DOCUMENT} .site-header{{padding-inline:var(--blog-edge)}}
 .spacer{{order:1}}
 .topnav{{order:2;margin-left:0;margin-right:12px}}
@@ -253,6 +259,23 @@ def _patch_presentation_logo(layout: str) -> str:
     return layout.replace('<div class="utility">', f'<div class="brand-logo">{logo.group(0)}</div><div class="utility">', 1)
 
 
+_MOBILE_MENU_RULES = (
+    ".mobile-menu{display:none;border:0;background:transparent;",
+    ".nav-drawer-head .close{border:0;background:transparent;",
+    ".nav-drawer nav button{border:0;background:transparent;",
+)
+
+
+def _patch_mobile_menu_color(layout: str) -> str:
+    """TOP and BLOG draw the hamburger, the drawer's close button and its menu items with the browser's default button colour,
+    which turns black on a dark page when color-scheme is not dark (e.g. a host that pins color-scheme). Name the colour like
+    the other header buttons do."""
+    for rule in _MOBILE_MENU_RULES:
+        layout = layout.replace(rule, rule + "color:var(--fg);", 1)
+    return layout
+
+
 def apply_frame_patches(layout: str) -> str:
+    layout = _patch_mobile_menu_color(layout)
     patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_logo(_patch_presentation_safe_area(_patch_logo_tile(layout)))))
     return _patch_header_height(_patch_default_header_spacing(_patch_sidebar_gradient(patched)))

@@ -131,7 +131,7 @@ DERIVED_ITEMS = {
     "left-dual": {
         "name": "LEFT DUAL Frame",
         "title": "left-dual:v1",
-        "description": "아이콘+이름 레일(84px)과 선택한 그룹의 하위 화면 목록 패널(216px)을 나란히 두는 이중 사이드바 변형. 메뉴가 많고 2단계 구조인 리포트·관리 콘솔에 어울립니다. 1단계 메뉴가 레일, 그 하위 메뉴(children)가 패널에 나옵니다.",
+        "description": "아이콘 레일(64px)과 선택한 그룹의 하위 화면 목록 패널(224px)을 나란히 두는 이중 사이드바 변형. 메뉴가 많고 2단계 구조인 리포트·관리 콘솔에 어울립니다. 1단계 메뉴가 레일, 그 하위 메뉴(children)가 패널에 나옵니다.",
         "variant": "sidebar-rail-plus-panel",
     },
 }

@@ -40,7 +40,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         }
       ]
     },
@@ -66,7 +66,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         }
       ]
     },
@@ -110,11 +110,11 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         },
         {
           "path": "scripts/derived_frames.py",
-          "sha256": "0f318cca7e724b81f28ccd71ca0211ae6cd6d91e25ea44ba261ad05ff1448751"
+          "sha256": "7624dc5d7ee4dc2e60f0eff1d3fca14687b514f791c8c2f6515ba9f67fbe9e3d"
         },
         {
           "path": "src/frames/dual-runtime.js",
@@ -126,7 +126,7 @@
     },
     {
       "id": "nhimc-top",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -146,7 +146,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         }
       ]
     },
@@ -173,7 +173,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         }
       ]
     },
@@ -205,7 +205,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -242,7 +242,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -274,7 +274,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "7bc30c69a89f0abc3374110e84ceac54a0fe7fb86dc691c85ee54908d764d65a"
+          "sha256": "9be3e6dd96dc28fdddef5fad1f7d3979ca47382e408164029136b9ba9ea06ee8"
         }
       ],
       "scrollOwners": {
