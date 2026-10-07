@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [2.4.3] - 2026-10-07
+
+- **공식 프롬프트 주소를 `raw.githubusercontent.com`으로 바꿨습니다.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". `raw.githack.com`은 푸시 뒤 반영에 10분 넘게 걸렸지만 `raw.githubusercontent.com`은 푸시 직후(캐시 5분 이내) 새 내용이 나옵니다. `NHIMC.md`는 새 파일 이름이라 이미 읽혀 굳어진 옛 복사본이 없습니다. README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 맞췄습니다.
+
 ## [2.4.2] - 2026-10-07
 
 - **웹 채팅(무료 플랜 포함)이 주소 하나만으로 화면을 만들게 했습니다.** 무료 플랜의 ChatGPT·Claude 웹은 사용자가 붙여 넣은 주소 하나만 열 수 있어서, `START.md`가 "다음에 `bootstrap.md`를 읽어라"라고 안내해도 두 번째 주소를 열지 못했고, "이 파일만 읽고"라는 프롬프트 때문에 거기서 멈추기도 했습니다. 새 `NHIMC.md`(와 같은 내용의 `START.md`)는 `bootstrap.md`에서 웹 채팅에 필요한 부분(프롬프트 힌트, 메뉴·Page 규칙, 복사용 Page 조각, BLOG·PRESENTATION Frame, Web Runtime 사용법)과 등록된 아이콘 이름 전체를 `scripts/build_start_md.py`로 뽑아 한 번에 읽도록 만든 파일입니다. 버전 번호가 없고 Web Runtime은 `@2`라서 옛 복사본을 읽어도 틀리지 않습니다. 셸이 있는 환경에서는 `git ls-remote`로 최신 태그의 `bootstrap.md`를 읽도록 안내합니다.
