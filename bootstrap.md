@@ -13,9 +13,12 @@
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md?v=2.3.2
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION?v=2.3.2
 이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
+
+주소 끝의 `?v=2.3.2`은 AI 서비스가 예전 복사본을 읽지 않게 하는 캐시 회피용이고 파일 내용과는 무관합니다. 두 주소를 모두 주는 이유는 웹 AI가 사용자가 준 주소만 열 수 있는 경우가 많기 때문입니다.
 
 그다음에는 자연어 요구만 받습니다.
 
@@ -32,7 +35,7 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 **필수 리소스**: 어떤 설치 경로든 `<루트>`로 쓰려면 `registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION` 6가지가 모두 있어야 합니다. 전체 저장소를 설치하는 플러그인 경로는 이 6가지가 저장소 루트에 그대로 있습니다. Codex의 “스킬만 업로드” 같은 경량 경로는 `skills/nhimc-worktool/`만 설치될 수 있으므로, 그 경우 나머지 5가지는 `skills/nhimc-worktool/resources/`(레포에 미리 미러링되어 있음) 아래에서 찾습니다.
 
 1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
-2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
+2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`(사용자가 `?v=` 주소로 준 경우 그 주소)**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 웹 AI가 이 주소를 열 수 없으면 이 문서 안의 링크(`v2.3.2` 등)에 적힌 버전을 `문서 기준`으로 쓰되 보고에는 `확인 못함(문서 기준 v…)`이라고 씁니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
 3. **설치된 `nhimc-worktool` 검색.** 이 환경의 플러그인 목록·스킬 목록·확장 목록에서 `nhimc-worktool`을 찾습니다. Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인/스킬 목록에서 설치 경로를 확인합니다.
 4. **설치본이 있으면 버전과 필수 리소스를 검증.** 찾은 설치 경로를 `<루트>` 후보로 놓고 위 “필수 리소스” 6가지가 모두 있는지 확인합니다(직접 있거나, `skills/nhimc-worktool/resources/` 아래에 미러로 있으면 됨).
    - 모두 있고 로컬 버전이 2단계의 원격과 같거나 더 새로우면: 이 설치본을 `<루트>`로 확정하고 8단계로 갑니다.
@@ -52,12 +55,12 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.1/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.2/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v2.3.1`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v2.3.2`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.2/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -184,12 +187,22 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 <!doctype html>
 <html lang="ko" data-theme="light">
 <head><meta charset="utf-8"><title>화면 제목</title>
-<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.1/dist/nhimc-web.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.2/dist/nhimc-web.js"></script>
 </head>
 <body>
 <main data-nhimc-role="content">…등록 Component와 Layout Primitive만…</main>
 <script type="application/json" data-nhimc-menu>[{"id":"main","label":"메뉴","icon":"hospital","href":"#main"}]</script>
 </body></html>
+```
+
+화면이 둘 이상이면(메뉴 항목이 2개 이상) **화면마다** `<section data-screen-panel="메뉴id"><main data-nhimc-role="content">…</main></section>`로 감쌉니다. 바깥에 `<main>` 하나를 두고 그 안에 화면을 모으지 않습니다(Runtime이 이 흔한 실수는 고쳐 주지만 정해진 형태는 아래입니다). 메뉴 항목 수와 화면 수, 순서가 같아야 합니다.
+
+```html
+<body>
+<section data-screen-panel="orders"><main data-nhimc-role="content">…주문 화면…</main></section>
+<section data-screen-panel="items"><main data-nhimc-role="content">…품목 화면…</main></section>
+<script type="application/json" data-nhimc-menu>[{"id":"orders","label":"주문","icon":"list","href":"#orders"},{"id":"items","label":"품목","icon":"hospital","href":"#items"}]</script>
+</body>
 ```
 
 1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.

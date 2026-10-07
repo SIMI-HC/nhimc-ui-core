@@ -18,7 +18,7 @@
   }
   const fail = (message) => {
     reveal();
-    document.body.innerHTML = '<pre style="white-space:pre-wrap;padding:16px;font:14px monospace">NHIMC UI Core: ' + esc(message) + '</pre>';
+    document.body.innerHTML = '<div style="max-width:720px;margin:48px auto;padding:20px;border:2px solid #c00;border-radius:12px;font:16px/1.6 sans-serif"><h1 style="margin:0 0 12px;font-size:20px">화면을 만들지 못했습니다</h1><pre style="white-space:pre-wrap;margin:0;font:14px monospace">NHIMC UI Core: ' + esc(message) + '</pre><p style="margin:12px 0 0">이 메시지를 AI에게 그대로 붙여 넣고 "규칙에 맞게 다시 만들어줘"라고 요청하세요.</p></div>';
     throw new Error(message);
   };
 
@@ -88,6 +88,18 @@
   };
   const render = () => {
   const source = document.documentElement;
+  // A common slip: one <main> holding every data-screen-panel section. Give each Page its own content root instead of failing.
+  document.querySelectorAll('main[data-nhimc-role="content"]').forEach((outer) => {
+    const pages = [...outer.children];
+    if (!pages.length || !pages.every((page) => page.matches('section[data-screen-panel]') && !page.querySelector('main[data-nhimc-role="content"]'))) return;
+    pages.forEach((page) => {
+      const main = document.createElement('main');
+      main.setAttribute('data-nhimc-role', 'content');
+      main.append(...page.childNodes);
+      page.append(main);
+    });
+    outer.replaceWith(...pages);
+  });
   const roots = [...document.querySelectorAll('main[data-nhimc-role="content"]')];
   const panels = [...document.querySelectorAll('section[data-screen-panel]')];
   if (!roots.length) fail('Content must contain main[data-nhimc-role="content"].');

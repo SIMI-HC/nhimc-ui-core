@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM_DIR = Path("src/guide/upstream")
 OUTPUT = Path("guide/nhimc-design-guide.html")
 REPO_URL = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md"
+VERSION_URL = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION"
 IMPORTED = ("design-guide.html", "design-guide.css", "design-tokens.css", "design-guide.js")
 
 
@@ -268,6 +269,7 @@ def build_guide(root: Path) -> Path:
     html = _replace(html, '<main class="gallery-main">', '<main class="gallery-main" id="galleryView">')
     gallery_end = html.index("</main>") + len("</main>")
     html = html[:gallery_end] + "\n" + sections + "\n" + html[gallery_end:]
+    html = _replace(html, f"{REPO_URL}\n이 파일만 읽고", f"{REPO_URL}?v={version}\n{VERSION_URL}?v={version}\n이 파일만 읽고")
 
     for label, pattern in {
         "external stylesheet": r'<link\b[^>]*rel="stylesheet"',
@@ -283,7 +285,7 @@ def build_guide(root: Path) -> Path:
     script = _replace(script, 'label:"SLOT · Template 삽입 영역"', 'label:"SLOT · Content 삽입 영역"')
     start = script.index("  function updateBuilderPrompt(){")
     end = script.index("  function openBuilderZoom")
-    script = script[:start] + BUILDER_PROMPT_JS.replace("__REPO__", REPO_URL) + "\n" + script[end:]
+    script = script[:start] + BUILDER_PROMPT_JS.replace("__REPO__", f"{REPO_URL}?v={version}\",\"{VERSION_URL}?v={version}") + "\n" + script[end:]
     script = _replace(
         script,
         "builderRequirements.addEventListener(\"input\",updateBuilderPrompt);",

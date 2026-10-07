@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "2.3.1",
+  "projectVersion": "2.3.2",
   "architecture": "frame-registry-layout-primitives",
   "canonicalSnapshot": {
     "manifest": "vendor/nhimc-design/upstream.json",

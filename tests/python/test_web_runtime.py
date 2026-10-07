@@ -74,6 +74,39 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertEqual(offline, web)
 
     @slow_test
+    def test_runtime_accepts_every_page_inside_one_main_like_the_per_page_form(self):
+        # the common AI slip: one outer <main data-nhimc-role="content"> holding all data-screen-panel sections
+        browser = find_browser()
+        runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
+        source = (ROOT / "tests/fixtures/web/multi-page.html").read_text(encoding="utf-8").replace("../../../dist/nhimc-web.js", runtime)
+        slip = source.replace('"><main data-nhimc-role="content">', '">').replace("</main></section>", "</section>")
+        slip = slip.replace('<section data-screen-panel="dashboard">', '<main data-nhimc-role="content"><section data-screen-panel="dashboard">', 1)
+        slip = slip.replace("</section>\n</nhimc-frame>", "</section></main>\n</nhimc-frame>", 1)
+        self.assertNotEqual(source, slip)
+        with tempfile.TemporaryDirectory() as folder:
+            correct, tolerated = Path(folder) / "correct.html", Path(folder) / "slip.html"
+            correct.write_text(source, encoding="utf-8")
+            tolerated.write_text(slip, encoding="utf-8")
+            expected = _frame_markup(_dump(browser, correct.resolve().as_uri()))
+            actual_dom = _dump(browser, tolerated.resolve().as_uri())
+        self.assertNotIn("화면을 만들지 못했습니다", actual_dom)
+        self.assertIn('data-menu-id="orders"', actual_dom)
+        self.assertEqual(expected, _frame_markup(actual_dom))
+
+    @slow_test
+    def test_runtime_failure_tells_the_user_what_to_do(self):
+        browser = find_browser()
+        runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
+        page = f'<!doctype html><html lang="ko" data-theme="light"><head><meta charset="utf-8"><script src="{runtime}"></script></head><body><main>no role</main></body></html>'
+        with tempfile.TemporaryDirectory() as folder:
+            target = Path(folder) / "broken.html"
+            target.write_text(page, encoding="utf-8")
+            dom = _dump(browser, target.resolve().as_uri())
+        self.assertIn("화면을 만들지 못했습니다", dom)
+        self.assertIn("NHIMC UI Core: Content must contain main[data-nhimc-role=", dom)
+        self.assertIn("규칙에 맞게 다시 만들어줘", dom)
+
+    @slow_test
     def test_runtime_top_frame_and_theme_color_match_offline_builder(self):
         browser = find_browser()
         with tempfile.TemporaryDirectory() as folder:
