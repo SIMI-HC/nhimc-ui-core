@@ -55,6 +55,13 @@ class VersionReferenceTests(unittest.TestCase):
         for needle in ("vendor/", "add_canonical_icon", "rules/layout.md"):
             self.assertNotIn(needle, text, needle)
 
+    def test_bootstrap_lists_every_registered_icon(self):
+        sprite = (ROOT / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8")
+        names = re.findall(r'<symbol[^>]*\bid="([^"]+)"', sprite)
+        text = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
+        listed = re.findall(r"`([a-z0-9-]+)`", text.split("## 등록된 아이콘", 1)[1].split("\n", 1)[1].split("\n## ", 1)[0])
+        self.assertEqual(names, listed, "bootstrap.md icon list must equal the sprite: a web chat cannot open vendor/")
+
     def test_first_prompt_is_one_version_free_url(self):
         # users paste one fixed URL (unchanged for every release)
         alias = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md"

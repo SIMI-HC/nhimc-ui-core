@@ -17,6 +17,7 @@ OUTPUTS = ("NHIMC.md", "START.md")
 SECTIONS = (
     "## 프롬프트 힌트 해석",
     "## 메뉴와 Page는 AI가 정합니다",
+    "## 등록된 아이콘",
     "## 자주 쓰는 Page 조각",
     "## BLOG Frame 스크롤 소유자",
     "## PRESENTATION Frame",
@@ -54,17 +55,13 @@ def render(root: Path = ROOT) -> str:
     body = re.sub(r", Frame \d+\.\d+\.\d+", "", body)  # a frame version in a heading is a version number
     body = body.replace("위 “코드 실행이 되는 경우” 절차로", "로컬 빌더(`scripts/build_verified_artifact.py`)로")
     body = body.replace("이 규칙은 `rules/layout.md`의 자동 선택 순서(마지막 폴백 LEFT, blog 제외)보다 우선합니다(vendor 파일은 그대로 두므로 여기서 덮어씁니다), ", "")
-    # a web chat cannot open the icon sprite or run the icon tool, so the file lists the registered names itself
-    body = body.replace("`vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만", "아래 “등록된 아이콘” 목록에 있는 이름만")
+    # a web chat cannot run the icon tool
     body = re.sub(
         r"사용자에게 알린 뒤, 승인받으면 `scripts/add_canonical_icon\.py`\([^)]*\)로 새 아이콘을 등록하고 씁니다\.",
         "그 사실을 사용자에게 알리고 목록에서 가장 가까운 것을 씁니다(웹에서는 아이콘을 추가할 수 없습니다).",
         body,
     )
-    sprite = (root / "vendor/nhimc-design/icons/nhimc-icons.svg").read_text(encoding="utf-8")
-    names = re.findall(r'<symbol[^>]*\bid="([^"]+)"', sprite)
-    icons = "## 등록된 아이콘 (메뉴 `icon`에는 이 이름만)\n\n" + " ".join(f"`{name}`" for name in names) + "\n"
-    return HEADER + "\n" + body.replace("## 자주 쓰는 Page 조각", icons + "\n## 자주 쓰는 Page 조각", 1)
+    return HEADER + "\n" + body
 
 
 def main() -> int:

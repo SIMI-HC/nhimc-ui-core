@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [2.4.5] - 2026-10-07
+
+- **`main/bootstrap.md` 하나만 읽어도 웹 채팅이 아이콘 이름을 알 수 있게 했습니다.** 메뉴 `icon`은 등록된 이름만 써야 하는데, `bootstrap.md`는 `vendor/.../nhimc-icons.svg`를 열라고만 안내해서 그 파일을 열 수 없는 웹 채팅(무료 플랜 포함)이 아이콘 이름을 지어낼 수 있었습니다. 등록된 아이콘 113개의 이름 전체를 `bootstrap.md`에 "등록된 아이콘" 절로 넣고, `NHIMC.md`는 이 절을 그대로 가져옵니다(전에는 생성기가 따로 만들었습니다). 목록이 아이콘 파일과 어긋나면 `test_version_references.py`가 실패합니다. 옛 프롬프트(`.../main/bootstrap.md` + "이 파일만 읽고")와 새 프롬프트(`.../main/NHIMC.md`)가 같은 규칙을 씁니다.
+
 ## [2.4.4] - 2026-10-07
 
 - `bootstrap.md`의 "raw `bootstrap.md` 읽기" 단계 주소를 `raw.githack.com`에서 `raw.githubusercontent.com`으로 바꿨습니다. 이제 문서 읽기용 주소는 모두 `raw.githubusercontent.com`입니다. Design Guide를 화면으로 여는 `rawcdn.githack.com` 링크는 HTML을 렌더링하는 호스트가 필요해 그대로입니다.

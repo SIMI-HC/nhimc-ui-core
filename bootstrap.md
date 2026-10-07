@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.4.4** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 `NHIMC.md`를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 파일이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
+**문서 버전: 2.4.5** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 `NHIMC.md`를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 파일이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
@@ -56,12 +56,12 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.4.4/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.4.5/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v2.4.4`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.4/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v2.4.5`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.5/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -134,10 +134,14 @@ python scripts/build_verified_artifact.py --input <임시 경로>/source.html --
 
 Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 영역만 채웁니다.
 
-1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등). 메뉴 `id`는 될 수 있으면 아이콘 이름과 겹치지 않게 짓습니다(빌더가 이 둘을 서로 다른 네임스페이스로 렌더링하므로 겹쳐도 깨지지는 않지만, 겹치지 않는 편이 더 명확합니다). 업무에 맞는 아이콘이 등록 목록에 없으면 비슷한 다른 아이콘으로 임의 대체하지 말고 사용자에게 알린 뒤, 승인받으면 `scripts/add_canonical_icon.py`(Core 아이콘 추가 절차, 아래 참고)로 새 아이콘을 등록하고 씁니다.
+1. 업무 요구를 보고 필요한 메뉴와 Page 수를 판단합니다. 메뉴는 `<script type="application/json" data-nhimc-menu>[{"id":"items","label":"품목 관리","icon":"hospital","href":"#items"}]</script>` 형식이며 그룹은 `children`(최대 3단)으로 표현합니다. `icon`은 아래 “등록된 아이콘” 목록에 있는 이름만 씁니다(`dashboard`, `list`, `users`, `settings`, `calendar`, `bar-chart`, `hospital`, `ambulance` 등). 메뉴 `id`는 될 수 있으면 아이콘 이름과 겹치지 않게 짓습니다(빌더가 이 둘을 서로 다른 네임스페이스로 렌더링하므로 겹쳐도 깨지지는 않지만, 겹치지 않는 편이 더 명확합니다). 업무에 맞는 아이콘이 등록 목록에 없으면 비슷한 다른 아이콘으로 임의 대체하지 말고 사용자에게 알린 뒤, 승인받으면 `scripts/add_canonical_icon.py`(Core 아이콘 추가 절차, 아래 참고)로 새 아이콘을 등록하고 씁니다.
 2. 메뉴 항목마다 Page 하나를 같은 순서로 만듭니다. `id`와 `href="#id"`가 일치해야 합니다.
 3. Page가 하나면 `<main data-nhimc-role="content">…</main>` 하나만 둡니다. 둘 이상이면 각각 `<section data-screen-panel="메뉴id"><main data-nhimc-role="content">…</main></section>`로 감쌉니다. 메뉴 클릭 시 화면 전환과 현재 메뉴 표시는 Frame이 처리하므로 직접 만들지 않습니다.
 4. 각 Page는 등록 Component와 Layout Primitive(`nhimc-page-header`, `nhimc-toolbar`, `nhimc-grid`, `nhimc-form-grid`, `nhimc-card`, …)만으로 채웁니다. Page마다 구성(검색·표·카드·폼·차트·탭)은 자유입니다.
+
+## 등록된 아이콘 (메뉴 `icon`에는 이 이름만)
+
+`menu` `panel-left` `home` `dashboard` `grid` `list` `more-horizontal` `more-vertical` `chevron-left` `chevron-right` `chevron-up` `chevron-down` `arrow-left` `arrow-right` `arrow-up` `arrow-down` `expand` `collapse` `plus` `minus` `x` `check` `search` `filter` `refresh` `undo` `redo` `edit` `trash` `copy` `save` `download` `upload` `file` `file-text` `folder` `folder-open` `archive` `printer` `paperclip` `image` `user` `users` `user-plus` `user-check` `badge-id` `lock` `unlock` `key` `shield` `shield-check` `eye` `eye-off` `settings` `sliders` `power` `log-in` `log-out` `help-circle` `info` `check-circle` `x-circle` `alert-circle` `alert-triangle` `bell` `bell-off` `clock` `calendar` `calendar-check` `history` `timer` `mail` `send` `message` `phone` `megaphone` `link` `external-link` `building` `hospital` `stethoscope` `heart-pulse` `activity` `pill` `syringe` `flask` `thermometer` `bed` `ambulance` `clipboard` `clipboard-list` `table` `database` `bar-chart` `line-chart` `pie-chart` `trend-up` `trend-down` `wifi` `server` `monitor` `smartphone` `sun` `moon` `palette` `star` `bookmark` `tag` `map-pin` `briefcase` `award` `flag` `ban`
 
 ## 자주 쓰는 Page 조각 (복사해서 값만 바꿉니다)
 
@@ -241,6 +245,6 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 ```
 
 1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). 주소의 `@2`는 jsDelivr가 최신 2.x 릴리스로 연결하는 형태라 릴리스마다 바꾸지 않으며, 옛 문서 복사본을 읽어도 최신 Runtime이 쓰입니다. `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
-2. 메뉴 `icon`은 `vendor/nhimc-design/icons/nhimc-icons.svg`에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
+2. 메뉴 `icon`은 위 “등록된 아이콘” 목록에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
 3. 인터넷과 외부 `<script src>`를 허용하는 호스트에서만 동작합니다. 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고, 오프라인 `index.html`이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
 4. Web Runtime은 미리보기만 합니다(인터넷 필요, 아무 파일도 자동으로 저장하지 않습니다). 브라우저 검증을 거친 오프라인 `index.html`이 필요하면 저작용 원본을 그대로 전달하지 말고 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 위 “코드 실행이 되는 경우” 절차로 다시 만들도록 안내합니다.

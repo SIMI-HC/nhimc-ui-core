@@ -149,6 +149,6 @@ Content 작성 규칙(발표용):
 ```
 
 1. `<script src>`는 반드시 `<head>`에 둡니다(본문 끝에 두면 Frame이 늦게 씌워져 스타일 없는 화면이 잠깐 보입니다). 주소의 `@2`는 jsDelivr가 최신 2.x 릴리스로 연결하는 형태라 릴리스마다 바꾸지 않으며, 옛 문서 복사본을 읽어도 최신 Runtime이 쓰입니다. `<nhimc-frame>`, `<style>`, 폰트, 아이콘, 로고, 자체 Frame은 넣지 않습니다. Runtime이 로드될 때 정본 Frame·Font·Icon·Logo·Theme을 씌웁니다.
-2. 메뉴 `icon`은 아래 “등록된 아이콘” 목록에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
+2. 메뉴 `icon`은 위 “등록된 아이콘” 목록에 있는 이름만 씁니다. 메뉴 JSON은 생략하면 제목 한 개짜리 메뉴가 됩니다.
 3. 인터넷과 외부 `<script src>`를 허용하는 호스트에서만 동작합니다. 막힌 호스트에서는 완성 파일을 만들 수 없다고 알리고, 오프라인 `index.html`이 필요하면 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 다시 요청하도록 안내합니다.
 4. Web Runtime은 미리보기만 합니다(인터넷 필요, 아무 파일도 자동으로 저장하지 않습니다). 브라우저 검증을 거친 오프라인 `index.html`이 필요하면 저작용 원본을 그대로 전달하지 말고 Claude Code · Codex · Gemini CLI 같은 로컬 환경에서 로컬 빌더(`scripts/build_verified_artifact.py`)로 다시 만들도록 안내합니다.
