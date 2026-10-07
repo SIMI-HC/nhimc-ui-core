@@ -23,7 +23,7 @@ class PluginInstallDoesNotCloneTests(unittest.TestCase):
             )
 
     def test_first_step_reads_bootstrap_via_raw_url_not_clone(self):
-        self.assertIn("raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md", BOOTSTRAP)
+        self.assertIn("raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md", BOOTSTRAP)
         intro = BOOTSTRAP.split("## 준비 절차", 1)[0]
         self.assertIn("`git clone`/`git pull`을 하지 않습니다", intro)
 

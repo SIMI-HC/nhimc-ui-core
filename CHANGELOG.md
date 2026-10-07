@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [2.4.4] - 2026-10-07
+
+- `bootstrap.md`의 "raw `bootstrap.md` 읽기" 단계 주소를 `raw.githack.com`에서 `raw.githubusercontent.com`으로 바꿨습니다. 이제 문서 읽기용 주소는 모두 `raw.githubusercontent.com`입니다. Design Guide를 화면으로 여는 `rawcdn.githack.com` 링크는 HTML을 렌더링하는 호스트가 필요해 그대로입니다.
+
 ## [2.4.3] - 2026-10-07
 
 - **공식 프롬프트 주소를 `raw.githubusercontent.com`으로 바꿨습니다.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". `raw.githack.com`은 푸시 뒤 반영에 10분 넘게 걸렸지만 `raw.githubusercontent.com`은 푸시 직후(캐시 5분 이내) 새 내용이 나옵니다. `NHIMC.md`는 새 파일 이름이라 이미 읽혀 굳어진 옛 복사본이 없습니다. README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 맞췄습니다.
