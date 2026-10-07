@@ -37,8 +37,8 @@ class VersionReferenceTests(unittest.TestCase):
         self.assertEqual([version], found)
 
     def test_first_prompt_is_one_version_free_url(self):
-        # users paste one fixed URL (the refs/heads/main form dodges a stale cache some web AIs keep for .../main/bootstrap.md)
-        alias = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md"
+        # users paste one fixed URL (the HEAD form of the file; claude.ai keeps whatever it first read for .../main/bootstrap.md)
+        alias = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md"
         for name in PROMPT_FILES:
             text = (ROOT / name).read_text(encoding="utf-8")
             self.assertIn(alias, text, name)

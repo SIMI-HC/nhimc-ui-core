@@ -1,7 +1,9 @@
 # 변경 이력
 
-## [Unreleased]
+## [2.3.5] - 2026-10-07
 
+- **첫 프롬프트의 주소를 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md`로 바꿨습니다.** 같은 파일의 다른 표기(`HEAD` = 기본 브랜치)입니다. Claude 웹은 한 번 읽은 주소의 내용을 오래 들고 있어서 `main/bootstrap.md`는 v2.0.2로, `refs/heads/main/bootstrap.md`는 2.3.2로 굳어 있었습니다. 읽은 적 없는 `HEAD` 주소는 새 대화에서 `projectVersion 2.3.4`(문서 버전 기준)로 정확히 읽히는 것을 확인했습니다. README, bootstrap, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 모두 이 주소로 바꿨습니다.
+- 한 번 읽은 복사본이 굳어도 괜찮도록 문서가 버전을 고정하지 않습니다(Web Runtime `@2`, 문서 버전 줄, `VERSION`은 선택). README에 예전 `main/bootstrap.md`를 쓰지 말라는 안내를 넣었습니다.
 - `bootstrap.md` 맨 위에 `문서 버전`을 적고, 2단계를 "`VERSION`은 열 수 있을 때만"으로 바꿨습니다. 웹 채팅 AI(ChatGPT·Claude 웹)는 사용자가 입력한 주소만 열 수 있어서 문서 안의 `VERSION` 주소를 열지 못해 "읽을 수 없음"을 오류처럼 보고하던 문제입니다. 이제 문서 버전을 `projectVersion`으로 쓰고 `확인 못함(문서 기준 v…)`만 보고합니다. 릴리스마다 이 줄이 `VERSION`과 같은지 `test_version_references.py`가 검사합니다.
 - `release_tag.py`의 jsDelivr 확인을 고쳤습니다: 사내망처럼 TLS를 가로채는 환경에서 Python이 인증서 검증에 실패하면 요청 자체를 못 했는데도 "옛 파일"이라고 경고하던 것을, 공개 파일을 바이트 비교로 검증하는 읽기 요청에서는 인증서 검증에 막히지 않게 하고 "옛 파일"과 "확인 못 함"을 구분해 알립니다. 새 태그를 색인할 시간을 위해 최대 대기도 늘렸습니다.
 

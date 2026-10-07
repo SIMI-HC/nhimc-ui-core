@@ -6,7 +6,7 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
-| 프로젝트(NHIMC UI Core) | `2.3.4` | `VERSION`, `registry/project.json` |
+| 프로젝트(NHIMC UI Core) | `2.3.5` | `VERSION`, `registry/project.json` |
 | Frame | `1.3.0` (left, left-blank), `1.4.0` (top, top-left), `1.0.0` (left-dual), `1.2.0` (presentation, presentation-vertical), `1.7.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
@@ -20,10 +20,10 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 ## 사용법
 
-처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 raw 파일을 읽으라는 뜻입니다).
+처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 raw 파일을 읽으라는 뜻입니다). 예전에 쓰던 `main/bootstrap.md` 주소는 일부 웹 AI(Claude 웹 등)가 옛 복사본을 계속 읽으니 아래 `HEAD` 주소를 쓰세요.
 
 ```text
-https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md
 이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 
@@ -37,7 +37,7 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstra
 
 ### Design Guide (설치 가이드 · 사용법 · 프롬프트 만들기)
 
-`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.4/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
+`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.5/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
 
 ### 메뉴와 Page
 
@@ -108,7 +108,7 @@ python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
-python scripts/build_release.py release/nhimc-ui-core-2.3.4.zip
+python scripts/build_release.py release/nhimc-ui-core-2.3.5.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.

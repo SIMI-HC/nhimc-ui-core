@@ -28,7 +28,7 @@ from scripts.frame_patches import apply_frame_patches
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM_DIR = Path("src/guide/upstream")
 OUTPUT = Path("guide/nhimc-design-guide.html")
-REPO_URL = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md"
+REPO_URL = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md"
 IMPORTED = ("design-guide.html", "design-guide.css", "design-tokens.css", "design-guide.js")
 
 
