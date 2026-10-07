@@ -4,7 +4,7 @@
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
 - 작업 폴더에 저장소를 클론하지 않습니다(유일한 예외는 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 절 참고).
 - 설치·등록은 공식 플러그인 경로만 쓰고, 등록 전에 사용자에게 먼저 묻습니다.
-- 원격 `VERSION`은 raw로 확인합니다.
+- 원격 버전은 `registry/project.json`의 `projectVersion`을 raw로 확인합니다.
 
 이 파일은 모든 AI 환경의 단일 진입점입니다. 이후 절차는 아래 "준비 절차"를 그대로 따릅니다.
 
@@ -13,7 +13,7 @@
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
+https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 
@@ -33,8 +33,8 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 
 **웹 채팅에서는 등록 여부를 묻지 않고 바로 `WEB_BOOTSTRAP`으로 갑니다.** claude.ai, ChatGPT, Gemini 같은 웹 채팅은 코드 실행 도구(샌드박스 셸)가 있어도 사용자의 컴퓨터가 아닙니다. 그 안에서 `claude plugin …` 같은 설치 명령을 제안하거나 실행해도 사용자 환경에는 아무 영향이 없으므로, 3~7단계를 건너뛰고 `WEB_BOOTSTRAP`으로 확정한 뒤 8·9단계로 갑니다(스킬 업로드는 사용자가 원할 때 직접 하며 묻지 않습니다). 등록 여부를 묻는 것은 사용자의 컴퓨터에서 도는 Claude Code · Codex · Gemini CLI(실제 `claude`/`codex`/`gemini` 명령과 플러그인 경로가 있는 환경)뿐입니다.
 
-1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
-2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 웹 AI가 이 주소를 열 수 없거나 사용자가 "이 파일만 읽고"라고 해서 열지 않았으면 이 문서 안의 링크(`v2.3.5` 등)에 적힌 버전을 `문서 기준`으로 쓰되 보고에는 `확인 못함(문서 기준 v…)`이라고 씁니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
+1. **raw `bootstrap.md` 읽기.** `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
+2. **원격 버전 확인.** `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/registry/project.json`의 `projectVersion`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 웹 AI가 이 주소를 열 수 없거나 사용자가 "이 파일만 읽고"라고 해서 열지 않았으면 이 문서 안의 링크(`v2.3.6` 등)에 적힌 버전을 `문서 기준`으로 쓰되 보고에는 `확인 못함(문서 기준 v…)`이라고 씁니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
 3. **설치된 `nhimc-worktool` 검색.** 이 환경의 플러그인 목록·스킬 목록·확장 목록에서 `nhimc-worktool`을 찾습니다. Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인/스킬 목록에서 설치 경로를 확인합니다.
 4. **설치본이 있으면 버전과 필수 리소스를 검증.** 찾은 설치 경로를 `<루트>` 후보로 놓고 위 “필수 리소스” 6가지가 모두 있는지 확인합니다(직접 있거나, `skills/nhimc-worktool/resources/` 아래에 미러로 있으면 됨).
    - 모두 있고 로컬 버전이 2단계의 원격과 같거나 더 새로우면: 이 설치본을 `<루트>`로 확정하고 8단계로 갑니다.
@@ -54,12 +54,12 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.5/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.6/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v2.3.5`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.5/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v2.3.6`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.6/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약

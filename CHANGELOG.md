@@ -1,7 +1,9 @@
 # 변경 이력
 
-## [Unreleased]
+## [2.3.6] - 2026-10-07
 
+- **첫 프롬프트의 주소를 `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`로 바꿨습니다.** Claude 웹은 주소별로 처음 읽은 내용을 오래 들고 있어서 `raw.githubusercontent.com/…/main/bootstrap.md`는 v2.0.2(9월 30일 상태)로, 그 뒤에 읽은 `refs/heads/main`·`HEAD` 형태도 각각 2.3.2·2.3.4로 굳어 있었습니다(시크릿 채팅·"캐시 없이" 문구도 소용없음). 한 번도 읽지 않은 `raw.githack.com` 주소는 최신 내용이 읽히는 것을 확인했습니다. README, bootstrap, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 이 주소로 맞췄습니다.
+- `bootstrap.md` 2단계의 원격 버전 확인을 `VERSION` 파일에서 `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/registry/project.json`의 `projectVersion`으로 바꿨습니다. githack이 확장자 없는 `VERSION`을 raw로 리다이렉트하고, raw의 `main/VERSION`은 Claude 웹에서 옛 값(2.0.2)으로 굳어 있었기 때문입니다.
 - **첫 프롬프트를 처음 형태로 되돌렸습니다**: `main/bootstrap.md` 주소 한 줄과 "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". `bootstrap.md` 맨 위의 `문서 버전` 줄과 `HEAD` 주소 안내를 뺐고, 2단계는 다시 `VERSION`을 읽습니다(못 열면 문서 안 링크의 버전을 `문서 기준`으로 씁니다). "웹 채팅은 설치를 묻지 않음", 여러 화면 예시, Web Runtime `@2`는 그대로입니다.
 - `bootstrap.md`: ① `VERSION` 파일을 읽지 않고 문서의 `문서 버전`을 씁니다(웹에서는 못 열거나 옛 복사본 2.0.2가 와서 오히려 틀렸습니다). ② 웹 채팅(claude.ai·ChatGPT·Gemini)에서는 샌드박스 셸이 있어도 "플러그인을 설치할까요?"를 묻지 않고 바로 `WEB_BOOTSTRAP`으로 진행합니다. 설치를 묻는 것은 사용자 컴퓨터의 Claude Code·Codex·Gemini CLI뿐입니다. SKILL.md의 준비 절차 요약도 같이 고쳤습니다.
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "nhimc-worktool",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "일산병원 업무 화면을 정본 Frame·Theme·Component로 조합하는 디자인 시스템 스킬.",
   "license": "SEE LICENSE IN LICENSE",
   "keywords": [
