@@ -31,9 +31,20 @@ class VersionReferenceTests(unittest.TestCase):
             self.assertTrue(found, f"{name} must show the Web Runtime script")
             self.assertEqual([major] * len(found), found, f"{name}: use @{major}, so an old copy of the document still loads the current runtime")
 
+    def test_bootstrap_states_its_own_version(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        found = re.findall(r"\*\*문서 버전: (\d+\.\d+\.\d+)\*\*", (ROOT / "bootstrap.md").read_text(encoding="utf-8"))
+        self.assertEqual([version], found)
+
+    def test_start_md_has_no_version_and_points_at_the_latest_tag(self):
+        text = (ROOT / "START.md").read_text(encoding="utf-8")
+        self.assertIsNone(re.search(r"\d+\.\d+\.\d+", text), "START.md must stay version-free: a cached copy must never be wrong")
+        self.assertIn("git ls-remote --tags --sort=-v:refname", text)
+        self.assertIn("/<태그>/bootstrap.md", text)
+
     def test_first_prompt_is_one_version_free_url(self):
         # users paste one fixed URL (unchanged for every release)
-        alias = "https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md"
+        alias = "https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/START.md"
         for name in PROMPT_FILES:
             text = (ROOT / name).read_text(encoding="utf-8")
             self.assertIn(alias, text, name)

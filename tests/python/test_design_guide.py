@@ -53,7 +53,7 @@ class DesignGuideTests(unittest.TestCase):
         header = html[html.index('<header class="gallery-header">') : html.index("</header>")]
         self.assertLess(header.index('class="brand"'), header.index('id="viewNav"'))
         self.assertLess(header.index('id="viewNav"'), header.index('id="themeToggle"'))
-        self.assertIn("https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md", html)
+        self.assertIn("https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/START.md", html)
         self.assertIn("이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)", html)
         self.assertNotIn("NHIMC Worktool 스킬로", html)
         self.assertIn("frame: ${builderState.frame", html)
@@ -87,7 +87,7 @@ class DesignGuideTests(unittest.TestCase):
         self.assertNotIn("#previewSource{display:none}", html)
         self.assertNotIn("이미 준비돼 있으면 원격 VERSION과 비교해", html)
         bootstrap = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
-        for phrase in ("원격 버전 확인", "raw.githack.com/SIMI-HC/nhimc-ui-core/main/registry/project.json", "사용자에게 먼저 묻습니다", "공식 경로로 설치·업데이트합니다", "Content Safe Area"):
+        for phrase in ("원격 버전 확인", "git ls-remote --tags --sort=-v:refname", "사용자에게 먼저 묻습니다", "공식 경로로 설치·업데이트합니다", "Content Safe Area"):
             self.assertIn(phrase, bootstrap)
         self.assertIn("별도 프롬프트를 요구하지 않습니다", bootstrap)
         self.assertIn("## 준비 절차 (항상 이 순서로", bootstrap)

@@ -1,5 +1,11 @@
 # 변경 이력
 
+## [2.3.7] - 2026-10-07
+
+- **첫 프롬프트가 `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/START.md`을 가리킵니다.** `START.md`는 버전이 하나도 없는 짧은 파일이라 웹 AI 서비스가 읽은 복사본을 오래 들고 있어도 틀리지 않습니다. 셸이 있는 환경에서는 `git ls-remote --tags --sort=-v:refname`(클론 아님)으로 최신 릴리스 태그를 찾아 `…/<태그>/bootstrap.md`를 읽게 합니다. 태그 주소는 내용이 바뀌지 않아 옛 복사본 문제가 구조적으로 없습니다. 셸이 없으면 `main/bootstrap.md`를 읽는 대체 경로가 있습니다.
+- `bootstrap.md`: `문서 버전` 줄을 다시 두고(최신 태그와 비교용), 2단계 원격 버전 확인을 `git ls-remote` 최신 태그로 바꿨으며, 보고(9단계)에 확인 방법과 읽은 태그 주소를 함께 쓰게 했습니다. `VERSION`·`main` 주소는 웹에서 옛 값(2.0.2)이 와서 읽지 않습니다.
+- 테스트: `START.md`에 버전 숫자가 없고 `git ls-remote`와 태그 주소 형식이 있는지, `bootstrap.md`의 `문서 버전`이 `VERSION`과 같은지 검사합니다.
+
 ## [2.3.6] - 2026-10-07
 
 - **첫 프롬프트의 주소를 `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`로 바꿨습니다.** Claude 웹은 주소별로 처음 읽은 내용을 오래 들고 있어서 `raw.githubusercontent.com/…/main/bootstrap.md`는 v2.0.2(9월 30일 상태)로, 그 뒤에 읽은 `refs/heads/main`·`HEAD` 형태도 각각 2.3.2·2.3.4로 굳어 있었습니다(시크릿 채팅·"캐시 없이" 문구도 소용없음). 한 번도 읽지 않은 `raw.githack.com` 주소는 최신 내용이 읽히는 것을 확인했습니다. README, bootstrap, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 이 주소로 맞췄습니다.
