@@ -20,10 +20,10 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 ## 사용법
 
-처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 raw 파일을 읽으라는 뜻입니다). 예전에 쓰던 `main/bootstrap.md` 주소는 일부 웹 AI(Claude 웹 등)가 옛 복사본을 계속 읽으니 아래 `HEAD` 주소를 쓰세요.
+처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 raw 파일을 읽으라는 뜻입니다).
 
 ```text
-https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 

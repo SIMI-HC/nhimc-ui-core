@@ -1,7 +1,5 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.3.5** — 이 문서가 곧 저장소의 버전을 알려 줍니다(릴리스마다 함께 올라갑니다). 아래 2단계의 `VERSION` 파일을 열 수 없어도 이 값을 `projectVersion`으로 쓰세요.
-
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
 - 작업 폴더에 저장소를 클론하지 않습니다(유일한 예외는 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 절 참고).
@@ -15,11 +13,9 @@
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
 이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
-
-위 주소는 `main/bootstrap.md`와 **같은 파일의 다른 표기**(`HEAD`는 기본 브랜치)입니다. 일부 웹 AI 서비스는 한 번 읽은 주소의 내용을 오래 들고 있어서, 예전에 쓰던 `main/bootstrap.md`로는 옛 복사본이 읽힐 수 있습니다. 이 문서는 버전을 고정하지 않도록(Web Runtime은 `@2`) 만들어 두었으니 한 번 읽은 복사본이어도 최신 Runtime이 쓰입니다.
 
 그다음에는 자연어 요구만 받습니다.
 
@@ -37,8 +33,8 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md
 
 **웹 채팅에서는 등록 여부를 묻지 않고 바로 `WEB_BOOTSTRAP`으로 갑니다.** claude.ai, ChatGPT, Gemini 같은 웹 채팅은 코드 실행 도구(샌드박스 셸)가 있어도 사용자의 컴퓨터가 아닙니다. 그 안에서 `claude plugin …` 같은 설치 명령을 제안하거나 실행해도 사용자 환경에는 아무 영향이 없으므로, 3~7단계를 건너뛰고 `WEB_BOOTSTRAP`으로 확정한 뒤 8·9단계로 갑니다(스킬 업로드는 사용자가 원할 때 직접 하며 묻지 않습니다). 등록 여부를 묻는 것은 사용자의 컴퓨터에서 도는 Claude Code · Codex · Gemini CLI(실제 `claude`/`codex`/`gemini` 명령과 플러그인 경로가 있는 환경)뿐입니다.
 
-1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
-2. **raw `VERSION` 확인 대신 문서 버전을 씁니다.** 이 문서 맨 위의 `문서 버전`이 원격 최신 버전이며 `projectVersion`으로 씁니다. `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`은 읽지 않습니다. 웹 채팅은 사용자가 입력한 주소만 열 수 있고, 열리더라도 예전에 읽어 둔 복사본(예: 2.0.2)이 와서 오히려 틀린 값이 나옵니다. 보고의 `최신 확인 결과`는 설치본이 없으면 `확인 못함(문서 기준 v<문서 버전>)`, 설치본이 있으면 문서 버전과 비교해 `이미 최신` 또는 `갱신 필요`로 씁니다. 이후 어떤 설치본도 문서 버전보다 새롭다고 단정하지 않습니다.
+1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
+2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 웹 AI가 이 주소를 열 수 없거나 사용자가 "이 파일만 읽고"라고 해서 열지 않았으면 이 문서 안의 링크(`v2.3.5` 등)에 적힌 버전을 `문서 기준`으로 쓰되 보고에는 `확인 못함(문서 기준 v…)`이라고 씁니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
 3. **설치된 `nhimc-worktool` 검색.** 이 환경의 플러그인 목록·스킬 목록·확장 목록에서 `nhimc-worktool`을 찾습니다. Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인/스킬 목록에서 설치 경로를 확인합니다.
 4. **설치본이 있으면 버전과 필수 리소스를 검증.** 찾은 설치 경로를 `<루트>` 후보로 놓고 위 “필수 리소스” 6가지가 모두 있는지 확인합니다(직접 있거나, `skills/nhimc-worktool/resources/` 아래에 미러로 있으면 됨).
    - 모두 있고 로컬 버전이 2단계의 원격과 같거나 더 새로우면: 이 설치본을 `<루트>`로 확정하고 8단계로 갑니다.

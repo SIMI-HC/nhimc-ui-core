@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **첫 프롬프트를 처음 형태로 되돌렸습니다**: `main/bootstrap.md` 주소 한 줄과 "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". `bootstrap.md` 맨 위의 `문서 버전` 줄과 `HEAD` 주소 안내를 뺐고, 2단계는 다시 `VERSION`을 읽습니다(못 열면 문서 안 링크의 버전을 `문서 기준`으로 씁니다). "웹 채팅은 설치를 묻지 않음", 여러 화면 예시, Web Runtime `@2`는 그대로입니다.
 - `bootstrap.md`: ① `VERSION` 파일을 읽지 않고 문서의 `문서 버전`을 씁니다(웹에서는 못 열거나 옛 복사본 2.0.2가 와서 오히려 틀렸습니다). ② 웹 채팅(claude.ai·ChatGPT·Gemini)에서는 샌드박스 셸이 있어도 "플러그인을 설치할까요?"를 묻지 않고 바로 `WEB_BOOTSTRAP`으로 진행합니다. 설치를 묻는 것은 사용자 컴퓨터의 Claude Code·Codex·Gemini CLI뿐입니다. SKILL.md의 준비 절차 요약도 같이 고쳤습니다.
 
 ## [2.3.5] - 2026-10-07
