@@ -36,15 +36,28 @@ class VersionReferenceTests(unittest.TestCase):
         found = re.findall(r"\*\*문서 버전: (\d+\.\d+\.\d+)\*\*", (ROOT / "bootstrap.md").read_text(encoding="utf-8"))
         self.assertEqual([version], found)
 
-    def test_start_md_has_no_version_and_points_at_the_latest_tag(self):
-        text = (ROOT / "START.md").read_text(encoding="utf-8")
-        self.assertIsNone(re.search(r"\d+\.\d+\.\d+", text), "START.md must stay version-free: a cached copy must never be wrong")
+    def test_web_edition_is_current_version_free_and_self_contained(self):
+        from scripts.build_start_md import OUTPUTS, render
+
+        expected = render(ROOT)
+        for name in OUTPUTS:
+            text = (ROOT / name).read_text(encoding="utf-8")
+            self.assertEqual(expected, text, f"{name} is stale: run python scripts/build_start_md.py")
+            self.assertIsNone(re.search(r"\d+\.\d+\.\d+", text), f"{name} must stay version-free: a cached copy must never be wrong")
+        text = expected
         self.assertIn("git ls-remote --tags --sort=-v:refname", text)
         self.assertIn("/<태그>/bootstrap.md", text)
+        self.assertIn("nhimc-web.js", text)
+        self.assertRegex(text, r"@\d+/dist/nhimc-web\.js")
+        for name in ("dashboard", "hospital", "ambulance", "bar-chart"):
+            self.assertIn(f"`{name}`", text)
+        # a web chat cannot open another file: nothing in the edition may depend on one
+        for needle in ("vendor/", "add_canonical_icon", "rules/layout.md"):
+            self.assertNotIn(needle, text, needle)
 
     def test_first_prompt_is_one_version_free_url(self):
         # users paste one fixed URL (unchanged for every release)
-        alias = "https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/START.md"
+        alias = "https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md"
         for name in PROMPT_FILES:
             text = (ROOT / name).read_text(encoding="utf-8")
             self.assertIn(alias, text, name)

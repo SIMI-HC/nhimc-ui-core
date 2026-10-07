@@ -1,5 +1,11 @@
 # 변경 이력
 
+## [2.4.2] - 2026-10-07
+
+- **웹 채팅(무료 플랜 포함)이 주소 하나만으로 화면을 만들게 했습니다.** 무료 플랜의 ChatGPT·Claude 웹은 사용자가 붙여 넣은 주소 하나만 열 수 있어서, `START.md`가 "다음에 `bootstrap.md`를 읽어라"라고 안내해도 두 번째 주소를 열지 못했고, "이 파일만 읽고"라는 프롬프트 때문에 거기서 멈추기도 했습니다. 새 `NHIMC.md`(와 같은 내용의 `START.md`)는 `bootstrap.md`에서 웹 채팅에 필요한 부분(프롬프트 힌트, 메뉴·Page 규칙, 복사용 Page 조각, BLOG·PRESENTATION Frame, Web Runtime 사용법)과 등록된 아이콘 이름 전체를 `scripts/build_start_md.py`로 뽑아 한 번에 읽도록 만든 파일입니다. 버전 번호가 없고 Web Runtime은 `@2`라서 옛 복사본을 읽어도 틀리지 않습니다. 셸이 있는 환경에서는 `git ls-remote`로 최신 태그의 `bootstrap.md`를 읽도록 안내합니다.
+- 공식 프롬프트는 `https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)"로 바꿨습니다(README, `bootstrap.md`, Design Guide, 쉬운 가이드). 파일 하나에 다 들어 있으니 "이 파일만"이 맞는 문구입니다. 이미 읽혀 굳어진 `START.md` 주소와 구 `main/bootstrap.md` 주소는 그대로 둡니다.
+- `NHIMC.md`·`START.md`가 `bootstrap.md`와 어긋나거나, 버전 번호가 들어가거나, 다른 파일을 열어야 하는 문구(`vendor/`, 아이콘 추가 도구 등)가 들어가면 `test_version_references.py`가 실패합니다.
+
 ## [2.4.1] - 2026-10-07
 
 - **클래스를 반쯤만 쓴 AI 화면도 제대로 보이게 했습니다.** Claude 웹이 만든 화면(2.4.0 기준)에서 클래스 이름은 전부 실제로 있어서 검사를 통과했지만 짝이 빠져 있었습니다. `nhimc-card`만 쓰고 `card`가 없어 카드 테두리·배경이 없음, `nhimc-stat-grid`만 쓰고 `nhimc-grid`가 없어 KPI가 글자로 쌓임, `<button>`에 `btn`이 없어 브라우저 기본 회색 버튼, `<h1>`과 `<p>`를 `<div>`로 안 감싸 설명이 오른쪽 끝으로 밀림, `<label>`에 `field`가 없어 라벨과 입력칸이 붙음. 이제 콘텐츠 영역에서는 `nhimc-card` 단독이 카드 모양, `nhimc-stat-grid` 단독이 격자, `<div class="nhimc-stat"><span>라벨</span><strong>128</strong></div>`가 KPI 카드 모양, 클래스 없는 `<button>`이 버튼 모양(`nhimc-toolbar-end`의 마지막은 주요 버튼), 제목 줄에 직접 둔 `h1`·`p`가 위아래로 쌓임, 폼·툴바 안의 클래스 없는 `<label>`이 `label.field` 모양으로 보입니다.
