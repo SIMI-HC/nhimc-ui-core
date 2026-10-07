@@ -87,8 +87,10 @@ const layoutExpression = `(() => {
   for (const bar of root.querySelectorAll('.nhimc-toolbar')) {
     if (bar.querySelector('.field')) continue;
     const parts = [...bar.querySelectorAll(':scope > *, .nhimc-toolbar-end > *')].filter(node => node.offsetParent && node.getBoundingClientRect().height && !node.classList.contains('nhimc-toolbar-end'));
-    const centers = parts.map(node => { const box = node.getBoundingClientRect(); return box.top + box.height / 2; });
-    if (centers.length > 1 && Math.max(...centers) - Math.min(...centers) > 3) problems.push('toolbar items are not vertically centered');
+    // only items that share a row are compared: a wrapped item sits on its own row by design
+    const boxes = parts.map(node => node.getBoundingClientRect());
+    const crooked = boxes.some((a, i) => boxes.some((b, j) => j > i && a.top < b.bottom && b.top < a.bottom && Math.abs((a.top + a.bottom) / 2 - (b.top + b.bottom) / 2) > 3));
+    if (crooked) problems.push('toolbar items are not vertically centered');
   }
   for (const head of root.querySelectorAll('.nhimc-card-head')) {
     const parts = [...head.querySelectorAll(':scope > *, .nhimc-card-head-end > *')].filter(node => node.offsetParent && node.getBoundingClientRect().height && !node.classList.contains('nhimc-card-head-end'));
@@ -98,6 +100,25 @@ const layoutExpression = `(() => {
   for (const node of root.querySelectorAll('*')) {
     if (!node.offsetParent || node.closest('.nhimc-scroll')) continue;
     if (node.getBoundingClientRect().right > rootBox.right + 1) { problems.push('content overflows its slot: ' + node.tagName + '.' + node.className); break; }
+  }
+  // a .nhimc-card without a visible surface (the AI wrote nhimc-card but not card)
+  for (const card of root.querySelectorAll('.nhimc-card')) {
+    const style = getComputedStyle(card);
+    if (parseFloat(style.borderTopWidth) < 1 && style.backgroundColor === 'rgba(0, 0, 0, 0)') { problems.push('card has no border or background'); break; }
+  }
+  // buttons look like buttons (a bare <button> is 21px tall in the browser, .btn is 36px)
+  for (const node of root.querySelectorAll('button')) {
+    if (!node.offsetParent || node.closest('.nhimc-pagination')) continue;
+    if (node.getBoundingClientRect().height < 30) { problems.push('button is unstyled: ' + node.textContent.trim().slice(0, 10)); break; }
+  }
+  // stat grids are grids, and a page header keeps its description under the title
+  for (const grid of root.querySelectorAll('.nhimc-stat-grid')) {
+    if (getComputedStyle(grid).display !== 'grid') { problems.push('nhimc-stat-grid is not a grid'); break; }
+  }
+  for (const head of root.querySelectorAll('.nhimc-page-header')) {
+    const title = head.querySelector(':scope > h1, :scope > div > h1');
+    const text = head.querySelector(':scope > p, :scope > div > p');
+    if (title && text && text.getBoundingClientRect().top < title.getBoundingClientRect().bottom - 2) { problems.push('page header description is beside the title'); break; }
   }
   // card body text must not sit against the card edge
   for (const card of root.querySelectorAll('.nhimc-card')) {

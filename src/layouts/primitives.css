@@ -4,6 +4,8 @@
 [data-nhimc-role="content"]{width:min(100%,var(--page-max));margin:0 auto;padding:var(--space-5) var(--space-5) 48px;display:grid;gap:var(--space-4);align-content:start;min-height:100%}
 [data-nhimc-role="content"] [hidden]{display:none!important}
 [data-nhimc-role="content"] .btn{white-space:nowrap}
+[data-nhimc-role="content"] button:not([class]){height:36px;padding:0 15px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-background);color:var(--color-foreground);font-weight:600;white-space:nowrap;cursor:pointer}
+[data-nhimc-role="content"] .nhimc-toolbar-end>button:not([class]):last-child{border-color:var(--color-primary);background:var(--color-primary);color:var(--color-primary-foreground)}
 [data-nhimc-role="content"] .field{width:auto;max-width:none;margin:0;justify-items:stretch;text-align:left}
 [data-nhimc-role="content"] .choice-group{margin:0;width:auto;justify-items:start;text-align:left}
 [data-nhimc-role="content"] caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -11,6 +13,8 @@
 .nhimc-page-header>div{min-width:0}
 .nhimc-page-header h1{margin:0 0 var(--space-1);font-size:24px;line-height:1.35}
 .nhimc-page-header p{margin:0;color:var(--color-muted-foreground)}
+.nhimc-page-header>h1,.nhimc-page-header>p{flex:1 1 100%;min-width:0}
+.nhimc-page-header>h1{margin-bottom:calc(var(--space-1) - var(--space-4))}
 .nhimc-actions{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
 .nhimc-section{display:grid;gap:var(--space-3);min-width:0}
 .nhimc-section>h2{margin:0;font-size:16px}
@@ -22,11 +26,13 @@
 .nhimc-toolbar>h2{margin:0;font-size:16px}
 .nhimc-toolbar .field{min-width:180px}
 .nhimc-toolbar>.nhimc-form-grid{flex:1 1 560px;min-width:0;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.nhimc-form-grid>label:not(.field),.nhimc-toolbar>label:not(.field){display:grid;gap:6px;justify-items:stretch;text-align:left;min-width:0}
 .nhimc-toolbar-end{margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2)}
 .nhimc-toolbar-end>span{color:var(--color-muted-foreground);font-size:12px}
 .nhimc-toolbar:has(.field) .nhimc-toolbar-end{align-items:flex-end}
 .nhimc-field-group{display:grid;gap:var(--space-2);min-width:0;border:0;padding:0;margin:0}
 .nhimc-card{padding:0;overflow:hidden;min-width:0}
+.nhimc-card:not(.card){border:1px solid var(--color-border-accent);border-radius:14px;background:var(--color-card)}
 .nhimc-card-head{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-3);padding:var(--space-4) 18px;border-bottom:1px solid var(--color-border-accent)}
 .nhimc-card-head>strong,.nhimc-card-head>h2{margin:0;font-size:16px;line-height:1.4}
 .nhimc-card-head>span{margin-left:auto;color:var(--color-muted-foreground);font-size:12px}
@@ -37,7 +43,11 @@
 .nhimc-card>div:not([class]),.nhimc-card>p:not([class]),.nhimc-card>form:not([class]){padding:18px}
 /* Stat (MetricOverview): one key number per card. nhimc-stat-grid keeps four cards on one row from about 700px. */
 .nhimc-stat{min-width:0}
-.nhimc-stat-grid{--grid-min:160px}
+.nhimc-stat-grid{--grid-min:160px;display:grid;gap:var(--space-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--grid-min)),1fr))}
+.nhimc-stat:not(.nhimc-card){display:grid;gap:var(--space-1);align-content:start;padding:18px;border:1px solid var(--color-border-accent);border-radius:14px;background:var(--color-card);color:var(--color-card-foreground)}
+.nhimc-stat:not(.nhimc-card)>span{color:var(--color-muted-foreground);font-size:13px}
+.nhimc-stat:not(.nhimc-card)>strong{font-size:28px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
+.nhimc-stat[data-nhimc-accent]:not(.nhimc-card){border-top:4px solid var(--nhimc-accent-surface)}
 .nhimc-stat-body{gap:var(--space-1)}
 .nhimc-stat-value{margin:0;font-size:28px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
 .nhimc-stat-unit{margin-left:var(--space-1);font-size:14px;font-weight:400;color:var(--color-muted-foreground)}

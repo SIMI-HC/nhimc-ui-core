@@ -188,6 +188,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 </div>
 ```
 
+- **클래스는 한 묶음입니다. 조각의 클래스를 줄이거나 바꾸지 않습니다.** 카드는 항상 `card nhimc-card`, 버튼은 항상 `btn`(강조는 `btn primary`), 입력은 `label.field`, 핵심 수치 격자는 `nhimc-grid nhimc-stat-grid`입니다. 한쪽만 쓰면 테두리·배경·버튼 모양이 빠져 밋밋하게 나옵니다.
 - 핵심 수치 카드(MetricOverview)는 위 `nhimc-stat` 조각만 씁니다(2~4개를 `nhimc-grid nhimc-stat-grid`에 나란히). `.metric`·`.metrics`처럼 클래스를 지어내면 스타일이 없어 글자가 붙어 보이고, 빌더는 거부하며 웹 미리보기는 경고를 띄웁니다. 카드 안 본문은 `nhimc-card-body`에 넣습니다.
 - 검색 조건은 `nhimc-toolbar` 안에 `label.field`를 나란히 두고 버튼은 `nhimc-toolbar-end`로 오른쪽에 둡니다(`nhimc-form-grid`는 여러 줄짜리 입력 폼용입니다). 제목 줄의 버튼은 `nhimc-page-header` 안의 `nhimc-actions`입니다.
 - 표의 칸은 줄바꿈하지 않고 표가 `nhimc-scroll` 안에서 가로로 스크롤됩니다. 설명처럼 긴 글을 줄바꿈해야 하는 칸에만 `class="nhimc-wrap"`을 붙입니다.

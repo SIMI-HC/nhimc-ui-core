@@ -455,7 +455,7 @@ def run_exact_browser_verification(root: Path, artifact: Path, receipt: Path) ->
         raise ValueError(f"exact browser verification failed{suffix}")
 
 
-CONTENT_FIXTURES = ("transport-management", "operations", "administration", "multi-page", "ai-transfer", "top-mint", "kpi-filter", "ai-misuse")
+CONTENT_FIXTURES = ("transport-management", "operations", "administration", "multi-page", "ai-transfer", "top-mint", "kpi-filter", "ai-misuse", "ai-half-classes")
 
 
 def run_content_layout(

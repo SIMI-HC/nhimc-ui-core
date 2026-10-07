@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>업무화면</title>
+</head>
+<body>
+<main data-nhimc-role="content">
+  <div class="nhimc-page-header">
+    <h1>업무 현황</h1>
+    <p>오늘의 주요 업무를 한눈에 확인합니다.</p>
+  </div>
+
+  <div class="nhimc-stat-grid">
+    <div class="nhimc-stat" data-nhimc-accent="sky"><span>오늘 접수</span><strong>128</strong></div>
+    <div class="nhimc-stat" data-nhimc-accent="pear"><span>처리 완료</span><strong>96</strong></div>
+    <div class="nhimc-stat" data-nhimc-accent="apricot"><span>진행 중</span><strong>24</strong></div>
+    <div class="nhimc-stat" data-nhimc-accent="pink"><span>지연</span><strong>8</strong></div>
+  </div>
+
+  <div class="nhimc-toolbar">
+    <input type="text" placeholder="업무명 / 담당자 검색">
+    <select><option>전체 상태</option><option>완료</option></select>
+    <div class="nhimc-toolbar-end"><button type="button">조회</button><button type="button">신규 등록</button></div>
+  </div>
+
+  <div class="nhimc-card">
+    <div class="nhimc-card-head"><h2>기본 정보</h2></div>
+    <div class="nhimc-card-body">
+      <div class="nhimc-form-grid">
+        <label>부서명<input type="text" value="원무과"></label>
+        <label>담당자<input type="text" value="김민수"></label>
+        <label>알림 방식<select><option>앱 알림</option><option>이메일</option></select></label>
+      </div>
+      <div class="nhimc-toolbar"><div class="nhimc-toolbar-end"><button type="button">저장</button></div></div>
+    </div>
+  </div>
+
+  <div class="nhimc-card">
+    <div class="nhimc-card-head"><h2>최근 처리 내역</h2></div>
+    <div class="nhimc-card-body">
+      <div class="nhimc-scroll" style="--table-min:560px">
+        <table>
+          <thead><tr><th>접수번호</th><th>업무명</th><th>담당자</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr><td>2026-1007-001</td><td>진료비 청구 검토</td><td>김민수</td><td><span class="badge ok">완료</span></td></tr>
+            <tr><td>2026-1007-002</td><td>물품 입고 확인</td><td>이서연</td><td><span class="badge warn">진행</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+<script type="application/json" data-nhimc-menu>[{"id":"dashboard","label":"업무 현황","icon":"dashboard","href":"#dashboard"}]</script>
+</body>
+</html>
