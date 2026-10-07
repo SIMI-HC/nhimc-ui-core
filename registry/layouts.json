@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "2.3.8",
+  "projectVersion": "2.4.0",
   "implementation": "src/layouts/primitives.css",
   "primitives": [
     {
@@ -47,6 +47,16 @@
       "id": "ContentCard",
       "selector": ".card.nhimc-card",
       "purpose": "머리(.nhimc-card-head)+본문(.nhimc-card-body 또는 .nhimc-scroll 표)를 가진 카드. data-nhimc-accent(sky·pear·apricot·yellow·purple·pink·amber)로 머리·테두리 색을 구분하며 Dialog 머리·Badge에도 같은 속성을 씁니다"
+    },
+    {
+      "id": "Stat",
+      "selector": ".nhimc-stat-value",
+      "purpose": "핵심 수치 하나를 보여 주는 카드(MetricOverview). 카드 머리(라벨) + .nhimc-stat-body(.nhimc-stat-value + .nhimc-stat-unit, .nhimc-stat-note)"
+    },
+    {
+      "id": "StatGrid",
+      "selector": ".nhimc-stat-grid",
+      "purpose": "Stat 카드 2~4개를 한 줄로 배치하는 Grid(.nhimc-grid와 함께 사용)"
     },
     {
       "id": "PresentationContent",

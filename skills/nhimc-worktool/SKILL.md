@@ -58,6 +58,39 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 - `nhimc-scroll` 안 `table`의 최소 너비는 기본이 컨테이너 폭(`--table-min: 100%`)입니다. 열이 많아 넓게 둬야 하면 `<div class="nhimc-scroll" style="--table-min:640px">`처럼 지정합니다.
 
+화면 위쪽의 제목 줄·검색 조건·핵심 수치는 아래 조각을 그대로 씁니다. **클래스를 새로 만들지 않습니다.**
+
+```html
+<div class="nhimc-page-header">
+  <div><h1>이송 현황</h1><p>오늘 접수된 이송 요청을 조회합니다.</p></div>
+  <div class="nhimc-actions"><button class="btn primary" type="button" data-nhimc-component="Button">이송 요청 등록</button></div>
+</div>
+
+<section class="card nhimc-card" data-nhimc-component="ContentCard SearchFilter">
+  <div class="nhimc-card-head"><strong>조회 조건</strong></div>
+  <div class="nhimc-card-body">
+    <div class="nhimc-toolbar">
+      <label class="field"><span>이송일</span><input type="date"></label>
+      <label class="field"><span>환자명</span><input type="text" placeholder="환자명 입력"></label>
+      <label class="field"><span>이송상태</span><select><option>전체</option><option>대기</option><option>완료</option></select></label>
+      <div class="nhimc-toolbar-end"><button class="btn ghost" type="button" data-nhimc-component="Button">초기화</button><button class="btn primary" type="button" data-nhimc-component="Button">조회</button></div>
+    </div>
+  </div>
+</section>
+
+<div class="nhimc-grid nhimc-stat-grid">
+  <section class="card nhimc-card nhimc-stat" data-nhimc-accent="sky" data-nhimc-component="Stat">
+    <div class="nhimc-card-head"><strong>전체 요청</strong></div>
+    <div class="nhimc-card-body nhimc-stat-body"><p class="nhimc-stat-value">37<span class="nhimc-stat-unit">건</span></p><small class="nhimc-stat-note">오늘 접수</small></div>
+  </section>
+</div>
+```
+
+- 핵심 수치 카드(MetricOverview)는 위 `nhimc-stat` 조각만 씁니다(2~4개를 `nhimc-grid nhimc-stat-grid`에 나란히). `.metric`·`.metrics`처럼 클래스를 지어내면 스타일이 없어 글자가 붙어 보이고, 빌더는 거부하며 웹 미리보기는 경고를 띄웁니다. 카드 안 본문은 `nhimc-card-body`에 넣습니다.
+- 검색 조건은 `nhimc-toolbar` 안에 `label.field`를 나란히 두고 버튼은 `nhimc-toolbar-end`로 오른쪽에 둡니다(`nhimc-form-grid`는 여러 줄짜리 입력 폼용입니다). 제목 줄의 버튼은 `nhimc-page-header` 안의 `nhimc-actions`입니다.
+- 표의 칸은 줄바꿈하지 않고 표가 `nhimc-scroll` 안에서 가로로 스크롤됩니다. 설명처럼 긴 글을 줄바꿈해야 하는 칸에만 `class="nhimc-wrap"`을 붙입니다.
+- 등록되지 않은 CSS 클래스는 쓰지 않습니다. 자주 틀리는 것: `card-head`→`nhimc-card-head`, `fields`→`nhimc-toolbar`, `actions`→`nhimc-actions`, `table-wrap`→`nhimc-scroll`, `title`→`nhimc-page-header`, `badge warning`·`badge secondary`→`badge warn`·`ok`·`bad`.
+
 ## Core 아이콘 추가 절차
 
 `vendor/nhimc-design/icons/nhimc-icons.svg`는 바이트 동일 미러라 직접 고치지 않습니다. 필요한 아이콘이 없으면 사용자에게 먼저 알리고 승인받은 뒤 `python scripts/add_canonical_icon.py --id <새-id> --label "<라벨>" --category <카테고리> --svg '<내부 SVG>'`로 `src/generated/icons/core-icons.svg`(Core 오버레이)에 추가합니다. 스타일 규격(`viewBox="0 0 24 24"`, `currentColor` 상속을 위한 `fill`/`stroke` 미지정)을 어기면 스크립트가 FAIL합니다. 이어서 `python scripts/update_integrity.py --frame nhimc-default --frame-version <다음 버전>`으로 해시를 갱신합니다. `bootstrap.md`의 “Core 아이콘 추가 절차”를 따릅니다.

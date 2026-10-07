@@ -73,7 +73,7 @@ const layoutExpression = `(() => {
     if (getComputedStyle(node).display !== 'none') problems.push('hidden element is visible: ' + node.tagName);
   }
   const header = root.querySelector('.nhimc-page-header');
-  const firstField = root.querySelector('.nhimc-toolbar .field');
+  const firstField = ([...root.querySelectorAll('.nhimc-toolbar')].find(bar => !bar.closest('.nhimc-card')) || document.createElement('i')).querySelector('.field');
   if (header && firstField && Math.abs(firstField.getBoundingClientRect().left - header.getBoundingClientRect().left) > 2) {
     problems.push('toolbar field is not aligned with the page header');
   }
@@ -98,6 +98,27 @@ const layoutExpression = `(() => {
   for (const node of root.querySelectorAll('*')) {
     if (!node.offsetParent || node.closest('.nhimc-scroll')) continue;
     if (node.getBoundingClientRect().right > rootBox.right + 1) { problems.push('content overflows its slot: ' + node.tagName + '.' + node.className); break; }
+  }
+  // card body text must not sit against the card edge
+  for (const card of root.querySelectorAll('.nhimc-card')) {
+    for (const child of card.children) {
+      if (child.matches('.nhimc-card-head, .nhimc-scroll, .nhimc-pagination') || !child.offsetParent || !child.textContent.trim()) continue;
+      if (parseFloat(getComputedStyle(child).paddingLeft) < 8) { problems.push('card body is flush against the card edge: ' + child.tagName + '.' + child.className); break; }
+    }
+  }
+  // a toolbar with 2-4 fields keeps them on one row while it is wide enough
+  for (const bar of root.querySelectorAll('.nhimc-toolbar')) {
+    const fields = [...bar.querySelectorAll('.field')].filter(node => node.offsetParent);
+    if (fields.length < 2 || fields.length > 4 || bar.clientWidth < 900) continue;
+    const tops = fields.map(node => Math.round(node.getBoundingClientRect().top));
+    if (Math.max(...tops) - Math.min(...tops) > 2) problems.push('search fields are stacked although the toolbar is wide enough');
+  }
+  // table text must not be broken inside a word
+  for (const cell of root.querySelectorAll('.nhimc-scroll th, .nhimc-scroll td')) {
+    const text = cell.textContent.trim();
+    if (!cell.offsetParent || !text || cell.children.length || cell.classList.contains('nhimc-wrap')) continue; // plain text cells only: a button or badge is taller than a text line by design
+    const range = document.createRange(); range.selectNodeContents(cell);
+    if (range.getBoundingClientRect().height > (parseFloat(getComputedStyle(cell).lineHeight) || 20) * 1.6) { problems.push('table text wraps onto several lines: ' + text.slice(0, 12)); break; }
   }
   return { problems, buttons: buttons.length, documentOverflow: document.documentElement.scrollWidth > innerWidth + 1 };
 })()`;

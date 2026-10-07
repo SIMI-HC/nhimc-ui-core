@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>이송업무 관리</title>
+</head>
+<body>
+<main data-nhimc-role="content">
+<header class="nhimc-page-header">
+  <div>
+    <h1>이송업무 관리</h1>
+    <p>환자 이송 요청을 조회하고 처리 상태를 관리합니다.</p>
+  </div>
+</header>
+
+<section class="nhimc-toolbar">
+  <div class="nhimc-form-grid">
+    <label class="field"><span>이송일</span><input type="date" value="2026-10-07"></label><label class="field"><span>환자명</span><input type="text" placeholder="환자명 입력"></label><label class="field"><span>이송상태</span><select><option>전체</option><option>대기</option><option>이송중</option><option>완료</option></select></label><label class="field"><span>출발병동</span><select><option>전체</option><option>1병동</option><option>2병동</option><option>응급의료센터</option></select></label>
+  </div>
+  <div class="nhimc-toolbar-end">
+    <button class="btn ghost" type="button" data-nhimc-component="Button">초기화</button>
+    <button class="btn primary" type="button" data-nhimc-component="Button">조회</button>
+  </div>
+</section>
+
+<section class="nhimc-grid">
+  <section class="card nhimc-card" data-nhimc-accent="sky"><div class="nhimc-card-head"><strong>전체 요청</strong></div><div><strong>37</strong><span>건</span></div></section>
+  <section class="card nhimc-card" data-nhimc-accent="yellow"><div class="nhimc-card-head"><strong>이송 대기</strong></div><div><strong>8</strong><span>건</span></div></section>
+  <section class="card nhimc-card" data-nhimc-accent="apricot"><div class="nhimc-card-head"><strong>이송 중</strong></div><div><strong>5</strong><span>건</span></div></section>
+  <section class="card nhimc-card" data-nhimc-accent="pear"><div class="nhimc-card-head"><strong>완료</strong></div><div><strong>24</strong><span>건</span></div></section>
+</section>
+
+<section class="card nhimc-card" data-nhimc-component="ContentCard DataTable">
+  <div class="nhimc-card-head">
+    <strong>이송 요청 목록</strong>
+    <div class="nhimc-card-head-end"><span>총 37건</span><button class="btn" type="button" data-nhimc-component="Button">새로고침</button></div>
+  </div>
+  <div class="nhimc-scroll">
+    <table data-nhimc-component="Table" aria-label="이송 요청 목록">
+      <thead><tr><th>접수번호</th><th>환자명</th><th>출발</th><th>도착</th><th>요청시간</th><th>이송수단</th><th>담당자</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>TR-20261007-0037</td><td>김○○</td><td>3병동</td><td>영상의학과</td><td>10:21</td><td>휠체어</td><td>박○○</td><td><span class="badge ok">완료</span></td></tr>
+        <tr><td>TR-20261007-0036</td><td>이○○</td><td>2병동</td><td>CT실</td><td>10:18</td><td>환자이송카트</td><td>최○○</td><td><span class="badge warn">이송중</span></td></tr>
+        <tr><td>TR-20261007-0035</td><td>박○○</td><td>1병동</td><td>수술실</td><td>10:12</td><td>침대</td><td>-</td><td><span class="badge warn">대기</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="nhimc-pagination" data-nhimc-role="pagination" data-nhimc-component="PaginationArea">
+    <nav class="pages" data-nhimc-component="Pagination" aria-label="페이지 이동"><button type="button" aria-label="이전 페이지">이전</button><button type="button" class="on" aria-current="page">1</button><button type="button">2</button><button type="button" aria-label="다음 페이지">다음</button></nav>
+  </div>
+</section>
+</main>
+
+<script type="application/json" data-nhimc-menu>[{"id":"transfer","label":"이송업무","icon":"ambulance","href":"#transfer"}]</script>
+</body>
+</html>

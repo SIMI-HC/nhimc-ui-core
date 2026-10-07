@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -15,6 +16,22 @@ VOID_ELEMENTS = frozenset(
     {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 )
 PATTERN_REGISTRY = Path("vendor/nhimc-design/patterns/registry.md")
+# The stylesheets that style Content. A class that appears in none of them renders unstyled (the usual AI slip: .metric, .fields, .card-head).
+STYLE_SOURCES = ("src/generated/components/components.css", "src/layouts/primitives.css")
+CLASS_HINTS = (
+    (("metric", "metrics", "metric-card", "kpi", "kpis", "stat", "stats", "summary-card"),
+     "Stat + StatGrid: .nhimc-grid.nhimc-stat-grid > section.card.nhimc-card.nhimc-stat (.nhimc-card-head + .nhimc-card-body.nhimc-stat-body > p.nhimc-stat-value + span.nhimc-stat-unit)"),
+    (("card-head", "card-header", "cardhead"), ".nhimc-card-head"),
+    (("card-body", "card-content"), ".nhimc-card-body"),
+    (("fields", "filters", "filter", "filter-bar", "search", "search-bar", "search-form", "form-row"),
+     ".nhimc-toolbar (label.field ... + .nhimc-toolbar-end) or .nhimc-form-grid"),
+    (("title", "page-title", "page-header", "header"), ".nhimc-page-header"),
+    (("actions", "action-bar", "btn-group", "buttons"), ".nhimc-actions"),
+    (("table-wrap", "table-container", "table-responsive"), ".nhimc-scroll"),
+    (("secondary", "warning", "danger", "success", "info", "error"), "badge ok | warn | bad"),
+    (("sr-only", "visually-hidden"), "a table caption is already visually hidden"),
+    (("row", "col", "container", "wrapper", "grid"), ".nhimc-grid / .nhimc-stack / .nhimc-section"),
+)
 
 
 @dataclass(frozen=True)
@@ -28,6 +45,7 @@ class _Inspector(HTMLParser):
         super().__init__(convert_charrefs=False)
         self.content_roots = 0
         self.roles: list[str] = []
+        self.classes: set[str] = set()
         self.components: list[str] = []
         self._stack: list[str] = []
 
@@ -42,6 +60,7 @@ class _Inspector(HTMLParser):
             if role == "content":
                 self.content_roots += 1
         self.components.extend(values.get("data-nhimc-component", "").split())
+        self.classes.update(values.get("class", "").split())
         if tag in FORBIDDEN_TAGS:
             raise ValueError(f"forbidden {tag} element in Content")
         if any(name in values for name in ("src", "srcset", "poster")):
@@ -86,6 +105,22 @@ def registered_names(root: Path) -> frozenset[str]:
     return frozenset(names)
 
 
+@lru_cache(maxsize=None)
+def _styled_classes(root: str) -> frozenset[str]:
+    css = "".join((Path(root) / name).read_text(encoding="utf-8") for name in STYLE_SOURCES)
+    return frozenset(re.findall(r"\.([A-Za-z_][\w-]*)", css))
+
+
+def _unknown_classes_message(unknown: list[str]) -> str:
+    hints = []
+    for names, hint in CLASS_HINTS:
+        hit = [name for name in unknown if name in names]
+        if hit:
+            hints.append(f"{'/'.join(hit)} -> {hint}")
+    message = "unregistered CSS class(es) with no style: " + ", ".join(unknown) + ". Use only the classes of registered Components and Layout Primitives"
+    return message + ("; " + "; ".join(hints) if hints else "") + "."
+
+
 def validate_content(root: Path, html: str) -> ContentInspection:
     parser = _Inspector()
     parser.feed(html)
@@ -96,4 +131,7 @@ def validate_content(root: Path, html: str) -> ContentInspection:
     for component in parser.components:
         if component not in known:
             raise ValueError(f"unknown component {component}; use the Component Registry")
+    unknown_classes = sorted(parser.classes - _styled_classes(str(root.resolve())))
+    if unknown_classes:
+        raise ValueError(_unknown_classes_message(unknown_classes))
     return ContentInspection(tuple(parser.components), tuple(parser.roles))

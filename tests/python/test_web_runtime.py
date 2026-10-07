@@ -94,6 +94,30 @@ class WebRuntimeTests(unittest.TestCase):
         self.assertEqual(expected, _frame_markup(actual_dom))
 
     @slow_test
+    def test_runtime_flags_a_class_without_a_style_and_stays_quiet_otherwise(self):
+        browser = find_browser()
+        runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()
+
+        def page(markup: str) -> str:
+            return (f'<!doctype html><html lang="ko" data-theme="light"><head><meta charset="utf-8"><script src="{runtime}"></script></head>'
+                    f'<body><main data-nhimc-role="content">{markup}</main></body></html>')
+
+        cases = {
+            "bad.html": page('<section class="metrics"><article class="card metric"><strong>24</strong></article></section>'),
+            "good.html": page('<section class="card nhimc-card"><div class="nhimc-card-head"><strong>제목</strong></div><div class="nhimc-card-body">내용</div></section>'),
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            doms = {}
+            for name, html in cases.items():
+                target = Path(folder) / name
+                target.write_text(html, encoding="utf-8")
+                doms[name] = _dump(browser, target.resolve().as_uri())
+        self.assertIn("스타일이 없는 클래스를 썼습니다", doms["bad.html"])
+        self.assertIn("<code>metrics, metric</code>", doms["bad.html"])
+        self.assertIn('data-nhimc-role="app-shell"', doms["bad.html"])
+        self.assertNotIn("스타일이 없는 클래스를 썼습니다", doms["good.html"])
+
+    @slow_test
     def test_runtime_failure_tells_the_user_what_to_do(self):
         browser = find_browser()
         runtime = (ROOT / "dist/nhimc-web.js").resolve().as_uri()

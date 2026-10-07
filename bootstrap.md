@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.3.8** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 `START.md`를 가리키고, `START.md`가 최신 릴리스 태그 주소로 이 문서를 읽게 합니다.
+**문서 버전: 2.4.0** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 `START.md`를 가리키고, `START.md`가 최신 릴리스 태그 주소로 이 문서를 읽게 합니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
@@ -56,12 +56,12 @@ https://raw.githack.com/SIMI-HC/nhimc-ui-core/main/START.md
 2. 열 수 없으면(명령 실패, GUI 없음, 웹 환경) 사용자가 바로 열 수 있는 **클릭 링크**로 전달합니다. 이 링크는 브라우저에서 화면으로 열립니다(HTML로 제공되는 정적 호스팅). 답변에는 아래 형식 그대로 **한 줄**로 씁니다.
 
    ```text
-   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.3.8/guide/nhimc-design-guide.html
+   디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.4.0/guide/nhimc-design-guide.html
    ```
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   주소의 태그 숫자(`v2.3.8`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.3.8/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   주소의 태그 숫자(`v2.4.0`)는 1단계에서 읽은 원격 `VERSION`에 맞춥니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -159,6 +159,39 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 구역을 색으로 구분하려면 `<section class="card nhimc-card" data-nhimc-accent="sky">`처럼 속성 하나만 붙입니다(`sky`·`pear`·`apricot`·`yellow`·`purple`·`pink`·`amber`). 카드 머리와 테두리, `<dialog class="dialog-box">`의 머리, `badge`(필수·선택 표시)에 같은 방식으로 쓰며 `style="background:…"` 인라인 색은 쓰지 않습니다. 분류용 강조일 뿐 주요 버튼은 계속 `btn primary`입니다. `purple`·`pink`·`amber`는 `theme: color-mix`에서만 고유 색이고, 다른 테마에서는 `sky`·`apricot`·`yellow` 색으로 대신 보입니다.
 - 상태 표시는 `badge ok|warn|bad`, 버튼은 `btn primary|ghost|ghost-subtle`, 검색 필드는 `label.field`입니다.
 - `nhimc-scroll` 안 `table`의 최소 너비는 기본이 컨테이너 폭(`--table-min: 100%`)입니다. 열이 많아 넓게 둬야 하면 `<div class="nhimc-scroll" style="--table-min:640px">`처럼 지정합니다(`nhimc-grid`의 `--grid-min`과 같은 방식). 짧은 표를 좁은 카드에 넣을 때 불필요한 가로 스크롤이 생기지 않도록 지정하지 않은 기본값을 그대로 둡니다.
+
+화면 위쪽의 제목 줄·검색 조건·핵심 수치는 아래 조각을 그대로 씁니다. **클래스를 새로 만들지 않습니다.**
+
+```html
+<div class="nhimc-page-header">
+  <div><h1>이송 현황</h1><p>오늘 접수된 이송 요청을 조회합니다.</p></div>
+  <div class="nhimc-actions"><button class="btn primary" type="button" data-nhimc-component="Button">이송 요청 등록</button></div>
+</div>
+
+<section class="card nhimc-card" data-nhimc-component="ContentCard SearchFilter">
+  <div class="nhimc-card-head"><strong>조회 조건</strong></div>
+  <div class="nhimc-card-body">
+    <div class="nhimc-toolbar">
+      <label class="field"><span>이송일</span><input type="date"></label>
+      <label class="field"><span>환자명</span><input type="text" placeholder="환자명 입력"></label>
+      <label class="field"><span>이송상태</span><select><option>전체</option><option>대기</option><option>완료</option></select></label>
+      <div class="nhimc-toolbar-end"><button class="btn ghost" type="button" data-nhimc-component="Button">초기화</button><button class="btn primary" type="button" data-nhimc-component="Button">조회</button></div>
+    </div>
+  </div>
+</section>
+
+<div class="nhimc-grid nhimc-stat-grid">
+  <section class="card nhimc-card nhimc-stat" data-nhimc-accent="sky" data-nhimc-component="Stat">
+    <div class="nhimc-card-head"><strong>전체 요청</strong></div>
+    <div class="nhimc-card-body nhimc-stat-body"><p class="nhimc-stat-value">37<span class="nhimc-stat-unit">건</span></p><small class="nhimc-stat-note">오늘 접수</small></div>
+  </section>
+</div>
+```
+
+- 핵심 수치 카드(MetricOverview)는 위 `nhimc-stat` 조각만 씁니다(2~4개를 `nhimc-grid nhimc-stat-grid`에 나란히). `.metric`·`.metrics`처럼 클래스를 지어내면 스타일이 없어 글자가 붙어 보이고, 빌더는 거부하며 웹 미리보기는 경고를 띄웁니다. 카드 안 본문은 `nhimc-card-body`에 넣습니다.
+- 검색 조건은 `nhimc-toolbar` 안에 `label.field`를 나란히 두고 버튼은 `nhimc-toolbar-end`로 오른쪽에 둡니다(`nhimc-form-grid`는 여러 줄짜리 입력 폼용입니다). 제목 줄의 버튼은 `nhimc-page-header` 안의 `nhimc-actions`입니다.
+- 표의 칸은 줄바꿈하지 않고 표가 `nhimc-scroll` 안에서 가로로 스크롤됩니다. 설명처럼 긴 글을 줄바꿈해야 하는 칸에만 `class="nhimc-wrap"`을 붙입니다.
+- 등록되지 않은 CSS 클래스는 쓰지 않습니다. 자주 틀리는 것: `card-head`→`nhimc-card-head`, `fields`→`nhimc-toolbar`, `actions`→`nhimc-actions`, `table-wrap`→`nhimc-scroll`, `title`→`nhimc-page-header`, `badge warning`·`badge secondary`→`badge warn`·`ok`·`bad`.
 
 ## Core 아이콘 추가 절차
 

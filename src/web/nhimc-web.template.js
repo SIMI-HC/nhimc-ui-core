@@ -156,6 +156,17 @@
   }
   let doc = D.layouts[kind].replace(/(<html\b[^>]*\bdata-theme=")[^"]+("[^>]*>)/i, '$1' + theme + '$2');
   if (scrollOwner !== 'main') doc = doc.replace('data-scroll-owner="main"', 'data-scroll-owner="' + scrollOwner + '"');
+  // A class that no stylesheet defines renders unstyled (the usual slip: .metric, .fields, .card-head). The preview still shows,
+  // with a notice on top that the user can hand back to the AI; the offline builder rejects such a class outright.
+  {
+    const styled = new Set((D.css.match(/\.[A-Za-z_][\w-]*/g) || []).map((name) => name.slice(1)));
+    const unstyled = [...new Set([...content.matchAll(/\sclass="([^"]*)"/g)].flatMap((match) => match[1].split(/\s+/)).filter(Boolean))].filter((name) => !styled.has(name));
+    if (unstyled.length) {
+      console.warn('NHIMC UI Core: classes without a style: ' + unstyled.join(', '));
+      const notice = '<div role="alert" style="margin:0 0 16px;padding:10px 14px;border:1px solid #c00;border-radius:8px;background:#fff5f5;color:#900;font:14px/1.5 sans-serif">스타일이 없는 클래스를 썼습니다: <code>' + esc(unstyled.join(', ')) + '</code>. 등록된 Component와 Layout Primitive의 클래스만 쓰세요. 이 메시지를 AI에게 붙여 넣고 고쳐 달라고 요청하세요.</div>';
+      content = content.replace(/<main\b[^>]*data-nhimc-role="content"[^>]*>/, (match) => match + notice);
+    }
+  }
   doc = replaceRoleContents(doc, 'content-slot', content);
   const titlePatterns = [/(<strong\s+class="site-title">)[\s\S]*?(<\/strong>)/, /(<button\s+class="brand-group"[^>]*>[\s\S]*?<span>)[\s\S]*?(<\/span>)/];
   for (const pattern of titlePatterns) {
