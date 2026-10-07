@@ -1,7 +1,10 @@
 # 변경 이력
 
-## [Unreleased]
+## [2.4.1] - 2026-10-07
 
+- **클래스를 반쯤만 쓴 AI 화면도 제대로 보이게 했습니다.** Claude 웹이 만든 화면(2.4.0 기준)에서 클래스 이름은 전부 실제로 있어서 검사를 통과했지만 짝이 빠져 있었습니다. `nhimc-card`만 쓰고 `card`가 없어 카드 테두리·배경이 없음, `nhimc-stat-grid`만 쓰고 `nhimc-grid`가 없어 KPI가 글자로 쌓임, `<button>`에 `btn`이 없어 브라우저 기본 회색 버튼, `<h1>`과 `<p>`를 `<div>`로 안 감싸 설명이 오른쪽 끝으로 밀림, `<label>`에 `field`가 없어 라벨과 입력칸이 붙음. 이제 콘텐츠 영역에서는 `nhimc-card` 단독이 카드 모양, `nhimc-stat-grid` 단독이 격자, `<div class="nhimc-stat"><span>라벨</span><strong>128</strong></div>`가 KPI 카드 모양, 클래스 없는 `<button>`이 버튼 모양(`nhimc-toolbar-end`의 마지막은 주요 버튼), 제목 줄에 직접 둔 `h1`·`p`가 위아래로 쌓임, 폼·툴바 안의 클래스 없는 `<label>`이 `label.field` 모양으로 보입니다.
+- `bootstrap.md`·`SKILL.md`의 복사용 조각 설명에 "클래스는 한 묶음이며 줄이거나 바꾸지 않는다(`card nhimc-card`, `btn`, `label.field`, `nhimc-grid nhimc-stat-grid`)"를 넣었습니다.
+- 내용 레이아웃 게이트에 카드 표면, 버튼 모양, 격자, 제목-설명 배치 검사 4개와 테스트 화면 `ai-half-classes`(위 Claude 웹 화면의 반쪽 클래스 마크업)를 추가했습니다. 2.4.0의 CSS로 돌리면 이 화면이 새 검사 4개로 모두 실패하는 것을 확인했습니다. 같은 줄에 겹치지 않는(줄바꿈된) 툴바 항목을 "세로 중앙 정렬 아님"으로 오판하던 기존 검사도 고쳤습니다.
 - `START.md`: ChatGPT가 프롬프트의 "이 파일만 읽고"를 글자 그대로 지켜 `START.md`만 읽고 `bootstrap.md`는 읽지 않은 채 멈추던 문제를 고쳤습니다. 맨 위에 "여기서 멈추지 말고 `bootstrap.md`까지 읽는 것이 요청에 포함된다"를 넣고, 셸이 없는 환경은 곧바로 `main/bootstrap.md`를 읽게 했습니다. 프롬프트 문구는 그대로입니다.
 
 ## [2.4.0] - 2026-10-07
