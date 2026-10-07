@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import ssl
 import subprocess
 import sys
 import time
+import urllib.error
 import urllib.request
 
 if __package__ in {None, ""}:
@@ -57,27 +59,44 @@ def cdn_runtime_urls(version: str) -> list[str]:
     return [f"https://cdn.jsdelivr.net/gh/{REPO}@{ref}/dist/nhimc-web.js" for ref in (f"v{version}", version.split(".")[0])]
 
 
-def refresh_cdn(root: Path, version: str, *, attempts: int = 4, wait: float = 15.0) -> list[str]:
+# The two requests below read public files and the body is compared byte for byte with dist/, and nothing secret
+# is sent, so TLS interception on a corporate network (Python rejects its CA) must not stop the check.
+_CONTEXT = ssl.create_default_context()
+_CONTEXT.check_hostname = False
+_CONTEXT.verify_mode = ssl.CERT_NONE
+
+
+def _get(url: str, timeout: float) -> bytes:
+    return urllib.request.urlopen(url, timeout=timeout, context=_CONTEXT).read()
+
+
+def refresh_cdn(root: Path, version: str, *, attempts: int = 8, wait: float = 15.0) -> list[tuple[str, str]]:
     """jsDelivr answers 404 for a brand-new tag (and keeps the miss) and serves a range such as @2 from a cache that
-    lasts hours: ask it to refetch, then wait until it serves dist/nhimc-web.js byte for byte. Returns the URLs still stale."""
+    lasts hours: ask it to refetch, then wait until it serves dist/nhimc-web.js byte for byte.
+    Returns (url, "stale" | "unreachable") for every URL that never matched."""
     expected = (root / "dist/nhimc-web.js").read_bytes()
-    stale = []
+    problems = []
     for url in cdn_runtime_urls(version):
+        reason = "unreachable"
         for attempt in range(attempts):
             try:
-                urllib.request.urlopen(url.replace("https://cdn.jsdelivr.net/", "https://purge.jsdelivr.net/"), timeout=30).read()
+                _get(url.replace("https://cdn.jsdelivr.net/", "https://purge.jsdelivr.net/"), 30)
             except OSError:
                 pass
             try:
-                body = urllib.request.urlopen(url, timeout=60).read()
+                body = _get(url, 60)
+            except urllib.error.HTTPError:
+                reason, body = "stale", b""
             except OSError:
                 body = b""
+            else:
+                reason = "stale"
             if body == expected:
                 break
             time.sleep(wait)
         else:
-            stale.append(url)
-    return stale
+            problems.append((url, reason))
+    return problems
 
 
 def main() -> int:
@@ -91,10 +110,11 @@ def main() -> int:
     create_and_push_tag(root, tag, commit=args.commit, remote=args.remote)
     print(f"release tag: {tag} -> {args.remote}")
     version = tag[1:]
-    stale = refresh_cdn(root, version)
-    for url in stale:
-        print(f"WARNING: jsDelivr is not serving the current runtime yet: {url} (purge it again later)")
-    if not stale:
+    problems = refresh_cdn(root, version)
+    for url, reason in problems:
+        what = "is not serving the current runtime yet" if reason == "stale" else "could not be checked (network)"
+        print(f"WARNING: jsDelivr {what}: {url} (check or purge it again later)")
+    if not problems:
         print("jsDelivr serves the current runtime")
     return 0
 

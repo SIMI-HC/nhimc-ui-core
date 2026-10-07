@@ -2,7 +2,9 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
+from scripts import release_tag
 from scripts.release_tag import cdn_runtime_urls, create_and_push_tag, expected_tag, tag_exists
 
 
@@ -75,6 +77,34 @@ class CdnUrlTests(unittest.TestCase):
             ],
             cdn_runtime_urls("2.4.1"),
         )
+
+
+class RefreshCdnTests(unittest.TestCase):
+    def _run(self, fetch):
+        import tempfile
+        import urllib.error
+        with tempfile.TemporaryDirectory() as folder:
+            (Path(folder) / "dist").mkdir()
+            (Path(folder) / "dist/nhimc-web.js").write_bytes(b"runtime")
+            with mock.patch.object(release_tag, "_get", fetch):
+                return release_tag.refresh_cdn(Path(folder), "2.4.1", attempts=2, wait=0)
+
+    def test_matching_bytes_are_fine(self):
+        self.assertEqual([], self._run(lambda url, timeout: b"runtime"))
+
+    def test_a_404_or_an_old_file_is_stale(self):
+        import urllib.error
+        def fetch(url, timeout):
+            if "purge." in url:
+                return b"{}"
+            raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
+        self.assertEqual(["stale", "stale"], [reason for _, reason in self._run(fetch)])
+
+    def test_a_network_failure_is_unreachable_not_stale(self):
+        import urllib.error
+        def fetch(url, timeout):
+            raise urllib.error.URLError("certificate verify failed")
+        self.assertEqual(["unreachable", "unreachable"], [reason for _, reason in self._run(fetch)])
 
 
 if __name__ == "__main__":
