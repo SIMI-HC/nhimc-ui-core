@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [2.4.6] - 2026-10-08
+
+- **Design Guide 링크를 GitHub Pages로 옮겼습니다.** `https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html`. 화면으로 열어 주던 `rawcdn.githack.com`은 호출 제한(429)으로 열리지 않을 때가 있었고, 릴리스마다 주소의 버전 숫자를 바꿔야 했습니다. Pages는 `main`의 최신 가이드를 항상 보여 주므로 숫자를 맞출 필요가 없습니다. 루트에 `.nojekyll`을 두어 Jekyll이 `.md` 파일을 가공하지 않게 했습니다. 이제 `githack.com`은 저장소의 어떤 안내에도 쓰이지 않습니다. 링크를 열 수 없는 환경의 대체 경로(jsDelivr 태그 주소, 소스로 보임)는 그대로입니다. 문서를 읽는 프롬프트 주소는 계속 `raw.githubusercontent.com`입니다.
+
 ## [2.4.5] - 2026-10-07
 
 - **`main/bootstrap.md` 하나만 읽어도 웹 채팅이 아이콘 이름을 알 수 있게 했습니다.** 메뉴 `icon`은 등록된 이름만 써야 하는데, `bootstrap.md`는 `vendor/.../nhimc-icons.svg`를 열라고만 안내해서 그 파일을 열 수 없는 웹 채팅(무료 플랜 포함)이 아이콘 이름을 지어낼 수 있었습니다. 등록된 아이콘 113개의 이름 전체를 `bootstrap.md`에 "등록된 아이콘" 절로 넣고, `NHIMC.md`는 이 절을 그대로 가져옵니다(전에는 생성기가 따로 만들었습니다). 목록이 아이콘 파일과 어긋나면 `test_version_references.py`가 실패합니다. 옛 프롬프트(`.../main/bootstrap.md` + "이 파일만 읽고")와 새 프롬프트(`.../main/NHIMC.md`)가 같은 규칙을 씁니다.

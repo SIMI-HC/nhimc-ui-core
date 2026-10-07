@@ -108,16 +108,17 @@ class DesignGuideTests(unittest.TestCase):
                 self.assertIn(phrase, description, identifier)
         self.assertIn("발표 Frame 두 가지, 계약은 하나", GUIDE.read_text(encoding="utf-8"))
 
-    def test_guide_links_use_the_release_tag_and_a_host_that_renders_html(self):
+    def test_guide_links_use_github_pages_and_the_release_tag_fallback(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        pages = "https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html"
         for relative in ("bootstrap.md", "README.md"):
             text = (ROOT / relative).read_text(encoding="utf-8")
-            self.assertIn(
-                f"https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v{version}/guide/nhimc-design-guide.html", text, relative
-            )
+            self.assertIn(pages, text, relative)
+            self.assertNotIn("githack.com", text, relative)
+        self.assertTrue((ROOT / ".nojekyll").is_file(), "GitHub Pages must not run Jekyll over the repository")
         bootstrap = (ROOT / "bootstrap.md").read_text(encoding="utf-8")
         self.assertIn("클릭 링크", bootstrap)
-        self.assertIn("디자인 가이드: https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v{}/guide/nhimc-design-guide.html".format(version), bootstrap)
+        self.assertIn("디자인 가이드: " + pages, bootstrap)
         self.assertIn("한 줄", bootstrap)
         self.assertIn(f"@v{version}/guide/nhimc-design-guide.html", bootstrap)
 

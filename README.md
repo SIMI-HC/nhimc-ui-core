@@ -6,7 +6,7 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
-| 프로젝트(NHIMC UI Core) | `2.4.5` | `VERSION`, `registry/project.json` |
+| 프로젝트(NHIMC UI Core) | `2.4.6` | `VERSION`, `registry/project.json` |
 | Frame | `1.3.0` (left, left-blank), `1.4.0` (top, top-left), `1.0.0` (left-dual), `1.2.0` (presentation, presentation-vertical), `1.7.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
@@ -37,7 +37,7 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md
 
 ### Design Guide (설치 가이드 · 사용법 · 프롬프트 만들기)
 
-`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://rawcdn.githack.com/SIMI-HC/nhimc-ui-core/v2.4.5/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
+`guide/nhimc-design-guide.html` 하나에 설치 가이드, 사용법, 프롬프트 만들기(Layout·Theme 선택 → 붙여넣을 프롬프트), Frame·Component·Icon 미리보기가 들어 있습니다. 인터넷 없이 열립니다. 설치(bootstrap)가 끝나면 AI가 이 파일을 열어 주고, 열 수 없으면 다운로드 파일로 전달합니다. 다시 열려면 `open-guide.cmd`를 실행하세요. 웹에서는 `https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html` 링크로 바로 열립니다(파일로 저장해도 됩니다). 파일은 `python scripts/build_design_guide.py`로만 생성합니다.
 
 ### 메뉴와 Page
 
@@ -108,14 +108,14 @@ python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
-python scripts/build_release.py release/nhimc-ui-core-2.4.5.zip
+python scripts/build_release.py release/nhimc-ui-core-2.4.6.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.
 
 검증은 목적별로 한 단계만 실행합니다. 개발 중에는 브라우저 의존 테스트와 대규모 화면 행렬을 제외한 `python scripts/verify_all.py --quick`, 일반 변경의 최종 인계 전에는 전체 `python scripts/verify_all.py`, 공개 릴리스 판단에는 전체 검증을 내부에 포함한 `python scripts/verify_release.py`를 사용합니다. `verify_release.py` 직전에 `verify_all.py`를 따로 실행하지 않습니다. 각 게이트는 단계별 및 전체 소요 시간을 출력합니다.
 
-`VERSION`을 올린 커밋을 푸시한 뒤에는 반드시 `python scripts/release_tag.py`로 `v<VERSION>` 태그를 만들어 `origin`에 푸시하세요. bootstrap.md와 Design Guide가 안내하는 githack·jsdelivr 링크는 이 태그가 있어야 동작하며, `scripts/verify_release.py`는 이제 태그가 없으면 `RELEASE BLOCKED: release tag`로 막습니다.
+`VERSION`을 올린 커밋을 푸시한 뒤에는 반드시 `python scripts/release_tag.py`로 `v<VERSION>` 태그를 만들어 `origin`에 푸시하세요. bootstrap.md와 Design Guide가 안내하는 jsdelivr 링크는 이 태그가 있어야 동작하며, `scripts/verify_release.py`는 이제 태그가 없으면 `RELEASE BLOCKED: release tag`로 막습니다.
 
 주요 계약은 `registry/frames.json`, `registry/components.json`, `registry/layouts.json`, `skills/nhimc-worktool/references/contracts.md`에 있습니다. Logo와 Font 공개 승인 및 라이선스 범위는 [PUBLIC_ASSET_REVIEW.md](PUBLIC_ASSET_REVIEW.md)에 기록되어 있습니다.
 
