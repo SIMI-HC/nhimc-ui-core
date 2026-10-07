@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 import unittest
 
-from scripts.release_tag import create_and_push_tag, expected_tag, tag_exists
+from scripts.release_tag import cdn_runtime_urls, create_and_push_tag, expected_tag, tag_exists
 
 
 def _git(root: Path, *arguments: str) -> subprocess.CompletedProcess:
@@ -64,6 +64,17 @@ class ReleaseTagTests(unittest.TestCase):
         _git(root, "commit", "-q", "-m", "second")
         with self.assertRaisesRegex(ValueError, "already points at a different commit"):
             create_and_push_tag(root, "v1.2.3", remote="origin")
+
+
+class CdnUrlTests(unittest.TestCase):
+    def test_runtime_urls_are_the_pinned_tag_and_the_major_range(self):
+        self.assertEqual(
+            [
+                "https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.1/dist/nhimc-web.js",
+                "https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@2/dist/nhimc-web.js",
+            ],
+            cdn_runtime_urls("2.4.1"),
+        )
 
 
 if __name__ == "__main__":
