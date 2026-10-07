@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [Unreleased]
+
+- `bootstrap.md`: ① `VERSION` 파일을 읽지 않고 문서의 `문서 버전`을 씁니다(웹에서는 못 열거나 옛 복사본 2.0.2가 와서 오히려 틀렸습니다). ② 웹 채팅(claude.ai·ChatGPT·Gemini)에서는 샌드박스 셸이 있어도 "플러그인을 설치할까요?"를 묻지 않고 바로 `WEB_BOOTSTRAP`으로 진행합니다. 설치를 묻는 것은 사용자 컴퓨터의 Claude Code·Codex·Gemini CLI뿐입니다. SKILL.md의 준비 절차 요약도 같이 고쳤습니다.
+
 ## [2.3.5] - 2026-10-07
 
 - **첫 프롬프트의 주소를 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/HEAD/bootstrap.md`로 바꿨습니다.** 같은 파일의 다른 표기(`HEAD` = 기본 브랜치)입니다. Claude 웹은 한 번 읽은 주소의 내용을 오래 들고 있어서 `main/bootstrap.md`는 v2.0.2로, `refs/heads/main/bootstrap.md`는 2.3.2로 굳어 있었습니다. 읽은 적 없는 `HEAD` 주소는 새 대화에서 `projectVersion 2.3.4`(문서 버전 기준)로 정확히 읽히는 것을 확인했습니다. README, bootstrap, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 모두 이 주소로 바꿨습니다.
