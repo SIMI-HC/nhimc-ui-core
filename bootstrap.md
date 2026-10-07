@@ -1,5 +1,7 @@
 # NHIMC UI Core 시작
 
+**문서 버전: 2.3.4** — 이 문서가 곧 저장소의 버전을 알려 줍니다(릴리스마다 함께 올라갑니다). 아래 2단계의 `VERSION` 파일을 열 수 없어도 이 값을 `projectVersion`으로 쓰세요.
+
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
 - 작업 폴더에 저장소를 클론하지 않습니다(유일한 예외는 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 절 참고).
@@ -34,7 +36,7 @@ https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstra
 **필수 리소스**: 어떤 설치 경로든 `<루트>`로 쓰려면 `registry/`, `scripts/`, `guide/`, `skills/`, `vendor/`, `VERSION` 6가지가 모두 있어야 합니다. 전체 저장소를 설치하는 플러그인 경로는 이 6가지가 저장소 루트에 그대로 있습니다. Codex의 “스킬만 업로드” 같은 경량 경로는 `skills/nhimc-worktool/`만 설치될 수 있으므로, 그 경우 나머지 5가지는 `skills/nhimc-worktool/resources/`(레포에 미리 미러링되어 있음) 아래에서 찾습니다.
 
 1. **raw `bootstrap.md` 읽기.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md`를 읽습니다(클론 아님). 지금 읽고 있는 이 문서가 그 결과입니다.
-2. **raw `VERSION` 확인.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`**만** 읽어(클론하지 않습니다) 앞으로 비교할 원격 최신 버전을 기억합니다. 웹 AI가 이 주소를 열 수 없거나 사용자가 "이 파일만 읽고"라고 해서 열지 않았으면 이 문서 안의 링크(`v2.3.4` 등)에 적힌 버전을 `문서 기준`으로 쓰되 보고에는 `확인 못함(문서 기준 v…)`이라고 씁니다. 읽을 수 없으면 `확인 못함`이며 이후 어떤 설치본도 “최신”이라고 말하지 않습니다.
+2. **raw `VERSION` 확인(열 수 있을 때만).** 이 문서 맨 위의 `문서 버전`이 저장소 버전이며 `projectVersion`으로 씁니다. 일반 웹 가져오기 도구가 있어 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/VERSION`을 열 수 있으면 **그 파일만** 읽어(클론하지 않습니다) 문서 버전과 비교합니다. 대부분의 웹 채팅은 사용자가 입력한 주소만 열 수 있어서 이 주소를 못 엽니다. 그때는 다시 시도하거나 오류·실패로 보고하지 말고 `최신 확인 결과`를 `확인 못함(문서 기준 v<문서 버전>)`이라고만 씁니다. 읽지 못한 경우에도 이후 어떤 설치본이든 “최신”이라고 단정하지 않습니다.
 3. **설치된 `nhimc-worktool` 검색.** 이 환경의 플러그인 목록·스킬 목록·확장 목록에서 `nhimc-worktool`을 찾습니다. Claude Code는 `~/.claude/plugins/cache/<마켓플레이스>/nhimc-worktool/<버전>/`이며, 다른 환경은 그 환경의 플러그인/스킬 목록에서 설치 경로를 확인합니다.
 4. **설치본이 있으면 버전과 필수 리소스를 검증.** 찾은 설치 경로를 `<루트>` 후보로 놓고 위 “필수 리소스” 6가지가 모두 있는지 확인합니다(직접 있거나, `skills/nhimc-worktool/resources/` 아래에 미러로 있으면 됨).
    - 모두 있고 로컬 버전이 2단계의 원격과 같거나 더 새로우면: 이 설치본을 `<루트>`로 확정하고 8단계로 갑니다.

@@ -31,6 +31,11 @@ class VersionReferenceTests(unittest.TestCase):
             self.assertTrue(found, f"{name} must show the Web Runtime script")
             self.assertEqual([major] * len(found), found, f"{name}: use @{major}, so an old copy of the document still loads the current runtime")
 
+    def test_bootstrap_states_its_own_version_for_hosts_that_cannot_open_VERSION(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        found = re.findall(r"\*\*문서 버전: (\d+\.\d+\.\d+)\*\*", (ROOT / "bootstrap.md").read_text(encoding="utf-8"))
+        self.assertEqual([version], found)
+
     def test_first_prompt_is_one_version_free_url(self):
         # users paste one fixed URL (the refs/heads/main form dodges a stale cache some web AIs keep for .../main/bootstrap.md)
         alias = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md"
