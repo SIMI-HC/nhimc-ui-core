@@ -1,5 +1,12 @@
 # 변경 이력
 
+## [2.3.3] - 2026-10-07
+
+- **첫 프롬프트를 다시 주소 한 줄로**: 2.3.2의 `?v=버전`·`VERSION` 줄은 릴리스마다 바꿔야 해서 되돌렸습니다. 사용자는 버전 없는 고정 주소 하나만 줍니다.
+- **그 주소를 `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/refs/heads/main/bootstrap.md`로 바꿨습니다.** `main/bootstrap.md`와 같은 파일의 다른 표기입니다. Claude 웹이 `main/bootstrap.md`는 9월 30일의 옛 복사본(v2.0.2)을 계속 읽고 있었고, 이 표기로는 최신(문서 기준 v2.3.2)을 읽는 것을 확인했습니다. README, bootstrap, Design Guide(프롬프트 만들기 포함), 쉬운 가이드가 같이 바뀌었습니다.
+- `bootstrap.md`: 사용자가 "이 파일만 읽고"라고 해서 `VERSION`을 열지 않으면 문서 안의 버전을 `문서 기준`으로 보고하도록 했습니다.
+- 테스트: 첫 프롬프트가 버전 없는 한 줄 주소(`?v=` 없음)인지 검사합니다.
+
 ## [2.3.2] - 2026-10-07
 
 - **웹 AI(ChatGPT·Claude 웹)에서 화면이 여러 개일 때 빈 화면이 되던 문제 수정**: AI가 `<main>` 하나에 모든 `data-screen-panel` 화면을 넣어도 Web Runtime이 화면마다 `<main>`을 만들어 줍니다. 전에는 `screen … must contain one content root` 오류 한 줄만 남고 화면이 비었습니다.
