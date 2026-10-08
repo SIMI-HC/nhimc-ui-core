@@ -57,6 +57,10 @@ frameVersion always means the same Frame.
        Every Frame except PRESENTATION also runs src/frames/enhance-runtime.js (scroll-to-top button, data-tip tooltip, count-up);
        the card motion, hover and dark-mode tones are CSS in src/layouts/primitives.css. Registry versions: BLOG 1.8.0,
        TOP and DEFAULT (top-left) 1.5.0, LEFT and LEFT BLANK 1.4.0, LEFT DUAL 1.1.0, PRESENTATION and PRESENTATION VERTICAL 1.2.1.
+1.9.0  BLOG: hovering a menu button paints its background 12px further to each side (the buttons have no horizontal padding, so it hugged the
+       text); the shadow fades with the other header hover effects. Registry version: BLOG 1.9.0.
+1.9.0  BLOG: hovering a menu button paints its background 12px further to each side (the buttons have no horizontal padding, so it hugged the
+       text); the shadow fades with the other header hover effects. Registry version: BLOG 1.9.0.
 1.4.1  TOP: the hamburger names its colour (color:var(--fg)); with the browser's default button colour it was black (invisible)
        on a dark page whose color-scheme stayed light. Registry version: TOP 1.4.1.
 1.2.0  PRESENTATION frames (presentation, presentation-vertical): the Ilsan Hospital logo (the TOP Frame's SVG, 32px) sits
@@ -167,6 +171,9 @@ _BLOG_SCROLL_OWNER_RULES = f"""
 .spacer{{order:1}}
 .topnav{{order:2;margin-left:0;margin-right:12px}}
 .utility{{order:3}}
+/* Menu hover: the buttons carry no horizontal padding, so the hover background hugged the text. It is painted 12px further to each side
+   (box-shadow: the button's size, position and underline do not change). */
+.topnav button:not([aria-current=page]):hover{{box-shadow:-12px 0 0 var(--color-secondary),12px 0 0 var(--color-secondary)}}
 """
 
 

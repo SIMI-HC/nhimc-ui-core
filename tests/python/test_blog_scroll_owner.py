@@ -101,7 +101,7 @@ class BlogScrollOwnerRenderTests(unittest.TestCase):
 
     def test_registry_records_the_new_frame_version_and_state(self):
         frame = next(item for item in json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"] if item["id"] == "nhimc-blog")
-        self.assertEqual("1.8.0", frame["version"])
+        self.assertEqual("1.9.0", frame["version"])
         self.assertEqual(["main", "document"], frame["scrollOwners"]["states"])
         self.assertEqual("main", frame["scrollOwners"]["default"])
 

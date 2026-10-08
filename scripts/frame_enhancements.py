@@ -45,6 +45,8 @@ CONTENT = (
     + "".join(
         f'<section class="card nhimc-card" data-nhimc-component="ContentCard"><div class="nhimc-card-head"><strong>{index}번째 목록</strong></div>'
         + '<div class="nhimc-card-body">'
+        + ('<div class="nhimc-scroll"><table data-nhimc-component="Table" aria-label="목록"><thead><tr><th scope="col">부서</th><th scope="col" class="nhimc-num">수량</th></tr></thead>'
+           '<tbody><tr><td>내과</td><td class="nhimc-num">1,284</td></tr></tbody></table></div>' if index == 1 else "")
         + "".join(f"<p>{index}-{line} 긴 화면을 실제로 스크롤해 맨 위로 버튼과 모션을 확인합니다.</p>" for line in range(1, 7))
         + "</div></section>"
         for index in range(1, 9)
@@ -59,7 +61,10 @@ def fragment(frame: str, owner: str, theme: str, runtime_url: str | None = None)
     return (
         f'<!doctype html><html lang="ko" data-theme="{theme}" data-frame="{frame}"{scroll}>'
         f'<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>이송 현황</title>{head_script}</head>'
-        f"<body>{CONTENT}</body></html>"
+        f'<body><section data-screen-panel="status">{CONTENT}</section>'
+        '<section data-screen-panel="notes"><main data-nhimc-role="content"><h1>공지</h1><p>짧은 화면입니다.</p></main></section>'
+        '<script type="application/json" data-nhimc-menu>[{"id":"status","label":"현황","icon":"list","href":"#status"},{"id":"notes","label":"공지","icon":"bell","href":"#notes"}]</script>'
+        "</body></html>"
     )
 
 
@@ -154,6 +159,19 @@ def problems(cells: list[dict], results: list[dict], expected: dict) -> list[str
         expect(result.get("motion", {}).get("animation") == "nhimc-rise", f"cards do not rise in (animation {result.get('motion', {}).get('animation')!r})")
         expect(result.get("reducedMotion", {}).get("animation") == "none", "cards still animate under prefers-reduced-motion: reduce")
         expect(not result.get("pageOverflowX"), "the page scrolls horizontally")
+        table = result.get("table", {})
+        expect(table.get("headRight") and table.get("cellRight"), "numeric table cells (class nhimc-num) are not right aligned")
+        expect("tabular-nums" in (table.get("numeric") or ""), "numeric table cells do not use equal-width digits")
+        hover = result.get("navHover")
+        if cell["frame"] in ("blog", "top") and not phone:
+            expect(bool(hover) and hover.get("hovered"), "the menu button is not hovered by the real mouse")
+            if hover and hover.get("hovered"):
+                expect(hover.get("background") not in ("rgba(0, 0, 0, 0)", "transparent"), "menu hover paints no background")
+                shadow = hover.get("shadow") or ""
+                if hover.get("paddingLeft", 99) < 4:  # BLOG: no horizontal padding, so the background is widened 12px per side
+                    expect("-12px 0px 0px 0px" in shadow and " 12px 0px 0px 0px" in shadow, f"menu hover is not widened 12px per side ({shadow!r})")
+                else:
+                    expect(shadow == "none", f"menu hover is widened although the button has padding ({shadow!r})")
 
         tones = {entry["colour"]: entry for entry in result.get("tones", [])}
         for colour, entry in tones.items():

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "projectVersion": "2.5.1",
+  "projectVersion": "2.5.2",
   "frames": [
     {
       "id": "nhimc-default",
@@ -40,7 +40,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/frames/enhance-runtime.js",
@@ -74,7 +74,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/frames/enhance-runtime.js",
@@ -126,7 +126,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "scripts/derived_frames.py",
@@ -166,7 +166,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/frames/enhance-runtime.js",
@@ -201,7 +201,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/frames/enhance-runtime.js",
@@ -241,7 +241,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -278,7 +278,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/presentation/presentation-runtime.js",
@@ -289,7 +289,7 @@
     },
     {
       "id": "nhimc-blog",
-      "version": "1.8.0",
+      "version": "1.9.0",
       "element": "nhimc-frame",
       "implementation": "src/generated/frame/frame-runtime.js",
       "adapter": "scripts/canonical_frame.py",
@@ -310,7 +310,7 @@
         },
         {
           "path": "scripts/frame_patches.py",
-          "sha256": "17fb67efff132f8b82cf01e999dbb72f5ba5fddb54c75510779c5f724be203cb"
+          "sha256": "33443de837760b24bad4e05fb842d48100efc02938573a0eca5e9183e7a370a1"
         },
         {
           "path": "src/frames/enhance-runtime.js",

@@ -6,8 +6,8 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
-| 프로젝트(NHIMC UI Core) | `2.5.1` | `VERSION`, `registry/project.json` |
-| Frame | `1.4.0` (left, left-blank), `1.5.0` (top, top-left), `1.1.0` (left-dual), `1.2.1` (presentation, presentation-vertical), `1.8.0` (blog) | `registry/frames.json` |
+| 프로젝트(NHIMC UI Core) | `2.5.2` | `VERSION`, `registry/project.json` |
+| Frame | `1.4.0` (left, left-blank), `1.5.0` (top, top-left), `1.1.0` (left-dual), `1.2.1` (presentation, presentation-vertical), `1.9.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
 | Web Runtime | `@2`(최신 2.x) | `dist/nhimc-web.js` |
@@ -108,7 +108,7 @@ python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
-python scripts/build_release.py release/nhimc-ui-core-2.5.1.zip
+python scripts/build_release.py release/nhimc-ui-core-2.5.2.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.

@@ -98,6 +98,7 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 핵심 수치 카드(MetricOverview)는 위 `nhimc-stat` 조각만 씁니다(2~4개를 `nhimc-grid nhimc-stat-grid`에 나란히). `.metric`·`.metrics`처럼 클래스를 지어내면 스타일이 없어 글자가 붙어 보이고, 빌더는 거부하며 웹 미리보기는 경고를 띄웁니다. 카드 안 본문은 `nhimc-card-body`에 넣습니다.
 - 검색 조건은 `nhimc-toolbar` 안에 `label.field`를 나란히 두고 버튼은 `nhimc-toolbar-end`로 오른쪽에 둡니다(`nhimc-form-grid`는 여러 줄짜리 입력 폼용입니다). 제목 줄의 버튼은 `nhimc-page-header` 안의 `nhimc-actions`입니다.
 - 표의 칸은 줄바꿈하지 않고 표가 `nhimc-scroll` 안에서 가로로 스크롤됩니다. 설명처럼 긴 글을 줄바꿈해야 하는 칸에만 `class="nhimc-wrap"`을 붙입니다.
+- 숫자 열은 `th`와 그 열의 모든 `td`에 `class="nhimc-num"`을 붙입니다(오른쪽 정렬, 자릿수 폭 일정). `style="text-align:right"`를 칸마다 쓰지 않습니다. 헤더 메뉴 위에 마우스를 올렸을 때의 넓은 강조 배경은 BLOG Frame이 알아서 그립니다.
 - 등록되지 않은 CSS 클래스는 쓰지 않습니다. 자주 틀리는 것: `card-head`→`nhimc-card-head`, `fields`→`nhimc-toolbar`, `actions`→`nhimc-actions`, `table-wrap`→`nhimc-scroll`, `title`→`nhimc-page-header`, `badge warning`·`badge secondary`→`badge warn`·`ok`·`bad`.
 - **Frame이 알아서 하는 것은 직접 만들지 않습니다.** 카드가 나타나는 모션과 마우스를 올렸을 때의 효과, 본문을 240px 넘게 스크롤하면 오른쪽 아래에 나오는 ‘맨 위로’ 버튼, `nhimc-stat-value`의 숫자 올라가기, 다크 모드에서 톤다운되는 강조 카드 머리·주요 버튼, 넓어진 도움말 창입니다. 같은 기능을 `<style>`·`<script>`·`position:fixed`·`@keyframes`로 따로 만들지 않습니다. 시스템의 ‘모션 줄이기’ 설정이면 움직임은 모두 꺼집니다.
 - 태그(`badge`)나 아무 요소에 한 줄 설명을 달려면 `data-tip` 속성을 씁니다: `<span class="badge warn" data-tip="6년이 지난 장비입니다" data-nhimc-component="Badge">확인</span>`. 마우스를 올리면 말풍선으로 뜨고, 표 안에서도 잘리지 않습니다.

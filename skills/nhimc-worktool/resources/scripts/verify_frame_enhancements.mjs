@@ -143,6 +143,12 @@ const measureExpression = `(async () => {
     if (close) { close.click(); await sleep(450); }
   }
   result.pageOverflowX = root.scrollWidth - innerWidth > 1;
+  const th = document.querySelector('th.nhimc-num');
+  const td = document.querySelector('td.nhimc-num');
+  result.table = th && td ? {
+    headRight: getComputedStyle(th).textAlign === 'right', cellRight: getComputedStyle(td).textAlign === 'right',
+    numeric: getComputedStyle(td).fontVariantNumeric,
+  } : {};
   return result;
 })()`;
 
@@ -181,6 +187,14 @@ async function main() {
     await delay(300);
     try {
       const result = await evaluate(measureExpression);
+      // the real mouse over a menu button (not the current page): the hover is a CSS :hover state, so it needs a real pointer
+      const spot = await evaluate(`(() => { const b = [...document.querySelectorAll('.topnav button:not([aria-current="page"])')].find((n) => n.offsetParent); if (!b) return null; b.scrollIntoView(); const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+      if (spot) {
+        await command('Input.dispatchMouseEvent', { type: 'mouseMoved', x: spot.x, y: spot.y });
+        await delay(400);
+        result.navHover = await evaluate(`(() => { const b = document.querySelector('.topnav button:hover'); if (!b) return { hovered: false }; const s = getComputedStyle(b); return { hovered: true, shadow: s.boxShadow, background: s.backgroundColor, paddingLeft: parseFloat(s.paddingLeft) }; })()`);
+        await command('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+      }
       // the same page asked for reduced motion: no animation, no count-up
       await command('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
       await delay(100);

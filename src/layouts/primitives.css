@@ -78,6 +78,10 @@
 .nhimc-scroll table{min-width:var(--table-min,100%)}
 .nhimc-scroll th,.nhimc-scroll td{white-space:nowrap;word-break:keep-all;overflow-wrap:normal}
 .nhimc-scroll th.nhimc-wrap,.nhimc-scroll td.nhimc-wrap{white-space:normal;min-width:16em}
+/* Numeric column: class="nhimc-num" on the th and on every td (right aligned, digits of equal width). */
+th.nhimc-num,td.nhimc-num{text-align:right;font-variant-numeric:tabular-nums}
+/* Numeric column: class="nhimc-num" on the th and on every td (right aligned, digits of equal width). */
+th.nhimc-num,td.nhimc-num{text-align:right;font-variant-numeric:tabular-nums}
 .nhimc-pagination{display:flex;justify-content:center;gap:var(--space-2);padding:var(--space-4);border-top:1px solid var(--color-border-accent)}
 .nhimc-pagination .pages{gap:var(--space-2)}
 .nhimc-pagination:not(:has(.pages)) button{min-width:34px}
@@ -99,7 +103,7 @@
 .app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(n+7){animation-delay:.54s}
 .nhimc-card{transition:box-shadow .22s ease-out,border-color .22s ease-out}
 tbody td{transition:background-color .14s ease-out}
-.app-shell .topnav button,.app-shell .utility button{transition:background-color .16s ease-out,color .16s ease-out}
+.app-shell .topnav button,.app-shell .utility button{transition:background-color .16s ease-out,color .16s ease-out,box-shadow .16s ease-out}
 .nhimc-scroll-top{animation:nhimc-pop .22s ease-out;transition:opacity .15s ease-out}
 .nhimc-tip{animation:nhimc-tip-in .14s ease-out}
 }

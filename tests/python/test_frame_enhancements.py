@@ -72,6 +72,31 @@ class FrameEnhancementTests(unittest.TestCase):
         self.assertIn("var(--color-primary)", block)
 
 
+class MenuHoverAndNumericColumnTests(unittest.TestCase):
+    SHADOW = "box-shadow:-12px 0 0 var(--color-secondary),12px 0 0 var(--color-secondary)"
+
+    def test_only_blog_widens_the_menu_hover_because_only_its_buttons_have_no_padding(self):
+        patched = {
+            name: frame_patches.apply_frame_patches((ROOT / f"vendor/nhimc-design/layouts/{name}.html").read_text(encoding="utf-8"))
+            for name in ("blog", "top")
+        }
+        self.assertIn(self.SHADOW, patched["blog"])
+        self.assertNotIn(self.SHADOW, patched["top"])
+        self.assertIn("padding:9px 0", patched["blog"])  # the reason: the BLOG menu button carries no horizontal padding
+
+    def test_the_hover_shadow_fades_with_the_other_header_effects(self):
+        css = (ROOT / "src/layouts/primitives.css").read_text(encoding="utf-8")
+        self.assertIn("transition:background-color .16s ease-out,color .16s ease-out,box-shadow .16s ease-out", css)
+
+    def test_numeric_columns_have_one_class_for_th_and_td(self):
+        css = (ROOT / "src/layouts/primitives.css").read_text(encoding="utf-8")
+        self.assertIn("th.nhimc-num,td.nhimc-num{text-align:right;font-variant-numeric:tabular-nums}", css)
+        for name in ("bootstrap.md", "skills/nhimc-worktool/SKILL.md"):
+            text = (ROOT / name).read_text(encoding="utf-8")
+            self.assertIn('class="nhimc-num"', text, name)
+            self.assertIn('style="text-align:right"', text, name)  # named only to say it is not to be used
+
+
 class DarkToneTests(unittest.TestCase):
     def test_mix_matches_the_channel_wise_rounding_of_the_reference_script(self):
         # values worked out with the app script this was taken from: mixHex(chip, card, pct) = round(c*pct/100 + card*(100-pct)/100)
