@@ -80,11 +80,11 @@ class CdnUrlTests(unittest.TestCase):
 
 
 class CdnDocumentUrlTests(unittest.TestCase):
-    def test_documents_are_the_two_files_web_ais_read_from_main(self):
+    def test_documents_are_the_two_files_web_ais_read_without_a_version(self):
         self.assertEqual(
             [
-                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/bootstrap.md", "bootstrap.md"),
-                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/NHIMC.md", "NHIMC.md"),
+                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md", "bootstrap.md"),
+                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/NHIMC.md", "NHIMC.md"),
             ],
             release_tag.cdn_document_urls(),
         )

@@ -60,8 +60,8 @@ def cdn_runtime_urls(version: str) -> list[str]:
 
 
 def cdn_document_urls() -> list[tuple[str, str]]:
-    """(url, repository file) for the documents web AIs read through jsDelivr's branch URL, which caches for hours."""
-    return [(f"https://cdn.jsdelivr.net/gh/{REPO}@main/{name}", name) for name in ("bootstrap.md", "NHIMC.md")]
+    """(url, repository file) for the documents web AIs read through jsDelivr's unversioned URL (newest tag, cached for hours)."""
+    return [(f"https://cdn.jsdelivr.net/gh/{REPO}/{name}", name) for name in ("bootstrap.md", "NHIMC.md")]
 
 
 # The two requests below read public files and the body is compared byte for byte with dist/, and nothing secret

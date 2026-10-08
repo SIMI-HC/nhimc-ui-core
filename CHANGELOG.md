@@ -1,5 +1,9 @@
 # 변경 이력
 
+## [2.4.8] - 2026-10-08
+
+- **공식 프롬프트 주소에서 `@main`을 뺐습니다.** `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". jsDelivr는 버전을 쓰지 않으면 가장 최근 릴리스 태그의 파일을 내려 줍니다(릴리스 직후 바로 확인함: 2.4.7). 반면 `@main` 주소는 jsDelivr가 브랜치를 오래 캐시해 푸시 뒤에도 옛 내용(2.4.5)이 남았습니다. 이제 태그를 만든 릴리스만 보이고, 만들다 만 `main`은 보이지 않습니다. README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 맞췄고 `release_tag.py`는 이 버전 없는 `bootstrap.md`·`NHIMC.md` 주소의 캐시를 갱신하고 저장소 파일과 같아질 때까지 확인합니다.
+
 ## [2.4.7] - 2026-10-08
 
 - **공식 프롬프트를 jsDelivr 주소로 바꿨습니다.** `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/bootstrap.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". Claude 웹이 이전 주소들(`raw.githubusercontent.com`의 `main/bootstrap.md` 등)을 옛 내용으로 붙잡고 있어, 아직 읽힌 적 없는 주소로 옮겼습니다. `bootstrap.md` 한 파일에 웹 채팅에 필요한 규칙과 아이콘 이름이 모두 있습니다. README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 모두 맞췄고, 웹 채팅 전용 발췌 `NHIMC.md`는 그대로 둡니다.
