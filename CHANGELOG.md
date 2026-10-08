@@ -1,5 +1,10 @@
 # 변경 이력
 
+## [2.4.7] - 2026-10-08
+
+- **공식 프롬프트를 jsDelivr 주소로 바꿨습니다.** `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/bootstrap.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". Claude 웹이 이전 주소들(`raw.githubusercontent.com`의 `main/bootstrap.md` 등)을 옛 내용으로 붙잡고 있어, 아직 읽힌 적 없는 주소로 옮겼습니다. `bootstrap.md` 한 파일에 웹 채팅에 필요한 규칙과 아이콘 이름이 모두 있습니다. README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 모두 맞췄고, 웹 채팅 전용 발췌 `NHIMC.md`는 그대로 둡니다.
+- `release_tag.py`가 jsDelivr의 `@main/bootstrap.md`와 `@main/NHIMC.md`도 캐시를 갱신(purge)하고 저장소 파일과 같아질 때까지 확인합니다. jsDelivr는 브랜치 주소를 몇 시간 캐시하기 때문입니다. Windows의 CRLF 체크아웃도 같은 내용으로 비교합니다.
+
 ## [2.4.6] - 2026-10-08
 
 - **Design Guide 링크를 GitHub Pages로 옮겼습니다.** `https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html`. 화면으로 열어 주던 `rawcdn.githack.com`은 호출 제한(429)으로 열리지 않을 때가 있었고, 릴리스마다 주소의 버전 숫자를 바꿔야 했습니다. Pages는 `main`의 최신 가이드를 항상 보여 주므로 숫자를 맞출 필요가 없습니다. 루트에 `.nojekyll`을 두어 Jekyll이 `.md` 파일을 가공하지 않게 했습니다. 이제 `githack.com`은 저장소의 어떤 안내에도 쓰이지 않습니다. 링크를 열 수 없는 환경의 대체 경로(jsDelivr 태그 주소, 소스로 보임)는 그대로입니다. 문서를 읽는 프롬프트 주소는 계속 `raw.githubusercontent.com`입니다.

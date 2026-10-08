@@ -79,6 +79,26 @@ class CdnUrlTests(unittest.TestCase):
         )
 
 
+class CdnDocumentUrlTests(unittest.TestCase):
+    def test_documents_are_the_two_files_web_ais_read_from_main(self):
+        self.assertEqual(
+            [
+                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/bootstrap.md", "bootstrap.md"),
+                ("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/NHIMC.md", "NHIMC.md"),
+            ],
+            release_tag.cdn_document_urls(),
+        )
+
+    def test_a_crlf_checkout_still_matches_what_the_cdn_serves(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as folder:
+            (Path(folder) / "dist").mkdir()
+            for name in ("dist/nhimc-web.js", "bootstrap.md", "NHIMC.md"):
+                (Path(folder) / name).write_bytes(b"a\r\nb")
+            with mock.patch.object(release_tag, "_get", lambda url, timeout: b"a\nb"):
+                self.assertEqual([], release_tag.refresh_cdn(Path(folder), "2.4.1", attempts=1, wait=0))
+
+
 class RefreshCdnTests(unittest.TestCase):
     def _run(self, fetch):
         import tempfile
@@ -86,6 +106,8 @@ class RefreshCdnTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             (Path(folder) / "dist").mkdir()
             (Path(folder) / "dist/nhimc-web.js").write_bytes(b"runtime")
+            (Path(folder) / "bootstrap.md").write_bytes(b"runtime")
+            (Path(folder) / "NHIMC.md").write_bytes(b"runtime")
             with mock.patch.object(release_tag, "_get", fetch):
                 return release_tag.refresh_cdn(Path(folder), "2.4.1", attempts=2, wait=0)
 
@@ -98,13 +120,13 @@ class RefreshCdnTests(unittest.TestCase):
             if "purge." in url:
                 return b"{}"
             raise urllib.error.HTTPError(url, 404, "Not Found", None, None)
-        self.assertEqual(["stale", "stale"], [reason for _, reason in self._run(fetch)])
+        self.assertEqual(["stale"] * 4, [reason for _, reason in self._run(fetch)])
 
     def test_a_network_failure_is_unreachable_not_stale(self):
         import urllib.error
         def fetch(url, timeout):
             raise urllib.error.URLError("certificate verify failed")
-        self.assertEqual(["unreachable", "unreachable"], [reason for _, reason in self._run(fetch)])
+        self.assertEqual(["unreachable"] * 4, [reason for _, reason in self._run(fetch)])
 
 
 if __name__ == "__main__":

@@ -59,6 +59,11 @@ def cdn_runtime_urls(version: str) -> list[str]:
     return [f"https://cdn.jsdelivr.net/gh/{REPO}@{ref}/dist/nhimc-web.js" for ref in (f"v{version}", version.split(".")[0])]
 
 
+def cdn_document_urls() -> list[tuple[str, str]]:
+    """(url, repository file) for the documents web AIs read through jsDelivr's branch URL, which caches for hours."""
+    return [(f"https://cdn.jsdelivr.net/gh/{REPO}@main/{name}", name) for name in ("bootstrap.md", "NHIMC.md")]
+
+
 # The two requests below read public files and the body is compared byte for byte with dist/, and nothing secret
 # is sent, so TLS interception on a corporate network (Python rejects its CA) must not stop the check.
 _CONTEXT = ssl.create_default_context()
@@ -74,9 +79,10 @@ def refresh_cdn(root: Path, version: str, *, attempts: int = 8, wait: float = 15
     """jsDelivr answers 404 for a brand-new tag (and keeps the miss) and serves a range such as @2 from a cache that
     lasts hours: ask it to refetch, then wait until it serves dist/nhimc-web.js byte for byte.
     Returns (url, "stale" | "unreachable") for every URL that never matched."""
-    expected = (root / "dist/nhimc-web.js").read_bytes()
+    targets = [(url, "dist/nhimc-web.js") for url in cdn_runtime_urls(version)] + cdn_document_urls()
     problems = []
-    for url in cdn_runtime_urls(version):
+    for url, name in targets:
+        expected = (root / name).read_bytes().replace(b"\r\n", b"\n")  # a Windows checkout may hold CRLF
         reason = "unreachable"
         for attempt in range(attempts):
             try:
@@ -91,7 +97,7 @@ def refresh_cdn(root: Path, version: str, *, attempts: int = 8, wait: float = 15
                 body = b""
             else:
                 reason = "stale"
-            if body == expected:
+            if body.replace(b"\r\n", b"\n") == expected:
                 break
             time.sleep(wait)
         else:
@@ -115,7 +121,7 @@ def main() -> int:
         what = "is not serving the current runtime yet" if reason == "stale" else "could not be checked (network)"
         print(f"WARNING: jsDelivr {what}: {url} (check or purge it again later)")
     if not problems:
-        print("jsDelivr serves the current runtime")
+        print("jsDelivr serves the current runtime and documents")
     return 0
 
 

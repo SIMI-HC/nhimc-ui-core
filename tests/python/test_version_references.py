@@ -64,7 +64,7 @@ class VersionReferenceTests(unittest.TestCase):
 
     def test_first_prompt_is_one_version_free_url(self):
         # users paste one fixed URL (unchanged for every release)
-        alias = "https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/NHIMC.md"
+        alias = "https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@main/bootstrap.md"
         for name in PROMPT_FILES:
             text = (ROOT / name).read_text(encoding="utf-8")
             self.assertIn(alias, text, name)
