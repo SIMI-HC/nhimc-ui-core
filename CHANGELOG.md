@@ -1,5 +1,10 @@
 # 변경 이력
 
+## [2.5.1] - 2026-10-08
+
+- **공식 프롬프트를 raw 주소 형식으로 되돌렸습니다.** `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md` + "이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)". 다른 사용자는 이 주소로 잘 나왔고, 옛 내용이 굳어 보였던 것은 시험하던 한 계정의 캐시로 보여서입니다(새 채팅·시크릿 창에서도 같은 계정이면 같은 결과). README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 모두 맞췄습니다.
+- 어떤 AI 서비스가 이 주소의 옛 복사본을 붙잡아 옛 내용(낮은 문서 버전, `defaultFrame: left`, 등록 질문)이 나오면, README에 적은 대체 주소(GitHub API, jsDelivr 버전 생략 주소, `NHIMC.md`)를 쓰면 됩니다. 대체 주소들은 그대로 동작합니다.
+
 ## [2.5.0] - 2026-10-08
 
 - **장비 이용도 보고서 앱에서 다듬은 디자인을 정본 Frame과 컴포넌트로 옮겼습니다.** 그 앱(`index.html`)의 Frame CSS와 컴포넌트·레이아웃 번들은 정본과 같았고, 개선은 모두 앱 스크립트 끝의 JS에 있었습니다. 같은 일을 앱마다 다시 하지 않도록 정본이 맡습니다.

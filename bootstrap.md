@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.5.0** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 GitHub API 주소(`https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
+**문서 버전: 2.5.1** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 raw 주소(`https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
@@ -17,8 +17,8 @@
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-NHIMC UI Core 준비해줘. git clone 금지.
-https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main 만 읽고, 모든 링크는 main 기준으로 만들어줘.
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
+이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 
 그다음에는 자연어 요구만 받습니다.
@@ -78,7 +78,7 @@ https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=mai
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.5.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.5.1/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약

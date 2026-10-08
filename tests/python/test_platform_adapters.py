@@ -125,8 +125,7 @@ class PlatformAdapterTests(unittest.TestCase):
         for status in ("READY", "WEB_BOOTSTRAP", "UNSUPPORTED"):
             self.assertIn(status, text)
         self.assertNotIn("INSTALLED", text)
-        self.assertIn("NHIMC UI Core 준비해줘. git clone 금지.", text)
-        self.assertIn("만 읽고, 모든 링크는 main 기준으로 만들어줘.", text)
+        self.assertIn("이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)", text)
         self.assertIn("이송업무 관리 화면 만들어줘.", text)
 
     def test_gemini_web_without_install_capability_is_not_ready(self):

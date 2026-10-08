@@ -6,7 +6,7 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 | 항목 | 값 | 확인 위치 |
 | --- | --- | --- |
-| 프로젝트(NHIMC UI Core) | `2.5.0` | `VERSION`, `registry/project.json` |
+| 프로젝트(NHIMC UI Core) | `2.5.1` | `VERSION`, `registry/project.json` |
 | Frame | `1.4.0` (left, left-blank), `1.5.0` (top, top-left), `1.1.0` (left-dual), `1.2.1` (presentation, presentation-vertical), `1.8.0` (blog) | `registry/frames.json` |
 | 플러그인 · 스킬 이름 | `nhimc-worktool` | `plugin.json`, `skills/nhimc-worktool/SKILL.md` |
 | 벤더 스냅샷 | 커밋 `08c45402eece` | `vendor/nhimc-design/upstream.json` |
@@ -20,11 +20,11 @@ NHIMC UI Core는 국민건강보험 일산병원 업무 화면을 정본 Frame, 
 
 ## 사용법
 
-처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 파일 하나를 읽으라는 뜻입니다). 주소는 GitHub API의 `bootstrap.md`이고 항상 `main`의 최신 문서를 줍니다(JSON의 `content`에 base64로 담겨 오며 AI가 풀어 읽습니다). 웹 AI가 같은 주소의 옛 복사본을 붙잡고 있지 않도록 이 형식을 씁니다. 셸이 있는 환경(Claude Code 등)에서는 `git ls-remote`로 최신 릴리스 태그를 찾아 그 태그의 `bootstrap.md`를 읽게 합니다. 웹 채팅만을 위한 짧은 발췌본 `NHIMC.md`도 있습니다.
+처음 한 번 AI에게 아래 두 줄만 전달합니다(clone이 아니라 raw 파일을 읽으라는 뜻입니다). 이 주소는 항상 `main`의 최신 문서를 줍니다. 결과가 옛 내용으로 나오면(문서 버전이 낮거나 `defaultFrame: left`, 등록 질문이 나옴) 그 AI 서비스가 같은 주소의 옛 복사본을 붙잡은 것입니다. 그때는 한 번도 읽힌 적 없는 주소를 쓰세요: GitHub API `https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main`(JSON의 base64 `content`를 AI가 풀어 읽음), 또는 jsDelivr `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md`(버전을 생략하면 가장 최근 릴리스 태그), 또는 웹 채팅 전용 발췌본 `NHIMC.md`입니다. 셸이 있는 환경(Claude Code 등)에서는 `git ls-remote`로 최신 릴리스 태그를 찾아 그 태그의 `bootstrap.md`를 읽게 합니다.
 
 ```text
-NHIMC UI Core 준비해줘. git clone 금지.
-https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main 만 읽고, 모든 링크는 main 기준으로 만들어줘.
+https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/main/bootstrap.md
+이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
 ```
 
 준비가 끝나면 자연어로 화면을 요청합니다.
@@ -108,7 +108,7 @@ python scripts/verify_all.py --quick
 python scripts/verify_all.py
 python scripts/release_tag.py
 python scripts/verify_release.py
-python scripts/build_release.py release/nhimc-ui-core-2.5.0.zip
+python scripts/build_release.py release/nhimc-ui-core-2.5.1.zip
 ```
 
 첫 명령은 빌드, 정확한 브라우저 검증, 영수증 대조, `index.html` 전달을 한 번에 수행합니다. `scripts/build_single_html.py`는 내부 합성기이며 사용자의 기본 흐름이 아닙니다.
