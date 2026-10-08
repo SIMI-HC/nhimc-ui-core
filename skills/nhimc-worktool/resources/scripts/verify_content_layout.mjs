@@ -14,7 +14,7 @@ if (!browserPath || !matrixPath) {
 const matrix = JSON.parse(readFileSync(matrixPath, 'utf8'));
 const profile = mkdtempSync(join(tmpdir(), 'nhimc-content-layout-'));
 const browser = spawn(browserPath, [
-  '--headless', '--disable-gpu', '--disable-extensions',
+  '--headless', '--force-prefers-reduced-motion', '--disable-gpu', '--disable-extensions',
   '--disable-background-networking', '--no-first-run',
   '--host-resolver-rules=MAP * ~NOTFOUND', '--remote-allow-origins=*',
   '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank',

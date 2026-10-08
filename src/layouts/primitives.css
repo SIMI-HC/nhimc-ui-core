@@ -56,7 +56,7 @@
 .nhimc-card[data-nhimc-accent]>div:not([class])>strong:first-child{font-size:28px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums}
 .nhimc-card[data-nhimc-accent]>div:not([class])>strong:first-child+span{margin-left:var(--space-1);color:var(--color-muted-foreground)}
 /* Accent: data-nhimc-accent="sky|pear|apricot|yellow|purple|pink|amber" tints a ContentCard (head + outline), a Dialog head
-   or a Badge. Classification only; primary actions stay NHIMC blue. The chips are fixed pastels in light and dark, and
+   or a Badge. Classification only; primary actions stay NHIMC blue. The sky, pear, apricot and yellow chips come with every theme (theme CSS, scripts/dark_tones.py) and are fixed pastels in light; in dark the head and outline are toned down (tones generated from the theme catalog: scripts/dark_tones.py, shipped with the theme CSS), and
    --color-chip-foreground is the fallback where a theme defines no --color-accent-*-foreground (it does only for Color Mix).
    purple, pink and amber chips exist only in Color Mix too, so in the other themes they fall back to sky, apricot and yellow (solid pastels, readable in dark). */
 [data-nhimc-accent="sky"]{--nhimc-accent-surface:var(--color-chip-sky);--nhimc-accent-foreground:var(--color-accent-sky-foreground,var(--color-chip-foreground))}
@@ -66,11 +66,11 @@
 [data-nhimc-accent="purple"]{--nhimc-accent-surface:var(--color-chip-purple,var(--color-chip-sky));--nhimc-accent-foreground:var(--color-accent-purple-foreground,var(--color-chip-foreground))}
 [data-nhimc-accent="pink"]{--nhimc-accent-surface:var(--color-chip-pink,var(--color-chip-apricot));--nhimc-accent-foreground:var(--color-accent-pink-foreground,var(--color-chip-foreground))}
 [data-nhimc-accent="amber"]{--nhimc-accent-surface:var(--color-chip-amber,var(--color-chip-yellow));--nhimc-accent-foreground:var(--color-accent-amber-foreground,var(--color-chip-foreground))}
-.nhimc-card[data-nhimc-accent]{border-color:var(--nhimc-accent-surface)}
-.nhimc-card[data-nhimc-accent]>.nhimc-card-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-surface)}
+.nhimc-card[data-nhimc-accent]{border-color:var(--nhimc-accent-line,var(--nhimc-accent-surface))}
+.nhimc-card[data-nhimc-accent]>.nhimc-card-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-line,var(--nhimc-accent-surface))}
 .nhimc-card[data-nhimc-accent]>.nhimc-card-head>h2{background-color:transparent!important;color:inherit!important}
 .nhimc-card[data-nhimc-accent]>.nhimc-card-head>span,.nhimc-card[data-nhimc-accent]>.nhimc-card-head .nhimc-card-head-end>span{color:inherit}
-.dialog-box[data-nhimc-accent]>.dialog-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-surface);border-radius:11px 11px 0 0}
+.dialog-box[data-nhimc-accent]>.dialog-head{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground);border-bottom-color:var(--nhimc-accent-line,var(--nhimc-accent-surface));border-radius:11px 11px 0 0}
 .dialog-box[data-nhimc-accent]>.dialog-head .icon-btn{color:inherit}
 .badge[data-nhimc-accent]{background:var(--nhimc-accent-surface);color:var(--nhimc-accent-foreground)}
 .field>span>.badge{padding:1px 8px;margin-left:4px}
@@ -81,6 +81,39 @@
 .nhimc-pagination{display:flex;justify-content:center;gap:var(--space-2);padding:var(--space-4);border-top:1px solid var(--color-border-accent)}
 .nhimc-pagination .pages{gap:var(--space-2)}
 .nhimc-pagination:not(:has(.pages)) button{min-width:34px}
+/* nhimc-motion:begin */
+/* Frame enhancements. Motion runs only when the user has not asked for reduced motion. The cards of a screen rise in when the
+   screen is shown (a screen switches from display:none, so the animation restarts), cards lift on hover, header buttons fade. */
+@keyframes nhimc-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes nhimc-pop{from{opacity:0;transform:translateY(14px)}to{opacity:.5;transform:none}}
+@keyframes nhimc-tip-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.nhimc-card:hover{box-shadow:var(--shadow-lg);border-color:var(--color-primary)}
+.app-shell .topnav button:not([aria-current=page]):hover,.app-shell .utility button:hover{background:var(--color-secondary);color:var(--color-primary)}
+@media(prefers-reduced-motion:no-preference){
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty){animation:nhimc-rise .46s cubic-bezier(.2,.7,.2,1) backwards}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(2){animation-delay:.09s}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(3){animation-delay:.18s}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(4){animation-delay:.27s}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(5){animation-delay:.36s}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(6){animation-delay:.45s}
+.app-shell:not([data-presentation-direction]) [data-nhimc-role="content-slot"] :is(.nhimc-card,.alert,.empty):nth-child(n+7){animation-delay:.54s}
+.nhimc-card{transition:box-shadow .22s ease-out,border-color .22s ease-out}
+tbody td{transition:background-color .14s ease-out}
+.app-shell .topnav button,.app-shell .utility button{transition:background-color .16s ease-out,color .16s ease-out}
+.nhimc-scroll-top{animation:nhimc-pop .22s ease-out;transition:opacity .15s ease-out}
+.nhimc-tip{animation:nhimc-tip-in .14s ease-out}
+}
+/* Scroll-to-top button: the Frame adds it (src/frames/enhance-runtime.js) once Content is scrolled past 240px. */
+.nhimc-scroll-top{position:fixed;right:28px;bottom:56px;z-index:40;width:44px;height:44px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:var(--color-primary);color:var(--color-primary-foreground);box-shadow:var(--shadow-lg);cursor:pointer;opacity:.5}
+.nhimc-scroll-top:hover,.nhimc-scroll-top:focus-visible{opacity:1}
+.nhimc-scroll-top[hidden]{display:none}
+.nhimc-scroll-top svg{width:18px;height:18px;display:block}
+/* Tooltip: data-tip="one-line summary" on a Badge (or any element); the Frame shows it above the page so a scrolling table cannot clip it. */
+[data-tip]{cursor:help}
+.nhimc-tip{position:fixed;z-index:60;max-width:280px;padding:8px 10px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-card);color:var(--color-card-foreground);box-shadow:var(--shadow-lg);font-size:12px;line-height:1.5;pointer-events:none}
+.nhimc-tip[hidden]{display:none}
+@media(max-width:767px){.nhimc-scroll-top{right:16px;bottom:44px}}
+/* nhimc-motion:end */
 /* Presentation primitives (PRESENTATION frames). The Frame's slide already centres Content inside its Safe Area;
    PresentationContent is the Content root inside that slide: no page padding, centred, one message per slide. */
 .slide>[data-nhimc-role="content"]{width:min(100%,1080px);min-height:0;margin:auto;padding:0;gap:var(--space-5);align-content:center;justify-items:center;text-align:center}

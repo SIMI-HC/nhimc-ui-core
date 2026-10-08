@@ -9,6 +9,7 @@ from pathlib import Path
 
 DERIVED_BASE = {"left-dual": "left"}
 DUAL_RUNTIME = "src/frames/dual-runtime.js"
+ENHANCE_RUNTIME = "src/frames/enhance-runtime.js"
 
 _DUAL_CSS = """
 /* nhimc-left-dual: icon rail + group panel. The menu is rebuilt from the flat LEFT links by src/frames/dual-runtime.js. */
@@ -64,8 +65,16 @@ def dual_runtime(root: Path | None = None) -> str:
     return ((root or Path(__file__).resolve().parents[1]) / DUAL_RUNTIME).read_text(encoding="utf-8")
 
 
+def enhance_runtime(root: Path | None = None) -> str:
+    """Scroll-to-top button, data-tip tooltip and count-up: every Frame but PRESENTATION."""
+    return ((root or Path(__file__).resolve().parents[1]) / ENHANCE_RUNTIME).read_text(encoding="utf-8")
+
+
 def variant_runtime(kind: str, root: Path | None = None) -> str:
-    return dual_runtime(root) if kind == "left-dual" else ""
+    """What follows the canonical frame runtime in the one <script>: the enhancements, then the variant's own runtime."""
+    if kind.startswith("presentation"):
+        return ""
+    return "\n" + enhance_runtime(root) + ("\n" + dual_runtime(root) if kind == "left-dual" else "")
 
 
 def derive_layout(kind: str, base: str, *, root: Path | None = None) -> str:

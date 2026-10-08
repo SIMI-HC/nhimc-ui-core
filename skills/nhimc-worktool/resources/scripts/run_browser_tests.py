@@ -544,6 +544,7 @@ def main() -> int:
     parser.add_argument("--presentation-safe-area-only", action="store_true")
     parser.add_argument("--blog-scroll-owner-only", action="store_true")
     parser.add_argument("--frame-render-only", action="store_true")
+    parser.add_argument("--frame-enhancements-only", action="store_true")
     parser.add_argument("--outside-click-only", action="store_true")
     parser.add_argument("--modal-stability-only", action="store_true")
     parser.add_argument("--all-frames", action="store_true")
@@ -557,6 +558,7 @@ def main() -> int:
         args.presentation_safe_area_only,
         args.blog_scroll_owner_only,
         args.frame_render_only,
+        args.frame_enhancements_only,
         args.outside_click_only,
         args.modal_stability_only,
     ))
@@ -601,6 +603,14 @@ def main() -> int:
         for item in report["problems"]:
             print(f"  {item}")
         print(f"modal stability: {report['cells']} cells x {', '.join(report['browsers'])} {'PASS' if report['all_passed'] else 'FAIL'}")
+        return 0 if report["all_passed"] else 1
+    if args.frame_enhancements_only:
+        from scripts.frame_enhancements import run_frame_enhancements
+
+        report = run_frame_enhancements(ROOT)
+        for item in report["problems"]:
+            print(f"  {item}")
+        print(f"frame enhancements: {report['cells']} cells {'PASS' if report['all_passed'] else 'FAIL'}")
         return 0 if report["all_passed"] else 1
     if args.frame_render_only:
         from scripts.frame_render import run_frame_render

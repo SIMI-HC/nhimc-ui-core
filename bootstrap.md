@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.4.10** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 GitHub API 주소(`https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
+**문서 버전: 2.5.0** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 GitHub API 주소(`https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
@@ -78,7 +78,7 @@ https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=mai
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.10/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.5.0/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
@@ -108,6 +108,7 @@ Content 작성 규칙(발표용):
 - 앵커(`#id`)는 sticky 헤더 높이를 반영한 `scroll-margin-top`으로 이동합니다. 페이지에서 따로 보정하지 않습니다.
 - 헤더 색은 `!important`가 아니라 토큰(`--site-header-surface`)으로 제어합니다. 로고·내비게이션·도움말·모바일 메뉴·Footer는 두 상태에서 같습니다.
 - 소유자 전환은 `document.documentElement.dataset.scrollOwner`만 바꾸면 됩니다.
+- 본문 칼럼은 기본 1560px(`--blog-width`)로 넓고 SiteHeader도 같은 폭에 맞춰집니다. 화면 폭을 바꾸는 CSS를 직접 쓰지 않습니다.
 
 ## 프롬프트 힌트 해석
 
@@ -214,6 +215,8 @@ Frame은 그대로 복사되고, AI는 **메뉴 JSON**과 **Page(Content)** 두 
 - 검색 조건은 `nhimc-toolbar` 안에 `label.field`를 나란히 두고 버튼은 `nhimc-toolbar-end`로 오른쪽에 둡니다(`nhimc-form-grid`는 여러 줄짜리 입력 폼용입니다). 제목 줄의 버튼은 `nhimc-page-header` 안의 `nhimc-actions`입니다.
 - 표의 칸은 줄바꿈하지 않고 표가 `nhimc-scroll` 안에서 가로로 스크롤됩니다. 설명처럼 긴 글을 줄바꿈해야 하는 칸에만 `class="nhimc-wrap"`을 붙입니다.
 - 등록되지 않은 CSS 클래스는 쓰지 않습니다. 자주 틀리는 것: `card-head`→`nhimc-card-head`, `fields`→`nhimc-toolbar`, `actions`→`nhimc-actions`, `table-wrap`→`nhimc-scroll`, `title`→`nhimc-page-header`, `badge warning`·`badge secondary`→`badge warn`·`ok`·`bad`.
+- **Frame이 알아서 하는 것은 직접 만들지 않습니다.** 카드가 나타나는 모션과 마우스를 올렸을 때의 효과, 본문을 240px 넘게 스크롤하면 오른쪽 아래에 나오는 ‘맨 위로’ 버튼, `nhimc-stat-value`의 숫자 올라가기, 다크 모드에서 톤다운되는 강조 카드 머리·주요 버튼, 넓어진 도움말 창입니다. 같은 기능을 `<style>`·`<script>`·`position:fixed`·`@keyframes`로 따로 만들지 않습니다. 시스템의 ‘모션 줄이기’ 설정이면 움직임은 모두 꺼집니다.
+- 태그(`badge`)나 아무 요소에 한 줄 설명을 달려면 `data-tip` 속성을 씁니다: `<span class="badge warn" data-tip="6년이 지난 장비입니다" data-nhimc-component="Badge">확인</span>`. 마우스를 올리면 말풍선으로 뜨고, 표 안에서도 잘리지 않습니다.
 
 ## Core 아이콘 추가 절차
 

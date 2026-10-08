@@ -1,5 +1,19 @@
 # 변경 이력
 
+## [2.5.0] - 2026-10-08
+
+- **장비 이용도 보고서 앱에서 다듬은 디자인을 정본 Frame과 컴포넌트로 옮겼습니다.** 그 앱(`index.html`)의 Frame CSS와 컴포넌트·레이아웃 번들은 정본과 같았고, 개선은 모두 앱 스크립트 끝의 JS에 있었습니다. 같은 일을 앱마다 다시 하지 않도록 정본이 맡습니다.
+- **BLOG 본문 칼럼을 넓혔습니다.** `--blog-width` 1080px → 1560px(앱에서는 `--blog-width:1560px`로 넓혔던 값). SiteHeader도 같은 폭에 맞춰집니다. 글 위주 화면은 `.app-shell{--blog-width:1080px}`로 좁힐 수 있습니다. BLOG 1.8.0.
+- **도움말 창이 화면 절반까지 넓어집니다.** 620px에서 끊기던 것을 `min(max(50vw,288px),calc(100vw - 48px))`로 바꿨습니다. BLOG, TOP, DEFAULT(top-left), LEFT, LEFT BLANK, LEFT DUAL, PRESENTATION 두 가지 모두 같습니다(768px 아래는 그대로 288px).
+- **강조 카드(`data-nhimc-accent`)가 모든 테마에서 색을 갖습니다.** 파스텔 색 칩(`--color-chip-*`)이 Color Mix 테마에만 정의되어 있어, 기본·Mint·Pear·Apricot·Neutral 테마에서는 카드 머리가 흰색이고 테두리가 글자색(검정)으로 나왔습니다. sky·pear·apricot·yellow 칩과 칩 위 글자색(`--color-chip-foreground`)을 모든 테마에 정의했습니다(고정 파스텔, 값은 Color Mix 카탈로그와 같음). purple·pink·amber는 전과 같이 Color Mix에만 있고 다른 테마에서는 sky·apricot·yellow로 보입니다. 게이트가 6개 테마 색 모두에서 머리색·테두리·글자 대비를 확인합니다.
+- **다크 모드 톤다운.** 파스텔 강조 카드(`data-nhimc-accent`)의 머리는 카드색 위에 파스텔 22%, 테두리는 28%로 어둡게, 글자는 카드 글자색으로 바꿨습니다(모든 테마). 주요 버튼(`btn primary`)은 테마 primary 60%를 카드색에 섞은 색(마우스를 올리면 75%)에 읽기 좋은 글자색으로 바꿨습니다. Mint와 Neutral은 primary가 밝아 흰 글자의 대비가 3:1 정도라 어두운 글자를 씁니다. 값은 `scripts/dark_tones.py`가 테마 카탈로그에서 계산해 테마 CSS로 내보내며(Edge 92에는 `color-mix`가 없어 정적 값), 모든 테마에서 글자 대비 4.5:1 이상을 게이트가 확인합니다.
+- **모션.** 화면이 보일 때 카드가 아래에서 올라오며 나타나고(18px, 0.46초, 최대 0.54초까지 순서대로), 카드에 마우스를 올리면 그림자와 테두리가 primary로 바뀌며, 헤더 버튼과 표 행이 부드럽게 바뀝니다. 모두 CSS이고 `prefers-reduced-motion: reduce`이면 꺼집니다.
+- **‘맨 위로’ 플로팅 버튼.** 본문(BLOG의 document 스크롤은 페이지)을 240px 넘게 스크롤하면 오른쪽 아래(모바일은 16px, 44px)에 반투명 원형 버튼이 나타나고 클릭하면 맨 위로 부드럽게 올라갑니다. 모든 Frame(PRESENTATION 제외)이 `src/frames/enhance-runtime.js`로 같은 버튼을 둡니다.
+- **`data-tip` 툴팁과 숫자 올라가기.** 태그(`badge`)나 어떤 요소든 `data-tip="한 줄 요약"`을 달면 마우스를 올릴 때 말풍선이 뜹니다(`position:fixed`라 스크롤되는 표 안에서도 잘리지 않음). `nhimc-stat-value`의 숫자는 화면이 보일 때 0.7초 동안 올라가며 소수점과 천 단위 쉼표를 유지합니다. 모션 줄이기이면 움직이지 않습니다.
+- **Frame 버전.** BLOG 1.8.0, TOP과 DEFAULT(top-left) 1.5.0, LEFT와 LEFT BLANK 1.4.0, LEFT DUAL 1.1.0, PRESENTATION 두 가지 1.2.1. `enhance-runtime.js`와 `derived_frames.py`가 Frame 보호 파일(digest)에 들어갑니다.
+- **새 게이트 `frame enhancements`.** 5개 Frame(BLOG는 두 스크롤 소유자)을 라이트·다크, 1920×1000과 375×800에서 오프라인 빌드와 Web Runtime으로 실제 Chrome에서 측정합니다: 맨 위로 버튼(숨김→표시→클릭 시 맨 위→다시 숨김, 위치·크기·가려지지 않음), 툴팁(표시·뷰포트 안·사라짐), 숫자 올라가기가 쓴 숫자로 끝남, 카드 모션과 모션 줄이기, 6개 테마 색의 다크 톤(색 값과 글자 대비), 도움말 폭, BLOG 폭, 가로 스크롤 없음. 다른 브라우저 게이트도 `--force-prefers-reduced-motion`으로 돌려 모션이 측정을 흔들지 않게 했습니다.
+- `bootstrap.md`·`SKILL.md`·웹 채팅용 `NHIMC.md`에 "Frame이 알아서 하는 것은 직접 만들지 않는다"(모션, 맨 위로 버튼, 숫자 올라가기, 다크 톤, 도움말 폭)와 `data-tip` 사용법, BLOG 폭을 적었습니다.
+
 ## [2.4.10] - 2026-10-08
 
 - **공식 프롬프트를 GitHub API 주소 형식으로 바꿨습니다.** 첫 줄 `NHIMC UI Core 준비해줘. git clone 금지.`, 둘째 줄 `https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main 만 읽고, 모든 링크는 main 기준으로 만들어줘.` README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 맞췄습니다. 이 주소는 항상 `main`의 최신 문서를 주고, 웹 AI가 옛 복사본을 붙잡고 있는 다른 주소들과 겹치지 않습니다.

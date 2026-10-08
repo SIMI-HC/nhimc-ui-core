@@ -60,6 +60,7 @@ LOCAL_NETWORK_ALLOWLIST = {
     "scripts/probe_console.mjs",
     "scripts/verify_presentation_safe_area.mjs",
     "scripts/verify_blog_scroll_owner.mjs",
+    "scripts/verify_frame_enhancements.mjs",
     "scripts/verify_frame_render.mjs",
     "scripts/verify_outside_click.mjs",
     "scripts/verify_modal_stability.mjs",

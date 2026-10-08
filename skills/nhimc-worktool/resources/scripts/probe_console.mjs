@@ -21,7 +21,7 @@ if (!browserPath || !url) {
 }
 const profile = mkdtempSync(join(tmpdir(), 'nhimc-console-'));
 const browser = spawn(browserPath, [
-  '--headless', '--disable-gpu', '--disable-extensions', '--no-first-run',
+  '--headless', '--force-prefers-reduced-motion', '--disable-gpu', '--disable-extensions', '--no-first-run',
   '--remote-allow-origins=*', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
   ...(offline ? ['--host-resolver-rules=MAP * ~NOTFOUND'] : []), 'about:blank',
 ], { stdio: 'ignore' });

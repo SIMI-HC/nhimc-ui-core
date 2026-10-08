@@ -119,7 +119,19 @@ def expected_primaries(root: Path) -> dict[tuple[str, str], list[int]]:
     return table
 
 
-def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list[int]]) -> list[str]:
+def expected_buttons(root: Path) -> dict[tuple[str, str], list[int]]:
+    """The primary Button: the theme primary in light, the toned colour (scripts/dark_tones.py) in dark."""
+    from scripts.dark_tones import DARK_CARD, SOFT, mix
+
+    table = dict(expected_primaries(root))
+    for (theme, mode), rgb in expected_primaries(root).items():
+        if mode == "dark":
+            soft = mix("#" + "".join(f"{part:02x}" for part in rgb), DARK_CARD, SOFT)
+            table[(theme, mode)] = [int(soft[index:index + 2], 16) for index in (1, 3, 5)]
+    return table
+
+
+def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list[int]], buttons: dict[tuple[str, str], list[int]] | None = None) -> list[str]:
     label = cell["id"]
     if result.get("error"):
         return [f"{label}: {result['error']}"]
@@ -128,8 +140,9 @@ def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list
     if want:
         if result.get("primaryRgb") != want:
             found.append(f"{label}: theme colour not applied, --color-primary is {result.get('primaryToken')} (expected rgb{tuple(want)})")
-        if result.get("buttonRgb") != want:
-            found.append(f"{label}: primary Button is rgb{tuple(result.get('buttonRgb') or ())}, expected rgb{tuple(want)}")
+        button = (buttons or expected).get((cell["theme"], cell["mode"]), want)
+        if result.get("buttonRgb") != button:
+            found.append(f"{label}: primary Button is rgb{tuple(result.get('buttonRgb') or ())}, expected rgb{tuple(button)}")
     if result.get("pageOverflowX"):
         found.append(f"{label}: the page scrolls horizontally")
     if not result.get("icons") and cell["frame"] not in {"presentation", "presentation-vertical"} and cell["width"] >= 768             and not (cell["frame"] == "left-dual" and cell["width"] < 1024):  # LEFT DUAL's rail is a drawer below 1024px
@@ -151,9 +164,10 @@ def cell_problems(cell: dict, result: dict, expected: dict[tuple[str, str], list
 def problems(root: Path, cells: list[dict], results: list[dict]) -> list[str]:
     by_id = {result["id"]: result for result in results}
     expected = expected_primaries(root)
+    buttons = expected_buttons(root)
     found: list[str] = []
     for cell in cells:
-        found.extend(dict.fromkeys(cell_problems(cell, by_id.get(cell["id"], {"error": "no measurement"}), expected)))
+        found.extend(dict.fromkeys(cell_problems(cell, by_id.get(cell["id"], {"error": "no measurement"}), expected, buttons)))
     return found
 
 

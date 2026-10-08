@@ -15,7 +15,7 @@ if (!browserPath || !artifactUrl || !/^[0-9a-f]{64}$/.test(runtimeToken ?? '')) 
 
 const profile = mkdtempSync(join(tmpdir(), 'nhimc-cdp-'));
 const browser = spawn(browserPath, [
-  '--headless',
+  '--headless', '--force-prefers-reduced-motion',
   '--disable-gpu',
   '--disable-extensions',
   '--disable-background-networking',

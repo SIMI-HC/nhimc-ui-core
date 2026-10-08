@@ -25,12 +25,12 @@ class ContractTests(unittest.TestCase):
         self.assertIn(f"nhimc-ui-core@{version.split('.')[0]}/dist/nhimc-web.js", readme)
 
     def test_project_and_frame_contracts_are_version_3(self):
-        self.assertEqual("2.4.10", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
+        self.assertEqual("2.5.0", (ROOT / "VERSION").read_text(encoding="utf-8").strip())
         project = json.loads((ROOT / "registry/project.json").read_text(encoding="utf-8"))
         frames = json.loads((ROOT / "registry/frames.json").read_text(encoding="utf-8"))["frames"]
-        self.assertEqual("2.4.10", project["projectVersion"])
+        self.assertEqual("2.5.0", project["projectVersion"])
         self.assertEqual(8, len(frames))
-        self.assertEqual({"1.0.0", "1.2.0", "1.3.0", "1.4.0", "1.4.1", "1.7.1"}, {frame["version"] for frame in frames})
+        self.assertEqual({"1.1.0", "1.2.1", "1.4.0", "1.5.0", "1.8.0"}, {frame["version"] for frame in frames})
 
     def test_repository_contract_is_consistent(self):
         self.assertEqual([], validate_contracts(ROOT))

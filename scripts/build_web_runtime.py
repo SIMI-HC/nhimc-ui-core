@@ -17,7 +17,7 @@ if __package__ in {None, ""}:
 
 from scripts.build_single_html import _font_css, _upstream, _verified_vendor_bytes
 from scripts.canonical_frame import ALL_FRAME_FILES
-from scripts.derived_frames import DERIVED_BASE, derive_layout, dual_runtime
+from scripts.derived_frames import DERIVED_BASE, derive_layout, dual_runtime, enhance_runtime
 from scripts.frame_patches import apply_frame_patches
 from scripts.icon_overlay import merged_sprite
 from scripts.theme_colors import theme_color_css, theme_color_ids
@@ -58,6 +58,7 @@ def build_web_runtime(root: Path = ROOT) -> Path:
         "runtime": runtime,
         "presentationRuntime": presentation_runtime,
         "dualRuntime": dual_runtime(root),
+        "enhanceRuntime": enhance_runtime(root),
         "css": css,
         "themeCss": theme_color_css(root),
         "icons": sorted(set(re.findall(r'<symbol\s+id="([a-z0-9-]+)"', sprite))),

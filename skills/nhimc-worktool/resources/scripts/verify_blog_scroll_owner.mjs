@@ -17,7 +17,7 @@ if (!browserPath || !matrixPath) {
 const matrix = JSON.parse(readFileSync(matrixPath, 'utf8'));
 const profile = mkdtempSync(join(tmpdir(), 'nhimc-blog-scroll-'));
 const browser = spawn(browserPath, [
-  '--headless', '--disable-gpu', '--disable-extensions', '--no-first-run',
+  '--headless', '--force-prefers-reduced-motion', '--disable-gpu', '--disable-extensions', '--no-first-run',
   '--remote-allow-origins=*', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank',
 ], { stdio: 'ignore' });
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));

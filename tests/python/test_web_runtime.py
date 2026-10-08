@@ -33,7 +33,7 @@ def _frame_markup(dom: str) -> str:
     body = re.sub(r"<script\b.*?</script>", "", body, flags=re.S)
     body = re.sub(r"<svg hidden.*?</svg>", "", body, flags=re.S)
     body = re.sub(r"준비됨 · (?:오프라인 문서|웹 실행)", "STATUS", body)
-    return re.sub(r"\s+", " ", body)
+    return re.sub(r"\s+(?=</body>)", "", re.sub(r"\s+", " ", body))  # the Frame appends its button and tooltip after any trailing whitespace
 
 
 class WebRuntimeTests(unittest.TestCase):

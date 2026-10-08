@@ -52,6 +52,11 @@ frameVersion always means the same Frame.
        centred (max(24px, edge + gutter)), so a narrow screen keeps 24px on both sides. The hamburger names its colour
        (color:var(--fg)) instead of using the default button colour, which turned black on a dark page when color-scheme
        stayed light.
+1.8.0  BLOG: the column is wide by default (--blog-width 1560px, was 1080px); an app that shows reading text sets
+       .app-shell{--blog-width:1080px}. The help sheet of BLOG, TOP and PRESENTATION takes half the screen (no 620px cap).
+       Every Frame except PRESENTATION also runs src/frames/enhance-runtime.js (scroll-to-top button, data-tip tooltip, count-up);
+       the card motion, hover and dark-mode tones are CSS in src/layouts/primitives.css. Registry versions: BLOG 1.8.0,
+       TOP and DEFAULT (top-left) 1.5.0, LEFT and LEFT BLANK 1.4.0, LEFT DUAL 1.1.0, PRESENTATION and PRESENTATION VERTICAL 1.2.1.
 1.4.1  TOP: the hamburger names its colour (color:var(--fg)); with the browser's default button colour it was black (invisible)
        on a dark page whose color-scheme stayed light. Registry version: TOP 1.4.1.
 1.2.0  PRESENTATION frames (presentation, presentation-vertical): the Ilsan Hospital logo (the TOP Frame's SVG, 32px) sits
@@ -151,8 +156,8 @@ _BLOG_SCROLL_OWNER_RULES = f"""
 {_DOCUMENT} .site-header{{position:sticky;top:0;border-bottom:1px solid var(--color-border-accent);box-shadow:var(--shadow-lg)}}
 {_DOCUMENT} .content{{flex:1 0 auto;overflow:visible}}
 {_DOCUMENT} .content [id]{{scroll-margin-top:calc(var(--site-header-height) + 16px)}}
-/* BLOG layout: one centred reading column; the header lines up with it (brand left, menu right, utilities last). */
-.app-shell{{--blog-width:1080px;--page-max:var(--blog-width);--blog-edge-raw:calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2);--blog-edge:max(24px,var(--blog-edge-raw))}}
+/* BLOG layout: one centred column (--blog-width, wide by default; an app narrows it for reading text); the header lines up with it (brand left, menu right, utilities last). */
+.app-shell{{--blog-width:1560px;--page-max:var(--blog-width);--blog-edge-raw:calc((100% - var(--scrollbar-inline-size,10px) - var(--blog-width)) / 2);--blog-edge:max(24px,var(--blog-edge-raw))}}
 {_DOCUMENT} .app-shell{{--blog-edge:max(24px,calc((100% - var(--blog-width)) / 2))}}
 .content [data-nhimc-role="content"]{{padding-inline:0}}
 .content{{grid-template-columns:minmax(0,var(--blog-width));justify-content:center}}
@@ -276,7 +281,17 @@ def _patch_mobile_menu_color(layout: str) -> str:
     return layout
 
 
+HELP_WIDTH_OLD = "width:min(50vw,620px)"
+HELP_WIDTH_NEW = "width:min(max(50vw,288px),calc(100vw - 48px))"
+
+
+def _patch_help_width(layout: str) -> str:
+    """The help sheet (BLOG, TOP, PRESENTATION) was capped at 620px, a thin strip on a wide screen. It now takes half the screen
+    (never under 288px or over the screen minus 48px); the mobile rule below 768px still wins."""
+    return layout.replace(HELP_WIDTH_OLD, HELP_WIDTH_NEW)
+
+
 def apply_frame_patches(layout: str) -> str:
-    layout = _patch_mobile_menu_color(layout)
+    layout = _patch_help_width(_patch_mobile_menu_color(layout))
     patched = _patch_nav_icons(_patch_blog_scroll_owner(_patch_presentation_logo(_patch_presentation_safe_area(_patch_logo_tile(layout)))))
     return _patch_header_height(_patch_default_header_spacing(_patch_sidebar_gradient(patched)))

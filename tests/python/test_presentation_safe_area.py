@@ -77,7 +77,7 @@ class PresentationBaseContractTests(unittest.TestCase):
                     expected = frame_patches._patch_blog_scroll_owner(expected)
                 if name in {"blog.html", "top.html"}:
                     expected = frame_patches._patch_nav_icons(frame_patches._patch_mobile_menu_color(expected))
-                expected = frame_patches._patch_header_height(frame_patches._patch_default_header_spacing(frame_patches._patch_sidebar_gradient(expected)))
+                expected = frame_patches._patch_help_width(frame_patches._patch_header_height(frame_patches._patch_default_header_spacing(frame_patches._patch_sidebar_gradient(expected))))
                 self.assertEqual(expected, patched, name)
                 self.assertNotIn(frame_patches.SAFE_AREA_MARKER, patched, name)
                 self.assertNotIn("presentation-direction", patched, name)
@@ -87,6 +87,7 @@ class PresentationBaseContractTests(unittest.TestCase):
         once = frame_patches.apply_frame_patches(raw)
         self.assertEqual(once, frame_patches.apply_frame_patches(once))
         restored = once.replace(' data-presentation-direction="horizontal"', "", 1)
+        restored = restored.replace(frame_patches.HELP_WIDTH_NEW, frame_patches.HELP_WIDTH_OLD)  # the help sheet width patch applies to every Frame
         restored = re.sub(r'<div class="brand-logo">.*?</div><div class="utility">', '<div class="utility">', restored, count=1, flags=re.DOTALL)
         restored = re.sub(re.escape("/* " + frame_patches.PRESENTATION_LOGO_MARKER + " */") + r".*?(?=</style>)", "", restored, count=1, flags=re.DOTALL)
         start = restored.index("\n/* " + frame_patches.SAFE_AREA_MARKER)
@@ -126,7 +127,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             frame = frames[frame_id]
             self.assertEqual("presentation", frame["extends"])
             self.assertEqual(base["sharedRuntime"], frame["implementation"])
-            self.assertEqual("1.2.0", frame["version"])
+            self.assertEqual("1.2.1", frame["version"])
             for name in base["frameOwns"]:
                 self.assertIn(name, frame["owns"], frame_id)
             for name in ("branding", "presentation-header", "presentation-controller", "content-safe-area", "content-center", "slide-transition", "slide-navigation"):
@@ -134,7 +135,7 @@ class PresentationBaseContractTests(unittest.TestCase):
             self.assertIn(base["sharedRuntime"], [item["path"] for item in frame["protectedFiles"]])
         for frame_id, frame in frames.items():
             if frame_id not in PRESENTATION_FRAMES:
-                self.assertEqual({"nhimc-blog": "1.7.1", "nhimc-top": "1.4.1", "nhimc-default": "1.3.0", "nhimc-left-blank": "1.3.0", "nhimc-top-left": "1.4.0"}.get(frame_id, "1.0.0"), frame["version"], frame_id)
+                self.assertEqual({"nhimc-blog": "1.8.0", "nhimc-top": "1.5.0", "nhimc-default": "1.4.0", "nhimc-left-blank": "1.4.0", "nhimc-top-left": "1.5.0", "nhimc-left-dual": "1.1.0"}[frame_id], frame["version"], frame_id)
                 self.assertNotIn("extends", frame)
 
     def test_presentation_primitives_are_registered_and_styled(self):

@@ -185,7 +185,7 @@
   const scripts = [...doc.matchAll(/<script>[\s\S]*?<\/script\s*>/gi)];
   if (scripts.length !== 1) fail('canonical runtime script must occur exactly once');
   const closeScript = '<' + '/script>';
-  doc = doc.slice(0, scripts[0].index) + '<script>\n' + (kind.startsWith('presentation') ? D.presentationRuntime : D.runtime + (kind === 'left-dual' ? D.dualRuntime : '')) + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
+  doc = doc.slice(0, scripts[0].index) + '<script>\n' + (kind.startsWith('presentation') ? D.presentationRuntime : D.runtime + '\n' + D.enhanceRuntime + (kind === 'left-dual' ? '\n' + D.dualRuntime : '')) + '\n' + business + '\n' + closeScript + doc.slice(scripts[0].index + scripts[0][0].length);
   const closeStyle = '<' + '/style>';
   const head = '<meta name="nhimc-core-version" content="' + D.version + '"><style data-nhimc-component-bundle="canonical">' + D.css + closeStyle;
   if (themeColor !== 'nhimc-default') doc = doc.replace(/(<html\b)/i, (m) => m + ' data-theme-color="' + themeColor + '"');

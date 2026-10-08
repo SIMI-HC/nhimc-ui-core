@@ -69,6 +69,10 @@ def verification_checks(
                 [sys.executable, "scripts/run_browser_tests.py", "--blog-scroll-owner-only"],
             ),
             (
+                "frame enhancements",
+                [sys.executable, "scripts/run_browser_tests.py", "--frame-enhancements-only"],
+            ),
+            (
                 "frame render",
                 [sys.executable, "scripts/run_browser_tests.py", "--frame-render-only"],
             ),
