@@ -1,12 +1,14 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.4.9** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 jsDelivr 주소(`https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
+**문서 버전: 2.4.10** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 GitHub API 주소(`https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
 - 작업 폴더에 저장소를 클론하지 않습니다(유일한 예외는 “웹에서 URL 없는 완성 HTML을 다운로드 파일로 주기” 절 참고).
 - 설치·등록은 공식 플러그인 경로만 쓰고, 등록 전에 사용자에게 먼저 묻습니다.
 - 원격 버전은 `registry/project.json`의 `projectVersion`을 raw로 확인합니다.
+- 문서는 한 번만 읽습니다. 응답이 GitHub API의 JSON이고 `content`가 base64이면 디코딩해 읽고, 다시 읽어 검증하려 하지 않습니다(호출 한도에 걸려도 이미 읽은 내용으로 진행합니다).
+- 사용자가 “링크는 main 기준으로”라고 해도: 디자인 가이드는 GitHub Pages 주소(항상 `main`), Web Runtime은 이 문서의 `@2` 주소 그대로 씁니다(`@2`는 항상 최신 2.x이고, `@main`은 jsDelivr가 몇 시간 캐시해 옛 런타임이 보일 수 있어 쓰지 않습니다). 태그(`@v숫자`)로 고정한 링크는 만들지 않습니다.
 
 이 파일은 모든 AI 환경의 단일 진입점입니다. 이후 절차는 아래 "준비 절차"를 그대로 따릅니다.
 
@@ -15,8 +17,8 @@
 사용자는 처음 한 번 다음처럼 요청합니다.
 
 ```text
-https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md
-이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)
+NHIMC UI Core 준비해줘. git clone 금지.
+https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main 만 읽고, 모든 링크는 main 기준으로 만들어줘.
 ```
 
 그다음에는 자연어 요구만 받습니다.
@@ -76,7 +78,7 @@ https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.9/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.10/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약

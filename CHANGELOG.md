@@ -1,5 +1,11 @@
 # 변경 이력
 
+## [2.4.10] - 2026-10-08
+
+- **공식 프롬프트를 GitHub API 주소 형식으로 바꿨습니다.** 첫 줄 `NHIMC UI Core 준비해줘. git clone 금지.`, 둘째 줄 `https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main 만 읽고, 모든 링크는 main 기준으로 만들어줘.` README, `bootstrap.md`, Design Guide(프롬프트 만들기 포함), 쉬운 가이드를 맞췄습니다. 이 주소는 항상 `main`의 최신 문서를 주고, 웹 AI가 옛 복사본을 붙잡고 있는 다른 주소들과 겹치지 않습니다.
+- **"모든 링크는 main 기준"에도 런타임이 옛것이 되지 않게 했습니다.** 이 요청을 받은 AI가 Web Runtime 주소를 `@main`으로 바꿔 쓰면 jsDelivr 브랜치 캐시 때문에 몇 시간 동안 옛 런타임이 보일 수 있습니다. `bootstrap.md`와 웹 채팅용 `NHIMC.md`에 "디자인 가이드는 GitHub Pages 주소, Web Runtime은 `@2` 그대로, 태그 고정 링크는 만들지 않는다"를 적었습니다.
+- **문서는 한 번만 읽게 했습니다.** GitHub API 응답(JSON의 base64 `content`)은 디코딩해 읽고, 다시 읽어 검증하려다 호출 한도(rate limit)에 걸리는 일을 막습니다.
+
 ## [2.4.9] - 2026-10-08
 
 - **준비 보고를 짧게 줄였습니다.** Claude 웹이 "어디서 읽었는지, API 호출 한도, base64 디코딩" 같은 점검 과정과 `platform`·`defaultFrame` 같은 내부 항목까지 길게 늘어놓았습니다. 이제 5줄 이내입니다: `NHIMC UI Core 준비 완료 (v버전)`, 환경·방식, 상태 한 줄, 디자인 가이드 링크, 다음 안내. 점검 과정과 내부 항목은 사용자가 묻기 전에는 쓰지 않고, 한계는 해당될 때만 한 줄입니다.

@@ -53,8 +53,9 @@ class DesignGuideTests(unittest.TestCase):
         header = html[html.index('<header class="gallery-header">') : html.index("</header>")]
         self.assertLess(header.index('class="brand"'), header.index('id="viewNav"'))
         self.assertLess(header.index('id="viewNav"'), header.index('id="themeToggle"'))
-        self.assertIn("https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md", html)
-        self.assertIn("이 파일만 읽고 NHIMC UI Core를 준비해줘. (git clone 금지)", html)
+        self.assertIn("https://api.github.com/repos/SIMI-HC/nhimc-ui-core/contents/bootstrap.md?ref=main", html)
+        self.assertIn("NHIMC UI Core 준비해줘. git clone 금지.", html)
+        self.assertIn("만 읽고, 모든 링크는 main 기준으로 만들어줘.", html)
         self.assertNotIn("NHIMC Worktool 스킬로", html)
         self.assertIn("frame: ${builderState.frame", html)
         self.assertIn("theme: ${builderState.theme", html)
