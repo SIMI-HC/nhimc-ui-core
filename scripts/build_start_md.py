@@ -31,13 +31,17 @@ HEADER = """# NHIMC UI Core 시작 (웹 채팅용)
 
 ## 먼저 할 일: 준비 보고
 
-사용자가 "NHIMC UI Core를 준비해줘"라고만 했다면 아래 항목을 짧게 보고하고, 이어서 "이송업무 관리 화면 만들어줘"처럼 만들 화면을 말해 달라고 안내합니다. 설치·등록 여부는 묻지 않습니다(웹 채팅에는 설치할 곳이 없습니다).
+사용자가 "NHIMC UI Core를 준비해줘"라고만 했다면 아래 형식으로 **5줄 이내로 짧게** 보고합니다. 점검 과정(어디서 읽었는지, 호출 한도, 인코딩 등)이나 내부 항목(`defaultFrame` 등)은 사용자가 묻기 전에는 쓰지 않습니다. 설치·등록 여부는 묻지 않습니다(웹 채팅에는 설치할 곳이 없습니다). 디자인 가이드 링크는 아래 주소 그대로 일반 텍스트로 쓰고 다른 주소로 바꾸지 않습니다.
 
-- platform: 지금 환경(예: ChatGPT 웹, Claude 웹)
-- installationMode: `WEB_BOOTSTRAP` (context-only, 웹 미리보기 방식)
-- defaultFrame: `top-left`, defaultTheme: `nhimc-default`
-- 버전: 이 파일은 버전이 없으므로 `확인 못함`이라고 씁니다.
-- 한계: 결과물은 인터넷이 필요한 Web Runtime 미리보기입니다. 브라우저 검증을 거친 오프라인 `index.html`이 필요하면 Claude Code·Codex·Gemini CLI 같은 로컬 환경에서 다시 요청해야 합니다.
+```text
+NHIMC UI Core 준비 완료
+환경: <ChatGPT 웹 / Claude 웹 …> · 방식: 웹 미리보기
+상태: 설치 없이 바로 사용할 수 있습니다.
+디자인 가이드: https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html
+다음: 만들 화면을 말해 주세요. 예: "이송업무 관리 화면 만들어줘."
+```
+
+한계는 해당될 때만 한 줄로 덧붙입니다: 결과물은 인터넷이 필요한 Web Runtime 미리보기이고, 브라우저 검증을 거친 오프라인 `index.html`이 필요하면 Claude Code·Codex·Gemini CLI 같은 로컬 환경에서 다시 요청해야 합니다. 기본값은 Frame `top-left`, Theme `nhimc-default`입니다. 이 파일에는 버전이 없으므로 버전을 쓰지 않습니다.
 
 코드 실행(셸)이 있고 github.com에 접근할 수 있는 환경(Claude Code·Codex 등)에서는 사용자의 \"이 파일만 읽고\"와 어긋나지 않게, 이 파일이 직접 안내하는 대로 이 발췌본 대신 전체 지침을 따릅니다. `git ls-remote --tags --sort=-v:refname https://github.com/SIMI-HC/nhimc-ui-core.git "v*"`(클론 아님)의 맨 위 태그가 최신 릴리스이고, `https://raw.githubusercontent.com/SIMI-HC/nhimc-ui-core/<태그>/bootstrap.md`가 내용이 바뀌지 않는 전체 지침입니다.
 """

@@ -1,6 +1,6 @@
 # NHIMC UI Core 시작
 
-**문서 버전: 2.4.8** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 jsDelivr 주소(`https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
+**문서 버전: 2.4.9** — 이 문서가 곧 저장소의 버전입니다(릴리스마다 함께 올라갑니다). 사용자 프롬프트는 이 문서의 jsDelivr 주소(`https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md`)를 가리킵니다. `NHIMC.md`(같은 내용의 옛 주소 `START.md`)는 웹 채팅이 한 번에 읽도록 이 문서에서 필요한 부분만 뽑은 웹 채팅용 발췌본이라(`scripts/build_start_md.py`가 만듭니다) 버전이 없고, 이 문서의 편집본이 아닙니다.
 
 **먼저 지킬 규칙**
 - 이 문서를 읽으려고 `git clone`/`git pull`을 하지 않습니다. 로컬에 사본이 있어도 raw URL로 다시 읽습니다.
@@ -46,7 +46,22 @@ https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md
 6. **승인 시 공식 경로로 설치·업데이트합니다.** Claude Code는 `claude plugin marketplace add SIMI-HC/nhimc-ui-core` 다음 `claude plugin install nhimc-worktool@nhimc-worktool-marketplace`(업데이트는 `claude plugin marketplace update nhimc-worktool-marketplace` 다음 `claude plugin update nhimc-worktool@nhimc-worktool-marketplace`)입니다. 다른 환경은 그 환경의 공식 명령을 씁니다. 어떤 경우에도 `git clone`/`git pull`로 대신하지 않습니다.
 7. **새 설치 경로를 `<루트>`로 설정하고 필수 리소스를 재검증합니다.** 6단계에서 설치·업데이트된 경로에 6가지 리소스가 모두 있는지 다시 확인합니다. 빠졌으면 “설치 패키지가 불완전하다”고 정확히 보고하고 `WEB_BOOTSTRAP`으로 폴백합니다(작업 폴더에 클론하지 않습니다).
 8. **Design Guide를 표출합니다.** 처음 준비했거나 2단계에서 “원격이 더 새로움”으로 판정했을 때만 아래 “준비 완료 후: Design Guide 열기”대로 엽니다. 파일은 `<루트>/guide/nhimc-design-guide.html`(또는 스킬 전용 설치는 `<루트>/resources/guide/nhimc-design-guide.html`)입니다. 이미 최신이면 다시 열지 않고 링크만 한 줄로 알려 줍니다.
-9. **결과를 보고합니다.** `platform`, `projectVersion`, `defaultFrame`, `defaultTheme`, `installationMode`에 더해 `최신 확인 결과`(갱신함/이미 최신/확인 못함), `스킬·플러그인 상태`(등록됨/업데이트함/업데이트 안 함/미등록·미지원/불완전), `Design Guide`(열었음/링크 전달/생략: 이미 최신)를 함께 씁니다. `최신 확인 결과`에는 어떻게 확인했는지(`git ls-remote` 직접 확인 + 읽은 태그 주소 / `문서 기준`)를 함께 씁니다.
+9. **결과를 보고합니다(짧게).** 아래 형식으로 5줄 이내로 씁니다. 점검 과정(어디서 읽었는지, 호출 한도, 인코딩 등)과 `platform`·`defaultFrame` 같은 내부 항목은 사용자가 묻기 전에는 쓰지 않습니다. 한계(예: 오프라인 `index.html`은 만들 수 없음)는 해당될 때만 한 줄로 덧붙입니다.
+
+   ```text
+   NHIMC UI Core 준비 완료 (v<읽은 문서의 문서 버전>)
+   환경: <Claude Code / Codex / ChatGPT 웹 / Claude 웹 …> · 방식: <플러그인 / 스킬 / 웹 미리보기>
+   상태: <아래 상태 문구 중 하나>
+   디자인 가이드: https://simi-hc.github.io/nhimc-ui-core/guide/nhimc-design-guide.html
+   다음: 만들 화면을 말해 주세요. 예: "이송업무 관리 화면 만들어줘."
+   ```
+
+   `상태` 문구는 환경에 맞게 하나만 고릅니다.
+   - 설치본이 최신(Claude Code 플러그인, Codex 플러그인·스킬 등): `이미 최신입니다. 바로 사용할 수 있습니다.` 이번에 올렸으면 `갱신함(<이전> → <현재>). 바로 사용할 수 있습니다.`
+   - 설치본이 옛 버전: 먼저 “업데이트할지” 묻습니다. Claude Code는 `claude plugin marketplace update nhimc-worktool-marketplace` 다음 `claude plugin update nhimc-worktool@nhimc-worktool-marketplace` 두 줄을 안내합니다.
+   - 미설치: 등록할지 먼저 묻고, Claude Code는 `claude plugin marketplace add SIMI-HC/nhimc-ui-core` 다음 `claude plugin install nhimc-worktool@nhimc-worktool-marketplace` 두 줄을 안내합니다. Codex 등 다른 환경은 그 환경의 플러그인·스킬 등록 방법을 안내하고 명령을 지어내지 않습니다.
+   - 웹 채팅(ChatGPT 웹, Claude 웹, Gemini 등): 설치할 곳이 없으니 `설치 없이 바로 사용할 수 있습니다(웹 미리보기).`
+   - `Design Guide`(열었음/링크 전달/생략: 이미 최신): 열었으면 `디자인 가이드: 열었음`, 못 열었거나 웹이면 위 링크를 전달합니다. 링크는 위 주소 그대로 쓰고 `@main` 같은 다른 주소로 바꾸지 않습니다.
 
 ## 준비 완료 후: Design Guide 열기
 
@@ -61,7 +76,7 @@ https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core/bootstrap.md
 
    링크 형식 규칙: `디자인 가이드: ` 뒤에 전체 주소를 한 줄로 씁니다. 주소 안에 공백이나 줄바꿈을 넣지 않고, 끝의 `.html`을 빼지 않으며, 답변에서는 코드 블록이나 백틱으로 감싸지 않고 그대로 클릭되는 일반 텍스트로 둡니다(위 상자는 예시입니다).
 
-   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.8/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
+   이 주소는 GitHub Pages가 `main`의 최신 가이드를 보여 주므로 버전 숫자를 맞출 필요가 없습니다. 링크를 열 수 없는 환경이면 `https://cdn.jsdelivr.net/gh/SIMI-HC/nhimc-ui-core@v2.4.9/guide/nhimc-design-guide.html` 는 텍스트로 제공되므로 소스가 보이는 것이 정상이며, 이 경우 그 내용을 `nhimc-design-guide.html`로 저장해서 열도록 안내합니다. 파일을 첨부·저장할 수 있는 환경이면 `guide/nhimc-design-guide.html`을 그대로 첨부합니다.
 3. 실제로 열었을 때만 “열었다”고 말하고, 못 열었으면 “다운로드 파일로 전달했다”고 정확히 말합니다.
 
 ## PRESENTATION Frame (`presentation`, `presentation-vertical`) — 공통 계약
